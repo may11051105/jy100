@@ -1,6 +1,3 @@
-﻿<!-- 【自動即時更新版本】
-更新購物車位置
----->
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -8,11 +5,17 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>【百分百】金庸商城</title>
-    
-<!-- Firebase 函式庫 資料庫-->
+<!-- Open Graph (分享卡片) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://may11051105.github.io/jy100/">
+<meta property="og:title" content="【百分百】金庸商城">
+<meta property="og:description" content="江湖補給 一站滿足">
+<meta property="og:image" content="https://may11051105.github.io/jy100/100.png">
+<!-- Firebase 函式庫 -->
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 <script>
+// Firebase 初始化
 const firebaseConfig = {
   apiKey: "AIzaSyDF8YUyotMS75qsGoRQidcgZ7_J9MJbGE8",
   authDomain: "jzmenu-a79cd.firebaseapp.com",
@@ -25,75 +28,75 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const dbFirebase = firebase.database();
+/* =============================
+// CONFIG專屬 集中管理##
+ ============================= */
+const CONFIG = {
+    serverId: "09",
+    serverName: "09倚天",
+    storeName: "🎮 09倚天【百分百】金庸商城",
+    sheet: "products09",
+    firebaseNode: "products09",
+    cacheKey: "jin_mall_products09",
+    loadingText: "👻👻👻",
+    secretDiv: "secret-products09",
+    orderTitle: "補給單📢傳給百分百以確認交易" 
+};
 </script>
-
 <style>
 /* ============================= 
- * 🎨 主題外觀
+//  🎨 主題外觀##
  ============================= */
 :root { 
-  /* 背景色## */
-  --main-bg: #f2f4f7;   /*body背景*/
-  --Header-bg:#111;  /*標題背景*/
-  --bg1: #577999; /*背景主色*/  
-    --bg2: #d4e9fc;/*背景2:資訊欄面板*購物車面板*/
-    --bg3: #f0f8ff;/*背景3:超淡*/
+  --main-bg: #f2f4f7;
+  --Header-bg:#111;
+  --bg1: #577999;    /*背景主色*/  
+  --bg2: #d4e9fc;    /*背景2:資訊欄面板*購物車面板*/
+  --bg3: #f0f8ff;    /*背景3:超淡*/
   --h3-bg: #2c3e50;  /*分類標題*/
 
 
+/* 文字顏色 */
+  --text-light: #888;    /*功能*/
+  --sold-out: #d35400;   /*缺貨*/
+  --price-color: #d35400;/*價格$*/
+  --stock-tip: #3498db;  /*庫存*/
+  --danger: #aa11aa;     /*使用限制*/
 
-/* ============================= */
-  /* 文字顏色 */
-  --text-light: #888; /*功能描述*/
-  --sold-out: #d35400; /*缺貨*/
-  --price-color: #d35400; /*價格$*/
-  --stock-tip: #3498db; /*庫存*/
-  --danger: #aa11aa; /*使用限制*/
-  /* 框線 */
   --border: #ccc;
-  --divider: #eee; /*商品分隔線*/
-  /* 結帳按鈕 */
+  --divider: #eee;
   --btn-bg: #28a745;
   --btn-active: #1e7e34;
-  /* 主色 */
-  --primary-dark: #1e7e34;/*結帳按鈕*/
-  --primary: #3498db;/*TOP按鈕(備用可用可不用)*/
-  /* 陰影 */
+  --primary-dark: #1e7e34;
+  --primary: #3498db;
   --shadow: rgba(0,0,0,0.2);
 }
-
-/************************************************/
-/*備用 body.dark : （搭配 var() 使用） 
- <body class="dark">：所有使用 var() 的樣式 root替換，達成整頁主題風格切換 */
-/************************************************/
+/*備用: 一鍵切換風格*/
 body.dark {
-  --main-bg: #eee;  /*背景*/
-}
-/* ==========================================
-   全域捲軸
-   ========================================== */
-/* 1. Chrome, Edge, Safari (WebKit 核心) */
-::-webkit-scrollbar {width: 10px; height: 10px; }
-::-webkit-scrollbar-thumb {border-radius: 20px;background: var(--bg1);}
-::-webkit-scrollbar-corner {background: var(--h3-bg);}
-/* 2. Firefox 使用標準的 scrollbar 屬性 */
-* {
-scrollbar-width: thin;scrollbar-color: var(--bg1) transparent;
--webkit-overflow-scrolling: touch;
+  --main-bg: #eee;
 }
 
 /* ============================= */
-/* 🧱 版面設定：窄間距 */
+/* 全域設定 */
 /* ============================= */
-body {font-family: "Microsoft JhengHei", sans-serif;
-  background: var(--main-bg); /*背景色*/
-  padding: 0px;
-  line-height: 1;/*每行間距*/
-  max-width: 480px; /*版面寬*/
-  margin: auto; /*頁邊*/
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { border-radius: 20px; background: var(--bg1); }
+::-webkit-scrollbar-corner { background: var(--h3-bg); }
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--bg1) transparent;
+  -webkit-overflow-scrolling: touch;
 }
-/* 捲動順滑 */
-html {scroll-behavior: smooth;}
+
+body {
+  font-family: "Microsoft JhengHei", sans-serif;
+  background: var(--main-bg);
+  padding: 0px;
+  line-height: 1;
+  max-width: 480px;
+  margin: auto;
+}
+html { scroll-behavior: smooth; }
 
 /* ============================= */
 /* 🎮 Header 頁首標題  */
@@ -106,46 +109,43 @@ header {
   background: radial-gradient(ellipse 40% 70% at 10px 15% ,var(--bg1),var(--Header-bg) ); 
   padding:0.1px;
   border-radius: 10px;
-  border-left: 10px solid var(--bg1);/*色條*/
+  border-left: 10px solid var(--bg1);
 }
-header h1{font-size:22px;}
-header a{
-     display: inline-block; 
-     background: var(--bg1); 
-     color: white; 
-     padding: 1px 20px; 
-     border-radius: 5px; 
-     text-decoration: none; 
-     font-weight: bold; 
-     font-size: 15px; 
-     cursor: pointer; 
-    }
-    
+header h1 { font-size:22px; }
+header a {
+  display: inline-block; 
+  background: var(--bg1); 
+  color: white; 
+  padding: 1px 20px; 
+  border-radius: 5px; 
+  text-decoration: none; 
+  font-weight: bold; 
+  font-size: 15px; 
+  cursor: pointer; 
+}
+
 /* ============================= */
 /* 容器 / 商品面版 */
 /* ============================= */
 .form-card {
-  max-width: 100%; /*面版寬*/
-  margin: 0; /*頁邊*/
+  max-width: 100%;
+  margin: 0;
   background: #fff;
-  padding: 5px ;/*面版邊距*/
+  padding: 5px;
   box-shadow: 0 5px 10px var(--shadow);
-  padding-bottom:100px; /*底部預留空間*/
+  padding-bottom:100px;/*底部預留空間*/
 }
 
-
 /* ============================= */
-/* 🧾 資訊欄 搜尋欄 */
+/* 🧾 資訊欄位
 /* ============================= */
-/*樣式*/
 .info-section {
-  background: var(--bg2);/*區塊底色*/
-  border: 1px solid var(--bg1);/*外框線*/
-  border-radius: 5px;/*弧度*/
-  padding: 0 3px;/*框內距*/
-  margin-bottom: 5px;/*底間距*/
+  background: var(--bg2);
+  border: 1px solid var(--bg1);
+  border-radius: 5px;
+  padding: 0 3px;
+  margin-bottom: 5px;
 }
-/*文字框*/
 .info-input {
   width: 100%;
   padding: 4px 10px;
@@ -155,55 +155,38 @@ header a{
   box-sizing: border-box;
   font-size: 14px;
 }
-/* 玩家資訊 交易方式：同一行 */
-.info-row {
-  display: flex;
-  gap: 3px;  /* 兩欄之間留空隙 */
-}
-/* 讓兩個欄位平均分配 */
-.info-row > * {
-    flex: 1;
-    min-width: 0;   /* 避免內容把寬度撐開 */
-}
+.info-row {display: flex; gap: 3px; }
+.info-row > * {flex: 1; min-width: 0; }
 
-/* ✕ 按鈕:搜尋框右側 */
-.search-container {
-    position: relative;
-    width: 100%;
-}
-/* ✕ 清除按鈕：定位在原本 info-section 的右側 */
+/* ✕ 清除按鈕：定位在info-section右側 */
 .search-clear-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: #ccc;
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    font-size: 11px;
-    line-height: 20px;
-    text-align: center;
-    cursor: pointer;
-    padding: 0;
-    z-index: 5;
-    transition: background 0.2s;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #ccc;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 11px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+  z-index: 5;
+  transition: background 0.2s;
 }
-/* 手機點擊時按鈕變深 */
-.search-clear-btn:active { background: #888888;}
-/* 預留右側空間，防止打字時文字被 ✕ 按鈕蓋住 */
-.info-input {padding-right: 35px !important;}
-
-
+.search-clear-btn:active { background: #888888; }
+.info-input { padding-right: 35px !important; }
 
 /* ============================= */
 /* 📑 分頁標籤：支援左右滑動 */
 /* ============================= */
 .tabs {
   display: flex;
-  overflow-x: auto; /* 超出時水平捲動 */
+  overflow-x: auto;
   gap: 4px;
   margin-bottom: 4px;
   padding-bottom: 4px;
@@ -230,7 +213,6 @@ header a{
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
-
 /* ============================= */
 /* 🏷 分類頁中的區塊標題 */
 /* ============================= */
@@ -242,63 +224,54 @@ h3 {
   font-size: 14px;
   letter-spacing: 1px;
 }
-h3.new {
-  color:yellow;
-  overflow: hidden;
-  white-space: nowrap; 
+h3.new { color:yellow; overflow: hidden; white-space: nowrap; 
 }
 h3.new span {
   display: inline-block;
   transform: translateX(100%);
   animation: notice 2s ease-out forwards; 
 }
-@keyframes notice {from {transform: translateX(50%); }
-    to {transform: translateX(0); }} 
-
+@keyframes notice {
+  from { transform: translateX(50%); }
+  to { transform: translateX(0); }
+} 
 
 /* ============================= */
 /* 🛒 商品容器 */
 /* ============================= */
-/*商品排列*/
 .item-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 0px;/*每項商品間距*/
-  border-bottom: 1px solid var(--divider);/*商品分隔線*/
+  padding: 3px 0px;
+  border-bottom: 1px solid var(--divider);
 }
 .item-info {
   flex: 1;
   display: flex;
   align-items: center;
-  gap: 2px; /*內距*/
+  gap: 2px;
   flex-wrap: wrap;
 }
-/*商品*/
-.item-name {font-weight: bold;color: #111;}
-/* 裝飾圓點 */
-.item-dot{width: 4px;height:4px;border-radius:50%;background:var(--bg1);}
+.item-name { font-weight: bold; color: #111; }
+.item-dot { width: 4px; height:4px; border-radius:50%; background:var(--bg1); }
 
-/*使用提示:帶框文字*/
 .item-limit {
   color: var(--danger); 
   font-size: 13px;
   background: #fffff0;
   border: 1px solid #d9d2e9;
   border-radius:2px;
-  padding: 2px; /*框距:上下 左右*/
+  padding: 2px;
 }
-/*功能說明:灰色*/
-.item-desc {font-size: 13px;color: #777;}
-/* 庫存提示: [剩n] */
-.stock-tip {color: var(--stock-tip);font-size: 14px;}
+.item-desc { font-size: 13px; color: #777; }
+.stock-tip { color: var(--stock-tip); font-size: 14px; }
 /* 停售標籤：【停】*/
 .disabled-item {
-    opacity: 0.5; /* 透明度: 0.1透明 ~ 1正常 */
-    filter: grayscale(100%);
-    cursor: not-allowed; /*游標*/
+  opacity: 0.5; /*淡化: 0.1透明 ~ 1正常 */
+  filter: grayscale(100%);
+  cursor: not-allowed;
 }
-/*金額*/
 .item-price {
   color: var(--price-color);
   font-weight: bold;
@@ -320,7 +293,7 @@ h3.new span {
 /* ============================= */
 /*父子商品群組*/
 /* ============================= */
-/* 父商品列表：視覺層次和互動 */
+/* 父商品列表*/
 .item-row.group-row {
   cursor: pointer;
   background-color: var(--bg3);
@@ -328,21 +301,18 @@ h3.new span {
   padding-left: 0px;
   position: relative;
 }
-/* 滑鼠懸停時的高亮效果 */
 .item-row.group-row:hover {
   background-color: var(--bg2);
   border-left: 0px solid var(--bg1);
   box-shadow: inset 0 0 8px rgba(3, 169, 165, 0.15);
   transform: translateX(2px);
 }
-/* 父商品列表被點擊/打開時的狀態 */
 .item-row.group-row.active {
   background-color: var(--bg2);
   border-left-color: var(--bg1);
   font-weight: 500;
 }
-
-/* 子選單：優化縮排和視覺層次 */
+/* 子選單 */
 .group-content {
   font-size: 14px;
   padding-left:1px;
@@ -354,17 +324,14 @@ h3.new span {
   display: none;
   animation: slideDown 0.25s ease-out;
 }
-/* 子選單展開動畫 */
 @keyframes slideDown {
-  from {opacity: 0;transform: translateY(-8px); }
-  to {opacity: 1;transform: translateY(0);} }
-/* 子選單打開狀態 */
-.group-content.open {display: block; }
-/* 子選單中項目 */
-.group-content .item-row {padding-left:1px;transition: all 0.2s ease; }
-.group-content .item-row:hover {background-color: var(--bg2);padding-left: 10px; border: 1px solid var(--bg1);}
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.group-content.open { display: block; }
+.group-content .item-row { padding-left:1px; transition: all 0.2s ease; }
+.group-content .item-row:hover { background-color: var(--bg2); padding-left: 10px; border: 1px solid var(--bg1); }
 
-/* 展開/收合箭頭 */
 .group-arrow {
   cursor: pointer;
   display: inline-block;
@@ -375,43 +342,33 @@ h3.new span {
   font-weight: bold;
   color: var(--bg1);
 }
-/* 箭頭旋轉動畫 */
-.group-content.open .group-arrow {transform: rotate(90deg);}
-.group-row{cursor:pointer;}
+.group-content.open .group-arrow { transform: rotate(90deg); }
+
 
 /* ============================= */
 /* ❌ 缺貨狀態 */
 /* ============================= */
-/* 缺貨項目：整行淡化 */
 .item-row.out-of-stock {  
-    background-color: #f9f9f9; /* 轉為淡色 */
-    opacity: 0.7; /* 透明度: 0.1透明 ~ 1正常 */  
-    cursor: not-allowed; /*防止滑鼠點擊「禁止」圖示*/
+  background-color: #f9f9f9;
+  opacity: 0.7; /*淡化: 0.1透明 ~ 1正常 */  
+  cursor: not-allowed;
 }
-
-/* 鎖數量輸入框 */
-.item-row.out-of-stock .qty{
-    background: #eee;
-    pointer-events: none;
-    cursor: not-allowed; /*游標*/
+.item-row.out-of-stock .qty {
+  background: #eee;
+  pointer-events: none;
+  cursor: not-allowed;
 }
-
-/* 缺貨商品：加上刪除線 */
-.item-row.out-of-stock .item-name{
+.item-row.out-of-stock .item-name {
   text-decoration: line-through; /*對商品名稱加刪除線*/
-  text-decoration-thickness: 1px; /* 刪除線粗細 */
+  text-decoration-thickness: 1px;/* 刪除線粗細 */
 }
-/* 缺貨的輸入框 */
 .qty:disabled {
   color: #ccc;
   background-color: #eee;
   border-color: #ddd;
   cursor: not-allowed;
 }
-
-/* 缺貨標籤:【缺】 */
-.sold-out {color: var(--sold-out);}
-
+.sold-out { color: var(--sold-out); }
 
 /* ============================= */
 /* 💰 底部結帳區 */
@@ -421,19 +378,17 @@ h3.new span {
   bottom: 0;
   background: #fff9db;
   padding: 10px;
-  margin-top: 10px;/*邊界*/
+  margin-top: 10px;
   border-radius: 10px;
-  border: 2px solid #f1c40f;/*邊框*/
+  border: 2px solid #f1c40f;
   text-align: right;
   box-shadow: 0 -3px 10px var(--shadow);
 }
-
 .grand-total {
   font-size: 1.6rem;
   color: var(--price-color);
   font-weight: bold;
 }
-
 .btn {
   background: var(--btn-bg);
   color: white;
@@ -447,105 +402,89 @@ h3.new span {
   font-weight: bold;
   letter-spacing: 2px;
 }
-.btn:active {background: var(--btn-active);}
-.total-box {padding: 10px;}
+.btn:active { background: var(--btn-active); }
 
-/* 上排左右分開 */
 .top-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-/* 左邊按鈕區 */
 .left-area {
-  min-height: 32px;/*保留高度 */
+  min-height: 32px;
   display: flex;
   align-items: center;
 }
 .action-row {
-  display: flex;/*支援JS先隱藏:none*/
-  gap: 5px;/*間格 */
+  display: flex;
+  gap: 5px;
 }
-.action-row.show {display: flex;}
-
-/* 按鈕樣式 */
+.action-row.show { display: flex; }
 .action-row button {
   padding: 5px 5px;
   font-size: 13px;
   border-radius: 6px;
   white-space: nowrap;
 }
-
-/* 總金額靠右 */
 .total {
   font-size: 16px;
   font-weight: bold;
   text-align: right;
 }
-
-/* 主按鈕 */
 .main-btn {
   width: 100%;
   padding: 12px;
   font-size: 16px;
 }
-
 /* 📱 手機優化 */
 @media (max-width: 480px) {
-.top-row {align-items: center;}
-.action-row button {font-size: 12px;padding: 5px 5px;}
+  .top-row { align-items: center; }
+  .action-row button { font-size: 12px; padding: 5px 5px; }
 }
-
 
 /* ============================= */
 /* 🛍 購物車 */
 /* ============================= */ 
 #cart-panel {
-  position: relative; /* 確保內部 .X-close 絕對定位基準正確 */
-  width: 100%; max-width: 480px;  
-  max-height: 80vh;/* 限制最大高度為螢幕高度的vh */
+  position: relative;/*確保內部.X-close絕對定位基準 */
+  width: 100%; 
+  max-width: 480px;  
+  max-height: 80vh;
   border-radius: 10px 10px 0 0;
-  background: var(--bg3);/*購物車底色:配合資訊欄風格*/
-  border: 1px solid var(--bg1);/*邊框*/ 
+  background: var(--bg3);
+  border: 1px solid var(--bg1); 
   padding: 5px;
   transform: translateY(100%);
   transition: transform 0.3s ease;
   display: flex;
-  flex-direction: column; /* 讓內部元件由上往下垂直排列 */
+  flex-direction: column; /* 內部元件由上往下垂直排列 */
   box-sizing: border-box;
 }
 #cart-panel h3 { margin-top: 0; }
-
 /*購物車商品*/
 #cart-list {
   list-style: none;
-  padding: 0;  margin: 10px 0;
+  padding: 0;  
+  margin: 10px 0;
   font-size: 13px;
-  flex: 1;              /* 自動佔滿中間剩餘的空間 */
-  max-height: 50vh;     /* 限制列表最大高度（也可由 flex 自動推開） */
-  padding-right: 5px;   /* 留一點空間給捲軸，避免遮擋文字 */
-  overflow-y: auto;     /* 當內容超出時，自動顯示垂直捲軸 */
-  -webkit-overflow-scrolling: touch; /* 手機 iOS 順暢滑動 */
+  flex: 1;              
+  max-height: 50vh;     
+  padding-right: 5px;  /*預留捲軸空間 */ 
+  overflow-y: auto;     
+  -webkit-overflow-scrolling: touch; /* 手機iOS順滑 */
 }
-
 #cart-list li {
   margin-bottom: 5px;
   border-bottom: 1px solid var(--divider);
   padding-bottom: 3px;
 }
-/* 面板底部的按鈕/結算區：確保固定在最下方 */
 #cart-panel .cart-footer,
 #cart-panel .total-box {
-  flex-shrink: 0;         /* 防止底部區域被商品擠壓或擠出螢幕外 */
+  flex-shrink: 0;         
   margin-top: auto;
 }
-
-/*金額*/
-.cart-total {font-weight: bold;margin-top: 5px;}
-
-/*按鈕*/
-.btn-cart{
+.cart-total { font-weight: bold; margin-top: 5px; }
+/*購物車內按鈕*/
+.btn-cart {
   flex:1;
   border:none;
   padding:6px;
@@ -555,13 +494,9 @@ h3.new span {
   font-size:15px;
   color:#fff;
 }
-/*清空*/
-.btn-clear{background:#b45f06;}
-/*送出*/
-.btn-submit{background:#4CAF50;}
+.btn-clear { background:#b45f06; } /*清空*/
+.btn-submit { background:#4CAF50; }/*送出*/
 
-
-/* 購物車面板: 滿版遮罩彈窗或底部滑出 */
 #cart-wrapper {
   position: fixed;
   top: 0;
@@ -577,117 +512,122 @@ h3.new span {
   pointer-events: none;
   transition: opacity 0.3s ease;
 }
-
-#cart-wrapper.expanded {opacity: 1;pointer-events: auto;}
-/* 狀態切換:預設縮合 */
-#cart-wrapper.collapsed {transform: translateX(260px);}
-/* 展開 */
-#cart-wrapper.expanded #cart-panel {transform: translateY(0);}
-
+#cart-wrapper.expanded { opacity: 1; pointer-events: auto; }
+#cart-wrapper.collapsed { transform: translateX(260px); }
+#cart-wrapper.expanded #cart-panel { transform: translateY(0); }
 
 /* ============================= 
  * ⬆️ 回到頂部:懸浮左下的按鈕 TOP 
 /* ============================= */
 .back-to-top {
-  position: fixed; bottom: 10px; /*位置：固定*/
-  right: min(calc(50% + 240px), calc(100% - 50px)); /*靠左 left ,靠右 right */
-  width: 50px; height: 50px;
+  position: fixed; 
+  bottom: 10px;
+  right: min(calc(50% + 240px), calc(100% - 50px));
+  width: 50px; 
+  height: 50px;
   border-radius: 50%;
-  background-color: var(--bg1);/*半透明可改 rgba(52, 152, 219, 0.8); */
+  background-color: var(--bg1);
   color: #fff;
   font-weight: bold;
   text-align: center;
   line-height: 50px;
-  cursor: pointer;/*遊標*/
+  cursor: pointer;
   justify-content: center;
   align-items: center;
-  display: none;/* 預設隱藏，捲動後由 JS 控制顯示 */
+  display: none;
   z-index: 999;
   box-shadow: 0 4px 12px var(--shadow);
   transition: opacity 0.3s;
 }
 /* 針對小螢幕（手機），讓按鈕不跑出螢幕外 */
-@media screen and (max-width: 480px) { .back-to-top {left: auto;right: auto;}}
-
+@media screen and (max-width: 480px) { 
+  .back-to-top { left: auto; right: auto; }
+}
 
 /* ============================= 
 <!-- 🔃 重新整理按鈕 -->
  ============================= */
 #refresh-button {
-    position: fixed; bottom:10px; 
-    left: min(calc(50% + 240px), calc(100% - 50px));
-    width: 50px; height:50px; border-radius: 50%;
-    background: linear-gradient(135deg, #667eea 20%, #764ba2 100%);  
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
-    z-index: 999;
-    transition: all 0.3s ease;
-    font-size: 24px;
-    user-select: none;" 
+  position: fixed; 
+  bottom: 10px; 
+  left: min(calc(50% + 240px), calc(100% - 50px));
+  width: 50px; 
+  height: 50px; 
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 20%, #764ba2 100%);  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+  z-index: 999;
+  transition: all 0.3s ease;
+  font-size: 24px;
+  user-select: none;
+}
+#refresh-button:hover {
+  transform: scale(1.1) rotate(10deg);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+#refresh-button:active { transform: scale(0.95); }
+#refresh-button.loading { animation: spin 1s linear infinite; }
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideOut {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100px); opacity: 0; }
 }
 
-#refresh-button:hover {
-    transform: scale(1.1) rotate(10deg);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);}
-#refresh-button:active {transform: scale(0.95);}
-#refresh-button.loading {animation: spin 1s linear infinite;}
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }}
-@keyframes slideIn {
-     from { transform: translateX(100px); opacity: 0; }
-     to { transform: translateX(0); opacity: 1; }}
-@keyframes slideOut {
-     from { transform: translateX(0); opacity: 1; }
-     to { transform: translateX(100px); opacity: 0; }}
-    
 /* ============================= 
-   ⚡ 載入中：浮動提示
+/*  載入中 Toast */
 /* ============================= */
 #loading-toast {
-    position: fixed;
-    top: 20%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.7);
-    color: white;
-    padding: 20px 20px;
-    border-radius: 20px;
-    font-size: 16px;
-    z-index: 10000;
-    display: none;
+  position: fixed;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.7);
+  color: white;
+  padding: 20px 20px;
+  border-radius: 20px;
+  font-size: 16px;
+  z-index: 10000;
+  display: none;
 }
-.bounce {display: inline-block; animation: bounce 0.6s infinite;}
+.bounce { display: inline-block; animation: bounce 0.6s infinite; }
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }}
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
 
 /* =============================
-/* 即時更新：浮動提示
+/* 即時更新 Toast */
 /* =============================*/
 .live-toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-20px);
-    background: var(--bg1); /* 背景 */
-    color: #ffffff;
-    padding: 10px 22px;
-    border-radius: 25px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    font-size: 14px;
-    font-weight: bold;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s ease;
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: var(--bg1);
+  color: #ffffff;
+  padding: 10px 22px;
+  border-radius: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  font-weight: bold;
+  z-index: 9999;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
-/* 提示時的動畫效果 */
-.live-toast.show {opacity: 1;transform: translateX(-50%) translateY(100px);}
-
+.live-toast.show { opacity: 1; transform: translateX(-50%) translateY(100px); }
 
 /* =============================
 /* 付款引導彈窗 Modal */
@@ -708,90 +648,87 @@ h3.new span {
   background: #fff;
   width: 99%;
   max-width: 420px;
-  height:420px;
+  height: 420px;
   padding: 5px;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.3);  
   box-sizing: border-box;
 }
-
 /* 訂單預覽區 -可控大小*/
-#modal-order-text{font-family:monospace; 
-  box-sizing:border-box; max-width: 99%;/*避免拖移放大時超出範圍*/
-  height:210px; width:100%; 
-  font-size:14px; line-height:1.2;
-  margin-bottom:10px; padding:5px;
-  overflow-y: auto;     /* 當內容超出時，自動顯示垂直捲軸 */
-  -webkit-overflow-scrolling: touch; /* 手機 iOS 順暢滑動 */
+#modal-order-text {
+  font-family: monospace; 
+  box-sizing: border-box; 
+  max-width: 99%; /*避免拖移放大時超出範圍*/
+  height: 210px;  width: 100%; 
+  font-size: 14px;  line-height: 1.2;
+  margin-bottom: 10px;  padding: 5px;
+  overflow-y: auto;     
+  -webkit-overflow-scrolling: touch;
 }
-      
-/*💡付款指引訊息區*/
-#payment-instruction{
-  border:1px solid #ddd; border-radius:5px; 
-  padding:5px; margin-bottom:5px;
-  font-size:14px; color:#333;line-height:1.3;
-  background:var(--bg3); 
+/*💡付款指引訊息區*/  
+#payment-instruction {
+  border: 1px solid #ddd; 
+  border-radius: 5px; 
+  padding: 5px;  margin-bottom: 5px;
+  font-size: 14px;  color: #333; line-height: 1.3;
+  background: var(--bg3); 
 }
-a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-top:6px;}
-
-/*X按鈕*/
+a { color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-top:6px; }
+/* 關閉X 按鈕*/
 .X-close {
   position: absolute; /*絕對定位:確保精準對齊面板*/
   top: 0px; right: 0px; width:30px; height:30px; 
-  font-size: 22px; text-align: center; font-weight: bold;cursor: pointer;
+  font-size: 22px; text-align: center; font-weight: bold; cursor: pointer;
   border-radius: 50px; border: 1px solid #fff;
   background: var(--bg1);
   padding: 1px;
   color: #fff;
 }
-.X-close:hover { color:var(--bg1); border: 3px solid var(--bg1); padding: 2px;background:var(--bg2);}/*觸發*/
-
+.X-close:hover { color:var(--bg1); border: 3px solid var(--bg1); padding: 2px; background:var(--bg2); }
 </style>
 </head>
 
+
 <!--============================================ 
- * 網頁開始 
+ * 網頁畫面 
 ============================================== -->
 <body class="dark">
-<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div><!--##-->
-<header><h1></h1>
-   <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a> 
+<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
+<header>
+  <h1></h1>
+  <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a> 
 </header>
 <div id="top-anchor"></div><!-- 錨點:回選單-跳到此 --->
-<div class="form-card">
 
-    <!----- 1. 玩家資訊欄新增備註欄 ----->
-<div class="info-section">
-  <div class="info-row">
-    <input type="text" id="user-id" class="info-input" placeholder="玩家🖊角色名"/>
-    <select id="pay-method" class="info-input" onchange="updateTotal()">
-      <option value="">-- 交易方式 --</option>
-      <option value="無卡存">ATM無卡存款 (滿100)</option>
-      <option value="轉帳">轉帳 (95折)</option>
-      <option value="LinePay">LinePay (95折)</option>
-      <option value="街口支付">街口支付 (95折)</option>
-      <option value="8591">8591 (滿100開專)</option>
-      <option value="海外刷卡">海外線上刷卡 (滿300)</option>
-      <option value="Paypal">Paypal (滿300)</option>
-      <option value="支付寶">支付寶¥ (1:4)</option>
-      <option value="其它">其它</option>
-    </select>
-  </div>
-  <!-- 新增備註欄 -->
-  <input type="text" id="order-memo" class="info-input" placeholder="📝 填寫備註 (如：交貨時間、特殊要求...)" />
-</div>    
-        
-      <!-- 搜尋框容器 -->
-    <div class="info-section" style="position: relative;">
-        <!-- 搜尋 ID 為 searchInput，事件為 oninput="handleSearch()" -->
-        <input type="text" id="searchInput" class="info-input" placeholder="🔍 搜尋..." oninput="handleSearch()"/>
-        <!-- ✕ 清除按鈕ID 為 search-clear-btn，點擊執行clearSearch() (預設隱藏) -->
-        <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" style="display: none;">✕</button>
-    </div>  
-        
-    
-<!-----分類標籤 分頁選單------------------>
-    <div class="tabs">
+<div class="form-card">
+  <!-- A1. 玩家資訊欄 -->
+  <div class="info-section">
+    <div class="info-row">
+      <input type="text" id="user-id" class="info-input" placeholder="玩家🖊角色名"/>
+      <select id="pay-method" class="info-input" onchange="updateTotal()">
+        <option value="">-- 交易方式 --</option>
+        <option value="無卡存">ATM無卡存款 (滿100)</option>
+        <option value="轉帳">轉帳 (95折)</option>
+        <option value="LinePay">LinePay (95折)</option>
+        <option value="街口支付">街口支付 (95折)</option>
+        <option value="8591">8591 (滿100開專)</option>
+        <option value="海外刷卡">海外線上刷卡 (滿300)</option>
+        <option value="Paypal">Paypal (滿300)</option>
+        <option value="支付寶">支付寶¥ (1:4)</option>
+        <option value="其它">其它</option>
+      </select>
+    </div>
+    <input type="text" id="order-memo" class="info-input" placeholder="📝 備註 (如：交貨時間、特殊要求...)" />
+  </div>    
+          
+  <!-- A2. 搜尋框容器 -->
+  <div class="info-section" style="position: relative;">
+    <input type="text" id="searchInput" class="info-input" placeholder="🔍 搜尋..." oninput="handleSearch()"/>
+    <button id="search-clear-btn" class="search-clear-btn" onclick="clearSearch()" style="display: none;">✕</button>
+  </div>  
+
+  <!-- 分類標籤 分頁選單 -->
+  <div class="tabs">
     <button class="tab-btn active" onclick="openTab(event, 'p1')">1.日常補給</button>
     <button class="tab-btn" onclick="openTab(event, 'p2')">2.擴充技能</button>
     <button class="tab-btn" onclick="openTab(event, 'p3')">3.屬性丹藥</button>
@@ -809,199 +746,174 @@ a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-
     <button class="tab-btn" onclick="openTab(event, 'p15')">15.套裝武林帖</button>
     <button class="tab-btn" onclick="openTab(event, 'p16')">16.其它寄賣</button>
     <button class="tab-btn" onclick="openTab(event, 'p99')">99.特殊專區</button>
-    <!-----若暫時沒用,可隱藏:加入( style="display:none;" )------------------>
-</div>
-
-<!----- 分類小組、商品標題 ------------------>
-<!--1.日常補給 -->
-<div id="p1" class="tab-content active">
-    <h3 class="new"><span>📢【限時限量更新活動】new</span></h3> <div id="list-p1-1"></div>
-    <h3>【貿易交流】</h3><div id="list-p1-2"></div>
-    <h3>【輔助工具】</h3><div id="list-p1-3"></div>
-    <h3>【勤學】日用消耗</h3><div id="list-p1-4"></div>
-    <h3>【其它道具】</h3><div id="list-p1-6"></div>
-</div>
-<!--2.擴充技能任務 -->
-<div id="p2" class="tab-content">
-    <h3>【擴充背包】</h3><div id="list-p2-1"></div>
-    <h3>【技能/原料】</h3><div id="list-p2-2"></div>
-    <h3>【任務奇物】</h3><div id="list-p2-3"></div>    
-    <h3>【PK戰鬥限時藥】</h3><div id="list-p2-4"></div>
-    <h3>【絕內武學讀本】</h3><div id="list-p2-5"></div>    
-</div>
-<!--3.屬性丹藥 -->
-<div id="p3" class="tab-content">
-    <h3>【屬性丹】(上限吃5顆)</h3><div id="list-p3-1"></div>
-    <h3>【屬性仙丹】(上限吃8顆)</h3><div id="list-p3-2"></div>
-    <h3>【屬性金丹】(上限吃10顆、需二轉)</h3><div id="list-p3-3"></div>
-    <h3>【特殊屬性提升】</h3><div id="list-p3-4"></div>
-    <h3>【屬性洗點重整】</h3><div id="list-p3-5"></div>
-    <h3>【技能永丹】</h3><div id="list-p3-6"></div>
-</div>
-
-<div id="p4" class="tab-content">
-    <h3>【內力值提升】永久+內</h3><div id="list-p4-1"></div>
-    <h3>【二十四結氣丹票根】永久</h3><div id="list-p4-2"></div>
-    <h3>【娛樂幣補精丹】永久+精</h3><div id="list-p4-3"></div>
-    <h3>【娛樂幣提神丹】永久+神</h3><div id="list-p4-4"></div>
-    <h3>【娛樂幣益氣丹】永久+氣</h3><div id="list-p4-5"></div>
-    <h3>【二轉血丹】永久+血 (需二轉)</h3><div id="list-p4-6"></div>
-    <h3>【二轉節氣大補丹】永久+精氣神(需二轉)</h3><div id="list-p4-7"></div>
-    <h3>【商城補精丹】永久+精</h3><div id="list-p4-8"></div>
-    <h3>【商城提神丹】永久+神</h3><div id="list-p4-9"></div>
-    <h3>【商城益氣丹】永久+氣</h3><div id="list-p4-10"></div>    
-</div>
-<!--5.基本丹 -->
-<div id="p5" class="tab-content">
-    <h3>【霹靂丹藥】</h3><div id="list-p5-1"></div>
-    <h3>【金鐘丹藥】</h3><div id="list-p5-2"></div>
-    <h3>【爆擊丹藥】</h3><div id="list-p5-3"></div>
-    <h3>【閃避丹藥】</h3><div id="list-p5-4"></div>
-    <h3>【反擊丹藥】</h3><div id="list-p5-5"></div>
-    <h3>【太極丹藥】</h3><div id="list-p5-6"></div>
-    <h3>【真武丹藥】</h3><div id="list-p5-7"></div>
-    <h3>【會心丹】</h3><div id="list-p5-8"></div>
-    <h3>【抗爆丹】</h3><div id="list-p5-9"></div>
-    <h3>【命中丹】</h3><div id="list-p5-10"></div>
-    <h3>【絕學威能】</h3><div id="list-p5-11"></div>
-</div>
-<!--6.多功能丹 -->
-<div id="p6" class="tab-content">   
-    <h3>【般若伏象多羅】</h3><div id="list-p6-1"></div>
-    <h3>【至尊真龍】</h3><div id="list-p6-2"></div>
-    <h3>【至尊無極】</h3><div id="list-p6-3"></div>
-    <h3>【至尊無雙】</h3><div id="list-p6-4"></div>
-    <h3>【至尊波羅】</h3><div id="list-p6-5"></div>
-    <h3>【至尊莫名其妙】</h3><div id="list-p6-6"></div>
-    <h3>【乾坤】多功能永丹</h3><div id="list-p6-9"></div>
-    <h3>【武甲】多功能永丹</h3><div id="list-p6-10"></div>
-    <h3>【絕霸】多功能永丹</h3><div id="list-p6-11"></div>
-    <h3>【禦極】多功能永丹</h3><div id="list-p6-12"></div>
-</div>
-
-<div id="p7" class="tab-content">
-    <h3>【天命丹藥】</h3><div id="list-p7-1"></div>
-    <h3>【天悟丹藥】</h3><div id="list-p7-2"></div>
-</div>
-<!--8.自修天悟裝 -->
-<div id="p8" class="tab-content">
-    <h3>【新手悟裝】</h3><div id="list-p8-1"></div>
-    <h3>【至尊天悟裝】悟裝升級</h3><div id="list-p8-2"></div>
-    <h3>【天命卷】天悟裝增加自修熟練度</h3><div id="list-p8-4"></div>
-    <h3>【天悟卷】開光天悟裝增加天悟熟練度</h3><div id="list-p8-5"></div>
-    <h3>【至尊戒指、披風】</h3><div id="list-p8-6"></div>
-    <h3>【減悟裝】</h3><div id="list-p8-7"></div>
-    <h3>【天命武器】</h3><div id="list-p8-8"></div>
-    <h3>【天命魂】</h3><div id="list-p8-9"></div>
-</div>
-
-<div id="p9" class="tab-content">
-    <h3>【壇裝4寶】</h3><div id="list-p9-1"></div>
-    <h3>【屬性裝】</h3><div id="list-p9-2"></div>
-    <h3>【(精十)武器】</h3><div id="list-p9-3"></div>
-    <h3>【(精十)7件套】</h3><div id="list-p9-4"></div>
-    <h3>【武罡心鏡】</h3><div id="list-p9-5"></div>
-</div>
-
-<div id="p10" class="tab-content">
-    <h3>【神威套裝】</h3><div id="list-p10-1"></div>
-    <h3>【神威升級】</h3><div id="list-p10-2"></div>
-    <h3>【神威合成石】</h3><div id="list-p10-3"></div>
-    <h3>【神威寶石物件】</h3><div id="list-p10-4"></div>
-    <h3>【寶石(人)】白虎套裝*7顆</h3><div id="list-p10-5"></div>
-    <h3>【寶石(地)】玄武套裝*5顆</h3><div id="list-p10-6"></div>
-    <h3>【寶石(天)】麒麟套裝*3顆</h3><div id="list-p10-7"></div>
-</div>
-
-<div id="p11" class="tab-content">
-    <h3>【麒麟慧心甲】</h3><div id="list-p11-1"></div>
-    <h3>【白虎霸武甲】</h3><div id="list-p11-2"></div>
-    <h3>【青龍暴麟甲】</h3><div id="list-p11-3"></div>
-    <h3>【朱雀天羽甲】</h3><div id="list-p11-4"></div>
-    <h3>【玄武禦龜甲】</h3><div id="list-p11-5"></div>
-    <h3>【升級物件】陰陽鋼石</h3><div id="list-p11-6"></div>
-</div>
-
-<div id="p12" class="tab-content">
-    <h3>【上古相關物件】</h3><div id="list-p12-1"></div>
-    <h3>【上古武器洗屬性】</h3><div id="list-p12-2"></div>
-    <h3>【上古昇星石】</h3><div id="list-p12-3"></div>
-    <h3>【上古防爆符】防昇星失敗時歸0</h3><div id="list-p12-4"></div>
-    <h3>【上古武器升階】</h3><div id="list-p12-5"></div>
-    <h3>【上古武器成品】</h3><div id="list-p12-6"></div>
-</div>
-<!--13.特殊系統 -->
-<div id="p13" class="tab-content">
-    <h3>【內丹進化】</h3><div id="list-p13-1"></div>
-    <h3>【內丹幻化】京城找孫姑娘</h3><div id="list-p13-2"></div>
-    <h3>【內丹仙化】大理天龍寺 渾沌活佛(選1.龍宮洞)</h3><div id="list-p13-3"></div>
-    <h3>【內丹玄化】大理天龍寺 玄天活佛</h3><div id="list-p13-4"></div>
-    <h3>【內丹羽化】大理天龍寺 雀羽仙人</h3><div id="list-p13-5"></div>
-    <h3>【幻武系統】</h3><div id="list-p13-6"></div>
-    <h3>【守護神】</h3><div id="list-p13-7"></div>
-</div>
-<!--14.常駐系統 -->
-<div id="p14" class="tab-content">
-    <h3>【八卦燈】</h3><div id="list-p14-1"></div>
-    <h3>【真武系統】功能/最大值</h3><div id="list-p14-2"></div>
-    <h3>【俠客系統】小卷相減=升級所需俠義小</h3><div id="list-p14-3"></div>
-</div>
-<!--15.套裝武林帖 -->
-<div id="p15" class="tab-content">
-    <h3>【造型服】</h3><div id="list-p15-1"></div>
-    <h3>【稀有武林帖】</h3><div id="list-p15-2"></div>
-    <h3>【商城帖】</h3><div id="list-p15-3"></div>
-    <h3>【名門帖】</h3><div id="list-p15-4"></div>
-</div>
-<!--16.其它 -->
-<div id="p16" class="tab-content">
-    <h3>【限時商品】留意是否上架期間</h3><div id="list-p16-1"></div>
-    <h3>【玩家寄賣】</h3><div id="list-p16-2"></div>
-</div>
-
-<div id="p99" class="tab-content">
-<h3>【🔒 請輸入密碼】</h3>
- <div id="password-box" style="padding:20px;"><input type="password" id="pwd" style="font-size:18px;" placeholder="輸入密碼">
-  <button onclick="checkPassword()">進入</button></div>
-  <div id="secret-section" style="display:none;">
-  <h3>【限量專區】##</h3><div id="list-p99-1"></div>
-  <div id="secret-products19"></div>
+    <!-----若暫時沒用,可隱藏:( style="display:none;" )------------------>
   </div>
-</div> 
 
-  <!----搜尋容器：搜尋用的隱藏分頁---->
+  <!-- 分類小組容器 商品標題-->
+  <div id="p1" class="tab-content active">
+      <h3 class="new"><span>📢【限時限量更新活動】new</span></h3> <div id="list-p1-1"></div>
+      <h3>【貿易交流】</h3><div id="list-p1-2"></div>
+      <h3>【輔助工具】</h3><div id="list-p1-3"></div>
+      <h3>【勤學】日用消耗</h3><div id="list-p1-4"></div>
+      <h3>【其它道具】</h3><div id="list-p1-6"></div>
+  </div>
+  <div id="p2" class="tab-content">
+      <h3>【擴充背包】</h3><div id="list-p2-1"></div>
+      <h3>【技能/原料】</h3><div id="list-p2-2"></div>
+      <h3>【任務奇物】</h3><div id="list-p2-3"></div>    
+      <h3>【PK戰鬥限時藥】</h3><div id="list-p2-4"></div>
+      <h3>【絕內武學讀本】</h3><div id="list-p2-5"></div>    
+  </div>
+  <div id="p3" class="tab-content">
+      <h3>【屬性丹】(上限吃5顆)</h3><div id="list-p3-1"></div>
+      <h3>【屬性仙丹】(上限吃8顆)</h3><div id="list-p3-2"></div>
+      <h3>【屬性金丹】(上限吃10顆、需二轉)</h3><div id="list-p3-3"></div>
+      <h3>【特殊屬性提升】</h3><div id="list-p3-4"></div>
+      <h3>【屬性洗點重整】</h3><div id="list-p3-5"></div>
+      <h3>【技能永丹】</h3><div id="list-p3-6"></div>
+  </div>
+  <div id="p4" class="tab-content">
+      <h3>【內力值提升】永久+內</h3><div id="list-p4-1"></div>
+      <h3>【二十四結氣丹票根】永久</h3><div id="list-p4-2"></div>
+      <h3>【娛樂幣補精丹】永久+精</h3><div id="list-p4-3"></div>
+      <h3>【娛樂幣提神丹】永久+神</h3><div id="list-p4-4"></div>
+      <h3>【娛樂幣益氣丹】永久+氣</h3><div id="list-p4-5"></div>
+      <h3>【二轉血丹】永久+血 (需二轉)</h3><div id="list-p4-6"></div>
+      <h3>【二轉節氣大補丹】永久+精氣神(需二轉)</h3><div id="list-p4-7"></div>
+      <h3>【商城補精丹】永久+精</h3><div id="list-p4-8"></div>
+      <h3>【商城提神丹】永久+神</h3><div id="list-p4-9"></div>
+      <h3>【商城益氣丹】永久+氣</h3><div id="list-p4-10"></div>    
+  </div>
+  <div id="p5" class="tab-content">
+      <h3>【霹靂丹藥】</h3><div id="list-p5-1"></div>
+      <h3>【金鐘丹藥】</h3><div id="list-p5-2"></div>
+      <h3>【爆擊丹藥】</h3><div id="list-p5-3"></div>
+      <h3>【閃避丹藥】</h3><div id="list-p5-4"></div>
+      <h3>【反擊丹藥】</h3><div id="list-p5-5"></div>
+      <h3>【太極丹藥】</h3><div id="list-p5-6"></div>
+      <h3>【真武丹藥】</h3><div id="list-p5-7"></div>
+      <h3>【會心丹】</h3><div id="list-p5-8"></div>
+      <h3>【抗爆丹】</h3><div id="list-p5-9"></div>
+      <h3>【命中丹】</h3><div id="list-p5-10"></div>
+      <h3>【絕學威能】</h3><div id="list-p5-11"></div>
+  </div>
+  <div id="p6" class="tab-content">   
+      <h3>【般若伏象多羅】</h3><div id="list-p6-1"></div>
+      <h3>【至尊真龍】</h3><div id="list-p6-2"></div>
+      <h3>【至尊無極】</h3><div id="list-p6-3"></div>
+      <h3>【至尊無雙】</h3><div id="list-p6-4"></div>
+      <h3>【至尊波羅】</h3><div id="list-p6-5"></div>
+      <h3>【至尊莫名其妙】</h3><div id="list-p6-6"></div>
+      <h3>【乾坤】多功能永丹</h3><div id="list-p6-9"></div>
+      <h3>【武甲】多功能永丹</h3><div id="list-p6-10"></div>
+      <h3>【絕霸】多功能永丹</h3><div id="list-p6-11"></div>
+      <h3>【禦極】多功能永丹</h3><div id="list-p6-12"></div>
+  </div>
+  <div id="p7" class="tab-content">
+      <h3>【天命丹藥】</h3><div id="list-p7-1"></div>
+      <h3>【天悟丹藥】</h3><div id="list-p7-2"></div>
+  </div>
+  <div id="p8" class="tab-content">
+      <h3>【新手悟裝】</h3><div id="list-p8-1"></div>
+      <h3>【至尊天悟裝】悟裝升級</h3><div id="list-p8-2"></div>
+      <h3>【天命卷】天悟裝增加自修熟練度</h3><div id="list-p8-4"></div>
+      <h3>【天悟卷】開光天悟裝增加天悟熟練度</h3><div id="list-p8-5"></div>
+      <h3>【至尊戒指、披風】</h3><div id="list-p8-6"></div>
+      <h3>【減悟裝】</h3><div id="list-p8-7"></div>
+      <h3>【天命武器】</h3><div id="list-p8-8"></div>
+      <h3>【天命魂】</h3><div id="list-p8-9"></div>
+  </div>
+  <div id="p9" class="tab-content">
+      <h3>【壇裝4寶】</h3><div id="list-p9-1"></div>
+      <h3>【屬性裝】</h3><div id="list-p9-2"></div>
+      <h3>【(精十)武器】</h3><div id="list-p9-3"></div>
+      <h3>【(精十)7件套】</h3><div id="list-p9-4"></div>
+      <h3>【武罡心鏡】</h3><div id="list-p9-5"></div>
+  </div>
+  <div id="p10" class="tab-content">
+      <h3>【神威套裝】</h3><div id="list-p10-1"></div>
+      <h3>【神威升級】</h3><div id="list-p10-2"></div>
+      <h3>【神威合成石】</h3><div id="list-p10-3"></div>
+      <h3>【神威寶石物件】</h3><div id="list-p10-4"></div>
+      <h3>【寶石(人)】白虎套裝*7顆</h3><div id="list-p10-5"></div>
+      <h3>【寶石(地)】玄武套裝*5顆</h3><div id="list-p10-6"></div>
+      <h3>【寶石(天)】麒麟套裝*3顆</h3><div id="list-p10-7"></div>
+  </div>
+  <div id="p11" class="tab-content">
+      <h3>【麒麟慧心甲】</h3><div id="list-p11-1"></div>
+      <h3>【白虎霸武甲】</h3><div id="list-p11-2"></div>
+      <h3>【青龍暴麟甲】</h3><div id="list-p11-3"></div>
+      <h3>【朱雀天羽甲】</h3><div id="list-p11-4"></div>
+      <h3>【玄武禦龜甲】</h3><div id="list-p11-5"></div>
+      <h3>【升級物件】陰陽鋼石</h3><div id="list-p11-6"></div>
+  </div>
+  <div id="p12" class="tab-content">
+      <h3>【上古相關物件】</h3><div id="list-p12-1"></div>
+      <h3>【上古武器洗屬性】</h3><div id="list-p12-2"></div>
+      <h3>【上古昇星石】</h3><div id="list-p12-3"></div>
+      <h3>【上古防爆符】防昇星失敗時歸0</h3><div id="list-p12-4"></div>
+      <h3>【上古武器升階】</h3><div id="list-p12-5"></div>
+      <h3>【上古武器成品】</h3><div id="list-p12-6"></div>
+  </div>
+  <div id="p13" class="tab-content">
+      <h3>【內丹進化】</h3><div id="list-p13-1"></div>
+      <h3>【內丹幻化】京城找孫姑娘</h3><div id="list-p13-2"></div>
+      <h3>【內丹仙化】大理天龍寺 渾沌活佛(選1.龍宮洞)</h3><div id="list-p13-3"></div>
+      <h3>【內丹玄化】大理天龍寺 玄天活佛</h3><div id="list-p13-4"></div>
+      <h3>【內丹羽化】大理天龍寺 雀羽仙人</h3><div id="list-p13-5"></div>
+      <h3>【幻武系統】</h3><div id="list-p13-6"></div>
+      <h3>【守護神】</h3><div id="list-p13-7"></div>
+  </div>
+  <div id="p14" class="tab-content">
+      <h3>【八卦燈】</h3><div id="list-p14-1"></div>
+      <h3>【真武系統】功能/最大值</h3><div id="list-p14-2"></div>
+      <h3>【俠客系統】小卷相減=升級所需俠義小</h3><div id="list-p14-3"></div>
+  </div>
+  <div id="p15" class="tab-content">
+      <h3>【造型服】</h3><div id="list-p15-1"></div>
+      <h3>【稀有武林帖】</h3><div id="list-p15-2"></div>
+      <h3>【商城帖】</h3><div id="list-p15-3"></div>
+      <h3>【名門帖】</h3><div id="list-p15-4"></div>
+  </div>
+  <div id="p16" class="tab-content">
+      <h3>【限時商品】留意是否上架期間</h3><div id="list-p16-1"></div>
+      <h3>【玩家寄賣】</h3><div id="list-p16-2"></div>
+  </div>
+  <div id="p99" class="tab-content">
+    <h3>【🔒 請輸入密碼】</h3>
+    <div id="password-box" style="padding:20px;">
+      <input type="password" id="pwd" style="font-size:18px;" placeholder="輸入密碼">
+      <button onclick="checkPassword()">進入</button>
+    </div>
+    <div id="secret-section" style="display:none;">
+      <h3>【限量專區】</h3><div id="list-p99-1"></div>
+      <div id="secret-products19"></div>
+    </div>
+  </div> 
+
+  <!-- 搜尋結果分頁 -->
   <div id="search-content" class="tab-content">
     <h3>🔍 搜尋結果</h3>
     <div id="list-search"></div>
   </div>
- 
 <!--商品容器底 結束--->
 </div>
 
-
-<!----- 訂單確認與付款引導彈窗 Modal ----->
+<!-- 訂單確認與付款引導彈窗 Modal -->
 <div id="payment-modal" class="modal-overlay" style="display:none;" onclick="closeModal(this)">
-  <!-- 阻止點擊內容區域時關閉彈窗 -->
   <div class="modal-content" onclick="event.stopPropagation()">
     <span class="X-close" onclick="closeModal(this)">&times;</span>
     <h3 style="margin-top:0;">📋 訂單確認與付款指引</h3>
-    <!-- 訂單預覽區 -->
     <textarea id="modal-order-text" readonly></textarea>
-    <!-- 動態付款指引訊息區 -->
     <div id="payment-instruction"></div>
-
-    <!-- 底部操作按鈕區 -->
     <div style="display:flex; gap:8px;">
       <button class="btn-cart" style="background:#6c757d;" onclick="handleAction(1)">📋 複製清單</button>
-      <!-- 彈窗內部的這個按鈕才執行 submitOrder 跳轉 LINE -->
       <button class="btn-cart" style="background:#06C755;" onclick="submitOrder()">💬 傳送到 LINE</button>
     </div>
   </div>
 </div>
 
-
-
-<!---- total-box底部計算金額區 (兼購物車入口) ---->
+<!---- 底部計算金額區total-box (兼購物車入口) ---->
 <div class="total-box">
   <div class="top-row">
     <div class="left-area">
@@ -1011,102 +923,68 @@ a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-
       總金額：<span class="grand-total">$<span id="total-val">0</span></span>
     </div>
   </div>
-
-  <!-- 按鈕組合：左邊看購物車明細，右邊直接結算 -->
   <div style="display: flex; gap: 8px; margin-top: 5px;">
     <button class="btn" style="flex: 1; background: #0275d8; margin-top: 0;" onclick="toggleCart()">🛒 購物車明細</button>
-    <button class="btn main-btn" style="flex: 1.5; margin-top: 0;" onclick="openPaymentModal()">
-      📋 結算送出 💕
-    </button>
+    <button class="btn main-btn" style="flex: 1.5; margin-top: 0;" onclick="openPaymentModal()">📋 結算送出 💕</button>
   </div>
 </div>
 
-
-<!----  購物車面板 (介面)  ---->
+<!-- 購物車抽屜面板 -->
 <div id="cart-wrapper" class="collapsed">
   <div id="cart-panel" onclick="event.stopPropagation()">
-  <!-- 1. 固定頭部 -->
-  <span class="X-close" onclick="closeModal(this)">&times;</span><!-- X 關閉按鈕 -->
+    <span class="X-close" onclick="closeModal(this)">&times;</span>
     <h3>🛒 購物車</h3>
-    <!-- 2. 可滾動的商品列表（商品太多時只會在這裡出現捲軸） -->
     <ul id="cart-list"></ul> 
-    <!-- 3. 固定底部（結算金額與按鈕，絕不掉出螢幕外） -->
-    <div class="cart-total">
-      總金額: $ <span id="cart-total">0</span>
-    </div>
-
-    <!-- 輸出與聯絡按鈕 -->
+    <div class="cart-total">總金額: $ <span id="cart-total">0</span></div>
+<!-- 輸出與聯絡按鈕 -->
     <div id="action-buttons" class="action-row" style="margin-top: 10px; display: flex; gap: 5px;">
       <button class="btn-cart" style="background:#6c757d;" onclick="handleAction(1)">📋 複製</button>
       <button class="btn-cart" style="background:#06C755;" onclick="handleAction(2)">💬 LINE</button>
       <button class="btn-cart" style="background:#17a2b8;" onclick="handleAction(3)">📧 Email</button>
     </div>
-
-    <!-- 清空/結算按鈕 -->
+<!-- 清空/結算按鈕 -->
     <div style="display: flex; gap: 10px; margin-top: 10px;">
-    <button class="btn-cart btn-clear" onclick="clearCart()">清空購物車</button>
-    <button class="btn-cart btn-submit" onclick="openPaymentModal()">前往結帳</button>
-</div>
-
+      <button class="btn-cart btn-clear" onclick="clearCart()">清空購物車</button>
+      <button class="btn-cart btn-submit" onclick="openPaymentModal()">前往結帳</button>
+    </div>
   </div>
 </div>
 
-
-<!-- 懸浮按鈕--->
+<!-- 懸浮按鈕 -->
 <div id="btnTop" class="back-to-top" onclick="window.scrollTo(0,0)" title="回頂部">TOP</div>
 <div id="refresh-button" onclick="refreshInventory()" title="重整資料">🔃</div>
-<!-- 自動更新提示元件 -->
 <div id="live-toast" class="live-toast">⚡ 商品資料已更新！</div>
 
-<!---- JavaScript(功能邏輯運算) ------------------>
+
+<!-- JavaScript 邏輯 ------------------->
 <script>
-//=====================//
-// 集中管理設定##
-//=====================//
-const CONFIG = {
-    serverId: 09,
-    serverName: "09倚天",
-    storeName: "🎮 09倚天【百分百】金庸商城",
-    sheet: "products09",
-    firebaseNode: "products09",//向Firebase抓取products節點
-    cacheKey: "jin_mall_products09", //建立獨立的快取key
-    loadingText: "👻👻👻",
-    secretDiv: "secret-products09",
-    orderTitle: "補給單📢傳給百分百以確認交易" 
-};
+let selectedItems = {}; 
+let productDB = {}; 
+let priceLookup = {}; 
+let globalOrderText = ""; 
+let currentTabId = 'p1'; 
+let secretPassword = "";
+let toastTimer = null; // 全域宣告
 
-let selectedItems = {}; //購物車: 記住所有輸入過的商品數量
-let productDB = {}; //商品資料庫: HTML的 id是 list-加上對應的 key
-let priceLookup = {}; //價格表
-let globalOrderText = ""; //全域存單Text
-let currentTabId = 'p1'; //搜尋紀錄專用,預設紀錄為第一頁
-let secretPassword = "";//記憶密碼
-
-//==============================================
-// 載入商品資料並建立快取##
-//==============================================
-//-- localStorage 瀏覽器儲存 / 快取機制##
-const CACHE_KEY = CONFIG.cacheKey;
-const CACHE_TIME_KEY = 'jin_mall_last_update';
-const CACHE_EXPIRE = 1000 * 60 * 5; // 時效:分鐘（視需求調整）
-
-// #1. 頁面初始化/載入商品（優先讀取快取秒開，再背景更新）
+// ==============================================
+// 載入商品資料並建立快取
+// ==============================================
 async function loadProducts() {
     const cacheKey = CONFIG.cacheKey || 'jin_mall_products';
     const cache = localStorage.getItem(cacheKey);
 
-    // 第一階段：如果有快取，先極速顯示畫面，避免訪客畫面空白
-    if (cache) {console.log("⚡ 優先載入 LocalStorage 快取資料");
+    if (cache) {
+        console.log("⚡ 優先載入 LocalStorage 快取資料");
         try {
             processData(JSON.parse(cache));
             render();
-        } catch (e) {console.warn("快取解析失敗，準備向 Firebase 重新抓取");}
+        } catch (e) {
+            console.warn("快取解析失敗，準備向 Firebase 重新抓取");
+        }
     }
-    // 第二階段：前往 Firebase 抓取最新資料並更新快取與畫面
     await fetchLatestData();
 }
 
-// #2. 從 Firebase 讀取最新資料（取代原本的抓 GAS + 寫入 Firebase）
 async function fetchLatestData() {
     const toast = document.getElementById('loading-toast');
     if (toast) toast.style.display = 'block';
@@ -1117,7 +995,6 @@ async function fetchLatestData() {
     try {
         console.log(`🌐 正在從 Firebase 讀取 [${CONFIG.firebaseNode}] 最新資料...`);
 
-        // 只向 Firebase 做「讀取」(once)，不再做寫入 (set)，因此支援 .write: false
         const snapshot = await dbFirebase.ref(CONFIG.firebaseNode).once('value');
         const data = snapshot.val();
 
@@ -1127,15 +1004,14 @@ async function fetchLatestData() {
 
         const dataArray = Array.isArray(data) ? data : Object.values(data);
 
-        // 更新 LocalStorage 快取與時間
         setSafeCache(cacheKey, JSON.stringify(dataArray));
         setSafeCache(cacheTimeKey, Date.now().toString());
 
-        // 重新處理與渲染最新畫面
         processData(dataArray);
         render();
         console.log("✅ Firebase 最新資料讀取並渲染完成！");
-    } catch (error) {console.error("❌ 讀取 Firebase 失敗：", error);
+    } catch (error) {
+        console.error("❌ 讀取 Firebase 失敗：", error);
         
         const cache = localStorage.getItem(cacheKey);
         if (cache) {
@@ -1143,61 +1019,80 @@ async function fetchLatestData() {
             processData(JSON.parse(cache));
             render();
             if (typeof showRefreshToast === 'function') {
-                showRefreshToast("⚠️ 無法取得最新資料，目前顯示為舊內容");}
-        } else {alert("⚠️ 無法載入商品資料，請檢查網路連線或規則設定。"); }
-    } finally { if (toast) toast.style.display = 'none'; }
+                showRefreshToast("⚠️ 無法取得最新資料，目前顯示為舊內容");
+            }
+        } else {
+            alert("⚠️ 無法載入商品資料，請檢查網路連線或規則設定。"); 
+        }
+    } finally { 
+        if (toast) toast.style.display = 'none'; 
+    }
 }
 
-// #3.安全寫入 LocalStorage（防止華為隱私模式報錯）
 function setSafeCache(key, value) {
-    try {localStorage.setItem(key, value);
-    } catch (e) {console.warn("⚠️ 瀏覽器阻擋 LocalStorage 寫入（可能開啟了無痕/隱私模式）");}
+    try {
+        localStorage.setItem(key, value);
+    } catch (e) {
+        console.warn("⚠️ 瀏覽器阻擋 LocalStorage 寫入");
+    }
 }
 
-// #4.安全讀取 LocalStorage
 function getSafeCache(key) {
     try {
-    return localStorage.getItem(key);
-    } catch (e) {console.warn("⚠️ 瀏覽器阻擋 LocalStorage 讀取");
-        return null; }
+        return localStorage.getItem(key);
+    } catch (e) {
+        console.warn("⚠️ 瀏覽器阻擋 LocalStorage 讀取");
+        return null; 
+    }
 }
 
-
-//==============================================
-//-- 處理商品資料與追蹤
-//==============================================
+// ==============================================
+// 處理商品資料
+// ==============================================
 function processData(data) {
     productDB = {};
     priceLookup = {}; 
     
     data.forEach(item => {
-    const key = String(item.key).toLowerCase();
-        if (!productDB[key]) {productDB[key] = [];}
+        const key = String(item.key).toLowerCase();
+        if (!productDB[key]) { productDB[key] = []; }
 
         const rawPrice = String(item.price).trim();
         const productInfo = {
             key: key,  
             g: item.group || "",
             n: item.name,
-            p: Number(item.price), //程式判斷為數字
-            rawPrice: rawPrice, //為原始文字
+            p: Number(item.price),
+            rawPrice: rawPrice,
             f: item.desc || "",
             l: item.limit || "",
             stock: normalizeStock(item.stock),
             enabled: item.enabled || "Y",
         };
-console.log(productInfo);
         productDB[key].push(productInfo);
         priceLookup[item.name] = productInfo.p;       
     });
 }
-
 //-- 讀取p99
 async function loadSettings() {
-    const res = await fetch("https://jzmenu-a79cd-default-rtdb.asia-southeast1.firebasedatabase.app/settings.json");
-    const data = await res.json();
-    secretPassword = data.secretPassword;
-    secretPassword = String(data.secretPassword);
+    try {
+        const res = await fetch("https://jzmenu-a79cd-default-rtdb.asia-southeast1.firebasedatabase.app/settings.json");
+        const data = await res.json();
+        if (data && data.secretPassword !== undefined) {
+            secretPassword = String(data.secretPassword);
+        }
+    } catch(e) {
+        console.warn("⚠️ 無法取得設定檔:", e);
+    }
+}
+
+//-- 分頁切換
+function openTab(evt, tabId) {
+    currentTabId = tabId;
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(tabId).classList.add('active');
+    evt.currentTarget.classList.add('active');
 }
 
 //--判斷庫存:
@@ -1206,144 +1101,122 @@ function normalizeStock(rawStock) {
     const parsedStock = Number(rawStock);
     return Number.isFinite(parsedStock) ? parsedStock : null;
 }
-//=====================//
-//--  如何處理商品
-//=====================//
+
+// ==============================================
+// 渲染 HTML 元件
+// ==============================================
 function renderItem(item) {       
     const savedQty = selectedItems[item.n] || "";
     const isOutOfStock = item.stock === 0;
     const hasLimit = Number.isFinite(item.stock) && item.stock > 0;
     const disabled = item.enabled === "N";
-    
-     //處理父商品
-    const isGroup =
-    item.p === -1 && item.key.split("-").length === 2;
+    //處理父商品
+    const isGroup = item.p === -1 && item.key.split("-").length === 2;
     const rowClass = isGroup ? 'item-row group-row'
-    : disabled ? 'item-row disabled-item'
-    : isOutOfStock ? 'item-row out-of-stock' : 'item-row';
+        : disabled ? 'item-row disabled-item'
+        : isOutOfStock ? 'item-row out-of-stock' : 'item-row';
     
     const maxAttr = hasLimit ? `max="${item.stock}"` : '';
     const stockNotice = hasLimit ? `<span class="stock-tip">[剩${item.stock}]</span>` : ''; 
-    const isTextPrice = Number.isNaN(item.p);//宣告當非數字
-     //鎖定輸入框
-    const inputAttr =
-    (isGroup || isTextPrice || isOutOfStock || disabled)
-    ? 'disabled'
-    : '';
+    const isTextPrice = Number.isNaN(item.p);
+    //鎖定輸入框
+    const inputAttr = (isGroup || isTextPrice || isOutOfStock || disabled) ? 'disabled' : '';
+    //特殊事件處理
+    const isGift = item.p === 0;
+    const priceDisplay = isGroup ? '<span style="font-size:13px; color:#777;">【規格】</span>' 
+        : disabled ? 'X' 
+        : isOutOfStock ? '---' 
+        : isTextPrice ? item.rawPrice
+        : (isGift ? '🎁贈' : `$${item.p}`);  
     
-    const isGift = item.p === 0; //0為禮物
-    
-    const priceDisplay = 
-    isGroup ? '<span style=" font-size:13px; color:#777;">【規格】</span>' 
-    :disabled ? 'X' 
-    :isOutOfStock ? '---' 
-    : isTextPrice ? item.rawPrice
-    :(isGift ? '🎁贈' 
-    : `$${item.p}`);  
-    
-    const descWithStatus = disabled? `${item.f}<span class="sold-out">【停】</span>`: isOutOfStock? `${item.f}<span class="sold-out">【缺】</span>`: item.f;
+    const descWithStatus = disabled ? `${item.f}<span class="sold-out">【停】</span>` : isOutOfStock ? `${item.f}<span class="sold-out">【缺】</span>` : item.f;
+
     return `
         <div class="${rowClass}">
-        <div class="item-info">
-        ${isGroup?'<span class="group-arrow">▶</span>': '<span class="item-dot"></span>'}
-        <span class="item-name">${item.n}</span>
-        <span class="item-limit">${item.l}</span>
-        <span class="item-desc">${descWithStatus}</span>
-        ${(!isOutOfStock && hasLimit) ? stockNotice : ''}
-        </div>
-        <span class="item-price">${priceDisplay}</span>
-        <input type="number" class="qty"
-               data-name="${item.n}" 
-               value="${savedQty}"
-               min="0"
-               ${maxAttr} ${inputAttr}>
-        </div>`;}
+          <div class="item-info">
+            ${isGroup ? '<span class="group-arrow">▶</span>' : '<span class="item-dot"></span>'}
+            <span class="item-name">${item.n}</span>
+            <span class="item-limit">${item.l}</span>
+            <span class="item-desc">${descWithStatus}</span>
+            ${(!isOutOfStock && hasLimit) ? stockNotice : ''}
+          </div>
+          <span class="item-price">${priceDisplay}</span>
+          <input type="number" class="qty"
+                 data-name="${item.n}" 
+                 value="${savedQty}"
+                 min="0"
+                 ${maxAttr} ${inputAttr}>
+        </div>`;
+}
 
-
-// -- 渲染商品:將renderItem() 建立群組結構
+// ==============================================
+// -- 渲染商品:將renderItem()建立連結
+// ==============================================
 function render() {
     Object.keys(productDB).forEach(key => {
-         // 只處理父分類 (例如 p8-1)
         if (key.split("-").length !== 2) return;
         const container = document.getElementById(`list-${key}`);
-        if (!container) {
-        console.warn(`找不到容器: list-${key}`);
-        return;}
+        if (!container) return;
+
         let html = '';
         
-        // 群組(price=-1)，尋找group子商品
         productDB[key].forEach(item => {
-  // 群組父商品
-    if(item.p === -1){
-        html += renderItem(item);
+            // 群組(price=-1)，尋找group子商品
+            if (item.p === -1) {
+                html += renderItem(item);
+                const groupItems = productDB[key].filter(child => child.g === item.g && child !== item);
+                html += `<div class="group-content">`;
+                groupItems.forEach(child => { html += renderItem(child); });
+                html += `</div>`;
+            } else if (!item.g) {
+                html += renderItem(item);
+            }
+        });    
 
-        const groupItems = productDB[key]
-            .filter(child =>
-                child.g === item.g &&
-                child !== item
-            );
-        html += `<div class="group-content">`;
-
-        groupItems.forEach(child=>{
-            html += renderItem(child);
-        });
-
-        html += `</div>`;}
-        else if(!item.g){
-        html += renderItem(item);}// 一般商品直接顯示
-});    
-       
-      //底部回選單
         html += `
         <div style="text-align:right; padding:5px 5px; border-top:1px dashed #eee;">
             <a href="#top-anchor">↑ 回到選單 ↑</a>
         </div>`;
-         container.innerHTML = html;//最後把整串內容塞進container
+        container.innerHTML = html;
     });
 } 
-       
-// Accordion 父子商品收合事件 
-// group-arrow: 整列商品都可以點開，若要指定位置可修改
-document.addEventListener("click", function(e){
+
+//-- 折疊選單事件
+document.addEventListener("click", function(e) {
     const row = e.target.closest(".group-row");
-    if(!row) return;
+    if (!row) return;
 
     const group = row.nextElementSibling;
-    if(!group || !group.classList.contains("group-content")) return;
+    if (!group || !group.classList.contains("group-content")) return;
     const arrow = row.querySelector(".group-arrow");
 
-    // 如果目前已開啟 → 直接關閉自己
-    if(group.classList.contains("open")){
+    if (group.classList.contains("open")) {
         group.classList.remove("open");
         arrow.textContent = "▶";
         return;
     }
 
-    // 關閉其它已開啟群組
-    document.querySelectorAll(".group-content.open")
-    .forEach(openGroup => {openGroup.classList.remove("open");
+    document.querySelectorAll(".group-content.open").forEach(openGroup => {
+        openGroup.classList.remove("open");
         const parentRow = openGroup.previousElementSibling;
         const parentArrow = parentRow?.querySelector(".group-arrow");
-        if(parentArrow){parentArrow.textContent = "▶";}
+        if (parentArrow) parentArrow.textContent = "▶";
     });
-    // 開啟目前群組
+
     group.classList.add("open");
-    arrow.textContent = "▼";});
+    arrow.textContent = "▼";
+});
 
-
-
-// 計算邏輯
+//-- 計算金額邏輯
 function updateTotal() {
     let total = 0;
     let cartHTML = "";
-    const payMethod = document.getElementById('pay-method')?.value;
 
     for (const name in selectedItems) {
         const qty = selectedItems[name];
         if (qty > 0) {
             const price = priceLookup[name]; 
-            
-            if (price !== undefined ) {
+            if (price !== undefined) {
                 const sub = qty * price;
                 total += sub;
                 cartHTML += `
@@ -1351,47 +1224,59 @@ function updateTotal() {
                     ${name} x ${qty} = $${sub}
                     <button onclick="removeItem('${name}')">❌</button>
                   </li>`;
-                  }}}
+            }
+        }
+    }
 
-    document.getElementById('cart-list').innerHTML = cartHTML;
-    document.getElementById('cart-total').innerText = total.toLocaleString();
+    const cartList = document.getElementById('cart-list');
+    if (cartList) cartList.innerHTML = cartHTML;
+
+    const cartTotal = document.getElementById('cart-total');
+    if (cartTotal) cartTotal.innerText = total.toLocaleString();
+
     const totalValEl = document.getElementById('total-val');
     if (totalValEl) totalValEl.innerText = total.toLocaleString();
 }
 
-  // 監聽 input數字輸入：處理庫存限制 + 計算金額
-  document.addEventListener('input', (e) => {
+document.addEventListener('input', (e) => {
     if (e.target.classList.contains('qty')) {
         const input = e.target;
-        syncQty(
-            input.dataset.name,
-            input.value,
-            input
-        );}
-  });
+        syncQty(input.dataset.name, input.value, input);
+    }
+});
 
-
-// 庫存事件處理: 確保輸入數量時會立刻把它寫進「記憶本」
+//-- 庫存事件處理
 function syncQty(name, value, inputEl = null) {
     let val = parseInt(value, 10);
-    if (isNaN(val) || val < 0) val = 0; // 修正：確保不為NaN與負數
-    // 若沒傳 input，就自己找
+    if (isNaN(val) || val < 0) val = 0;
+
     const input = inputEl || document.querySelector(`input[data-name="${name}"]`);
     if (input) {
         const maxAttr = input.getAttribute('max');
-        const max = maxAttr !== null && maxAttr !== "" && !isNaN(Number(maxAttr))? Number(maxAttr) : null;       
-        // 庫存限制
+        const max = maxAttr !== null && maxAttr !== "" && !isNaN(Number(maxAttr)) ? Number(maxAttr) : null;       
         if (max !== null && val > max) {
             alert(`抱歉，該庫存僅剩 ${max} 件！`);
             val = max;
-            input.value = max;}}
-    selectedItems[name] = val;//存入購物車    
-    updateTotal();//更新金額
+            input.value = max;
+        }
+    }
+    selectedItems[name] = val;    
+    updateTotal();
 }
 
 
-// 紀錄搜尋前使用者原本處於哪一個分頁 //預設帶入目前 CONFIG 的分頁
-let previousTabId = CONFIG.firebaseNode; 
+// 輔助：selectedItems 記憶的數據同步畫面上的所有 input
+function syncAllInputs() {
+    document.querySelectorAll('input.qty').forEach(input => {
+        const name = input.dataset.name;
+        if (name) {
+            const qty = selectedItems[name];
+            input.value = (qty && qty > 0) ? qty : "";
+        }
+    });
+}
+
+let previousTabId = CONFIG.firebaseNode; // 紀錄搜尋前使用者原本處於的分頁
 // ==============================================
 // 搜尋功能：輸入時自動切換、清空時無縫切回原本分頁
 // ==============================================
@@ -1404,20 +1289,14 @@ function handleSearch() {
     const searchList = document.getElementById('list-search');
     const clearBtn = document.getElementById("search-clear-btn");
 
-    // 1. 動態控制 ✕ 清除按鈕的顯示 / 隱藏
     if (clearBtn) {
         clearBtn.style.display = keyword.length > 0 ? "block" : "none";
     }
 
-    // 2. 當搜尋關鍵字被清空時：無縫切回搜尋前原本的分頁
     if (!keyword) {
-        if (searchContent) searchContent.classList.remove('active'); // 關閉搜尋頁面
-        
-        // 清除所有分頁的高亮狀態
+        if (searchContent) searchContent.classList.remove('active');
         document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-        // 還原搜尋前正常顯示的分頁與按鈕
         if (typeof currentTabId !== 'undefined' && currentTabId) {
             const activeTab = document.getElementById(currentTabId);
             if (activeTab) activeTab.classList.add('active');
@@ -1425,20 +1304,20 @@ function handleSearch() {
             const activeBtn = document.querySelector(`.tab-btn[onclick*="${currentTabId}"]`);
             if (activeBtn) activeBtn.classList.add('active');
         }
-        return; // 結束執行
+        
+        // 🔑切回原本 Tab 時，把最新的購物車數量同步回 DOM
+        syncAllInputs();
+        return;
     }
 
-    // 3. 當有輸入關鍵字時：切換到搜尋結果頁面
     document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     if (searchContent) searchContent.classList.add('active');
 
-    // 4. 搜尋 productDB 資料庫
     let results = [];
     if (typeof productDB !== 'undefined') {
         for (let key in productDB) {
-            if (key === "p99-1") continue; // 🔒 搜尋排除隱藏的 p99
-            
+            if (key === "p99-1") continue;          
             if (Array.isArray(productDB[key])) {
                 productDB[key].forEach(item => {
                     const nameMatch = item.n && item.n.toLowerCase().includes(keyword);
@@ -1451,64 +1330,54 @@ function handleSearch() {
         }
     }
 
-    // 5. 搜尋結果畫面
     if (searchList) {
         if (results.length === 0) {
             searchList.innerHTML = "<div style='padding:20px; color:gray; text-align:center;'>找不到相關商品...</div>";
-        } else {searchList.innerHTML = results.map(renderItem).join(''); }
+        } else {
+            searchList.innerHTML = results.map(renderItem).join(''); 
+        }
     }
 }
 
-//--點擊 ✕ 按鈕時呼叫：清空搜尋欄並觸發還原
+//--搜尋✕按鈕時：清空搜尋欄並觸發還原
 function clearSearch() {
     const searchInput = document.getElementById("searchInput");
-    if (searchInput) {searchInput.value = ""; } // 清空文字
-    handleSearch(); // 重新呼叫 handleSearch，自動觸發 !keyword 的還原邏輯
+    if (searchInput) searchInput.value = "";
+    handleSearch();
 }
-    
-//-- 分頁切換
-function openTab(evt, tabId) {
-    currentTabId = tabId;
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabId).classList.add('active');
-    evt.currentTarget.classList.add('active');
-}
+
 
 //-- 購物車開/關: 切換展開或收合
 function toggleCart() {
     if (window.event) window.event.stopPropagation();
     const wrapper = document.getElementById('cart-wrapper');
     if (!wrapper) return;
-    // 清除可能殘留的 display:none，避免被鎖死！
     wrapper.style.display = "";
-    // 雙向切換 CSS Class 狀態
-    wrapper.classList.toggle('expanded');// 切換「展開」狀態
-    wrapper.classList.toggle('collapsed');//切換「收合」狀態 
+    wrapper.classList.toggle('expanded');
+    wrapper.classList.toggle('collapsed');
 }
-
 //-- 購物車: 清空
 function clearCart() {
     if (confirm("確定要清空購物車嗎？")) {
-        selectedItems = {};//(1)清空內容
-        document.querySelectorAll('.qty').forEach(input => input.value = "");// (2)所有（input）輸入框歸零
-        updateTotal();//(3)更新金額 歸0
-        //(4)關閉購物車面板，讓畫面乾淨(不用可刪除這段)
+        selectedItems = {};
+        document.querySelectorAll('.qty').forEach(input => input.value = "");
+        updateTotal();
         const wrapper = document.getElementById('cart-wrapper');
         wrapper.classList.remove('expanded');
-        wrapper.classList.add('collapsed');}
+        wrapper.classList.add('collapsed');
+    }
 }
-
 //-- 購物車: 刪除單項商品
 function removeItem(name) {
     selectedItems[name] = 0;
-    document.querySelectorAll(`input[data-name="${name}"]`).forEach(el => el.value = "");
+    // 🔑精準清空所有選單與搜尋結果中該商品的 input 即可
+    document.querySelectorAll(`input[data-name="${CSS.escape ? CSS.escape(name) : name}"]`).forEach(el => el.value = "");
     updateTotal();
-    if (document.getElementById('search-content').classList.contains('active')) handleSearch();
 }
-//-- 處理按鈕行為 --複製、並提供寄信選項
+
+//-- 處理按鈕行為: 複製、並提供寄信選項
 function handleAction(type) {
-    if (window.event) window.event.stopPropagation(); // 阻止事件冒泡，避免觸發購物車收合
+    if (window.event) window.event.stopPropagation();
     
     const text = buildOrderText();
     if (!text) return alert("未選商品！無法複製清單");
@@ -1517,23 +1386,20 @@ function handleAction(type) {
         navigator.clipboard.writeText(text).then(() => alert("✅ 已複製清單"));
         if (type === 2) window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
     } else if (type === 3) {
-        // 改用 mailto 觸發 window.open，避免 location.href 在部分手機/瀏覽器被阻擋
         const mailUrl = `mailto:may11051105@gmail.com?subject=${encodeURIComponent("金庸商城訂單")}&body=${encodeURIComponent(text)}`;
         window.open(mailUrl, '_self');
     }
 }
 
-
 // ==============================================
-//--  清單內容 ----
+// 產生訂單文字檔
 // ==============================================
-// 1. 在 buildOrderText 中加入備註 (Memo)
 function buildOrderText() {
-    const user = document.getElementById('user-id')?.value || "未填";
-    const pay = document.getElementById('pay-method')?.value || "未填";
-    const memo = document.getElementById('order-memo')?.value || "無"; // 讀取備註
+    const user = document.getElementById('user-id')?.value || "👶"; 
+    const pay = document.getElementById('pay-method')?.value || "💰";
+    const memo = document.getElementById('order-memo')?.value || "💯"; 
     let itemText = "";
-    let total = 0; //原始金額
+    let total = 0; 
     let index = 1;
     let totalQty = 0;
 
@@ -1542,7 +1408,7 @@ function buildOrderText() {
         const price = priceLookup[name];
         if (qty > 0 && price !== undefined) {
             const sub = qty * price;
-            itemText += `${index}●${name} ${qty}x${price}= ${sub}\n`;
+            itemText += `${index}●${name} ${qty} x${price}=${sub}\n`;
             index++;
             totalQty += qty;
             total += sub;
@@ -1552,36 +1418,32 @@ function buildOrderText() {
 
     let totalDisplay = total.toLocaleString();
     
-    // 依交易方式計算折扣與格式
     if (pay === '無卡存') {
-        // 95折後無條件進位至百位數：Math.ceil( (total * 0.95) / 100 ) * 100
         const discounted = Math.round(total * 0.95);
         const roundedHundred = Math.ceil(discounted / 100) * 100;
         totalDisplay = `${total}(ATM存款)= ${roundedHundred} 元`;
     } else if (pay === '支付寶') {
         totalDisplay = `${total} /4= ¥${Math.round(total / 4)}`;
     } else if (pay === '轉帳' || pay === 'LinePay' || pay === '街口支付') {
-        totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元\n(已享95折)`;
+        totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元 (已享95折)`;
     }
 
     return `補給單📢傳給百分百以確認交易
-🌐伺服器：${CONFIG.serverName}
-💰交易方式：${pay}
-👤角色：${user}
+伺服器🌐 ${CONFIG.serverName}
+交易：${pay}
+角色：${user}
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 ${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 備註：${memo}
 總計：${index-1}項 / ${totalQty}個
-總額：$${totalDisplay} `;
-}
-//`
+總額：$${totalDisplay}`;
+}//`
 
 // ==============================================
-//--  付款指引 ----
+//--  付款指引 -開啟Modal
 // ==============================================
-//-- 1. 開啟付款指引彈窗 (只負責顯示彈窗，不開啟新頁面)
 function openPaymentModal() {
-    if (window.event) window.event.stopPropagation(); // 阻止事件冒泡 (避免觸發購物車收合)
+    if (window.event) window.event.stopPropagation();
     
     const text = buildOrderText();
     if (!text) return alert("尚未選擇商品！");
@@ -1592,11 +1454,8 @@ function openPaymentModal() {
     const instructionDiv = document.getElementById('payment-instruction');
     
     if (!modal) return;
-
-    // 代入訂單文字
     orderTextArea.value = text;
 
-    // 依交易方式切換指引
     let instructionHtml = "";
     switch(pay) {
         case "海外刷卡":
@@ -1628,58 +1487,51 @@ function openPaymentModal() {
     }
 
     instructionDiv.innerHTML = instructionHtml;
-    modal.style.display = "flex"; // 順暢顯示彈窗
+    modal.style.display = "flex";
 }
-
-//-- 2. 關閉彈窗: 通用關閉函數 (支援Modal彈窗與購物車抽屜)
+//-- 關閉彈窗: 通用關閉函數 (支援Modal彈窗與購物車抽屜)
 function closeModal(target) {
     if (window.event) window.event.stopPropagation();
-    // 找到最近的視窗容器
     const modal = (typeof target === 'string') 
         ? document.getElementById(target) 
         : target ? target.closest('.modal-overlay, #cart-wrapper') : null;
 
     if (!modal) return;
     
-    // 情況 A：如果是一般的 Modal 付款彈窗 (利用 display 控制)
     if (modal.classList.contains('modal-overlay')) {
         modal.style.display = "none";
     } 
     
-    // 情況 B：如果是購物車側邊/底部面板 (利用 Class 控制)
     if (modal.id === 'cart-wrapper' || modal.closest('#cart-wrapper')) {
         const cartWrapper = document.getElementById('cart-wrapper');
         cartWrapper.classList.remove('expanded');
         cartWrapper.classList.add('collapsed');
-        // 確保不留 style.display = "none"，才不會鎖住下一次的 toggleCart
         cartWrapper.style.display = ""; 
     }
 }
 
-//-- 3. 送出訂單至 LINE (由彈窗內的按鈕點擊時觸發)
+//-- 送出訂單 (由彈窗內的按鈕點擊時觸發)
 async function submitOrder() {
     if (window.event) window.event.stopPropagation();
     const text = buildOrderText();
     if (!text) return alert("尚未選擇商品！");
 
-    // 自動複製訂單文字到剪貼簿
     if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).catch(() => {});
     }
-
-    closeModal(); // 開啟 LINE 前先關閉彈窗
+    closeModal();
     window.open(`https://line.me/R/msg/text/${encodeURIComponent(text)}`, "_blank");
 }
-//`
 
-
-//-- p99密碼驗證
+//-- p99驗證
 function checkPassword() {
     const input = document.getElementById("pwd").value.trim();
     if (input === String(secretPassword).trim()) {
         document.getElementById("secret-section").style.display = "block";
         document.getElementById("password-box").style.display = "none";
-    } else { alert("密碼錯誤"); }
+    } else { 
+        alert("密碼錯誤"); 
+    }
 }
 
 //-- TOP按鈕：監聽捲動事件，決定何時跳出按鈕
@@ -1693,13 +1545,10 @@ function refreshInventory() {
     const btn = document.getElementById('refresh-button');
     btn.classList.add('loading');
     btn.style.pointerEvents = 'none';
-    
-    // 呼叫現有的 fetchLatestData 函數
+
     fetchLatestData().then(() => {
         btn.classList.remove('loading');
         btn.style.pointerEvents = 'auto';
-        
-        // 成功提示
         showRefreshToast('✅ 庫存已更新');
     }).catch(error => {
         btn.classList.remove('loading');
@@ -1708,6 +1557,7 @@ function refreshInventory() {
         console.error('更新失敗:', error);
     });
 }
+
 function showRefreshToast(message) {
     const toast = document.createElement('div');
     toast.textContent = message;
@@ -1729,51 +1579,41 @@ function showRefreshToast(message) {
         setTimeout(() => toast.remove(), 300);
     }, 2000);
 }
-
-//資料更新浮動提示
+//--資料更新浮動提示
 function showLiveToast(message = "⚡ 商品資料已更新") {
     const toast = document.getElementById("live-toast");
     if (!toast) return;
     toast.textContent = message;
     toast.classList.add("show"); 
-    if (toastTimer) clearTimeout(toastTimer);// 避免頻繁更新時定時器互相衝突 
-    toastTimer = setTimeout(() => { toast.classList.remove("show"); }, 2000);// 自動淡出隱藏
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { toast.classList.remove("show"); }, 2000);
 }
 
-//初始化時就監聽
-document.querySelector("header h1").textContent = CONFIG.storeName;//標題
-document.getElementById("loading-toast").innerHTML =
-`獲取最新資料中<span class="bounce">${CONFIG.loadingText}..</span>`; //loading
+// ==============================================
+//--初始化時就監聽
+// ==============================================
+document.querySelector("header h1").textContent = CONFIG.storeName;
+document.getElementById("loading-toast").innerHTML = `獲取最新資料中<span class="bounce">${CONFIG.loadingText}..</span>`;
 document.getElementById('pay-method').addEventListener('change', updateTotal);
-
-// ==============================================
-// Firebase 實時動態監聽 + 自動彈窗提示
-// ==============================================
-let isInitialLoad = true; // 紀錄是否為開啟網頁的第一次載入
-let toastTimer = null;
+//-- Firebase 動態監聽 + 提示
+let isInitialLoad = true;
 dbFirebase.ref(CONFIG.firebaseNode).on('value', (snapshot) => {
     const data = snapshot.val();
     if (!data) return;
 
     const dataArray = Array.isArray(data) ? data : Object.values(data);
     const cacheKey = CONFIG.cacheKey || 'jin_mall_products';
-    // 1. 更新 LocalStorage 快取與畫面
+
     localStorage.setItem(cacheKey, JSON.stringify(dataArray));
     processData(dataArray);
     render();
-    // 2. 判斷提示顯示時機
-    if (isInitialLoad) {        
-        isInitialLoad = false; } //第一次開啟網頁時不彈窗，只標記初始化完成
-    else { showLiveToast(); } //背景資料改動時，動態滑出提示！
+
+    if (isInitialLoad) { isInitialLoad = false; 
+    } else { showLiveToast(); }
 });
 
-//畫面初始化：
-loadProducts();//先讀快取秒開，再背景更新最新資料
+loadProducts();//畫面初始化
 loadSettings();
-
-
 </script>
-
-
 </body>
 </html>
