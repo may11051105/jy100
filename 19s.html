@@ -1,4 +1,4 @@
-<!-- 【自動即時更新版本】
+﻿<!-- 【自動即時更新版本】
 更新購物車位置
 ---->
 
@@ -35,12 +35,12 @@ const dbFirebase = firebase.database();
  ============================= */
 :root { 
   /* 背景色## */
-  --main-bg: #999;   /*body背景*/
+  --main-bg: #f2f4f7;   /*body背景*/
   --Header-bg:#111;  /*標題背景*/
-  --bg1: #03a9a5; /*背景主色*/  
-    --bg2: #dcfcfc;/*背景2:資訊欄面板*購物車面板*/
-    --bg3: #f7ffff;/*背景3:超淡*/
-  --h3-bg: #004542;  /*分類標題*/
+  --bg1: #577999; /*背景主色*/  
+    --bg2: #d4e9fc;/*背景2:資訊欄面板*購物車面板*/
+    --bg3: #f0f8ff;/*背景3:超淡*/
+  --h3-bg: #2c3e50;  /*分類標題*/
 
 
 
@@ -761,8 +761,8 @@ a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-
  * 網頁開始 
 ============================================== -->
 <body class="dark">
-<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
-<header><h1></h1>
+<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div><!--##-->
+<header><h1></h1><!--##-->
    <a href="/">🏠回伺服器選單</a><!----- 回首頁----->   
 </header>
 <div id="top-anchor"></div><!-- 錨點:回選單-跳到此 --->
@@ -972,7 +972,7 @@ a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-
  <div id="password-box" style="padding:20px;"><input type="password" id="pwd" style="font-size:18px;" placeholder="輸入密碼">
   <button onclick="checkPassword()">進入</button></div>
   <div id="secret-section" style="display:none;">
-  <h3>【限量專區】</h3><div id="list-p99-1"></div>
+  <h3>【限量專區】##</h3><div id="list-p99-1"></div>
   <div id="secret-products19"></div>
   </div>
 </div> 
@@ -1072,14 +1072,14 @@ a{color:#0275d8; font-weight:bold; font-size:14px; display:inline-block; margin-
 // 集中管理設定##
 //=====================//
 const CONFIG = {
-    serverId: 19,
-    serverName: "19嵩山",
-    storeName: "🎮 19嵩山【百分百】金庸商城",
-    sheet: "products19",
-    firebaseNode: "products19",//向Firebase抓取products節點
-    cacheKey: "jin_mall_products19", //建立獨立的快取key
-    loadingText: "😵‍💫",
-    secretDiv: "secret-products19",
+    serverId: 09,
+    serverName: "09倚天",
+    storeName: "🎮 09倚天【百分百】金庸商城",
+    sheet: "products09",
+    firebaseNode: "products09",//向Firebase抓取products節點
+    cacheKey: "jin_mall_products09", //建立獨立的快取key
+    loadingText: "👻👻👻",
+    secretDiv: "secret-products09",
     orderTitle: "補給單📢傳給百分百以確認交易" 
 };
 
@@ -1091,9 +1091,9 @@ let currentTabId = 'p1'; //搜尋紀錄專用,預設紀錄為第一頁
 let secretPassword = "";//記憶密碼
 
 //==============================================
-// 載入商品資料並建立快取
+// 載入商品資料並建立快取##
 //==============================================
-//-- localStorage 瀏覽器儲存 / 快取機制
+//-- localStorage 瀏覽器儲存 / 快取機制##
 const CACHE_KEY = CONFIG.cacheKey;
 const CACHE_TIME_KEY = 'jin_mall_last_update';
 const CACHE_EXPIRE = 1000 * 60 * 5; // 時效:分鐘（視需求調整）
