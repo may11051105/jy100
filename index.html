@@ -1,0 +1,345 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【百分百】金庸商城</title>
+
+  <!-- FontAwesome 圖示 -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+/* =========================
+       1. 全域設定
+ ========================= */
+    *, *::before, *::after {
+      box-sizing: border-box;margin: 0;padding: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 10% 10%, #E4F1E7 0%, transparent 40%),
+        radial-gradient(circle at 90% 20%, #EDF5EF 0%, transparent 42%),
+        radial-gradient(circle at 20% 90%, #DCEBE0 0%, transparent 45%),
+        radial-gradient(circle at 85% 85%, #E6F1E8 0%, transparent 40%),
+        #F4F8F5;
+      color: #222;
+      display: flex;
+      justify-content: center;
+      padding: 25px 12px;
+      min-height: 100vh;
+    }
+    /* 捲軸 */
+    ::-webkit-scrollbar {width: 10px;}
+    ::-webkit-scrollbar-thumb {background: #A8C2AE;border-radius: 10px;}
+
+/* =========================
+       2. 主容器
+========================= */
+.container { width: 100%; max-width: 800px;text-align: center;}
+
+/* =========================
+   3. 頁頭
+ ========================= */
+header {
+    position: relative;
+    padding: 10px 0 5px;
+    overflow: hidden;
+}
+
+header h1 {
+    position: relative;
+    z-index: 2;
+    font-size: 2.2rem;
+    color: #356B4B;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+}
+
+header p {
+    position: relative;
+    z-index: 2;
+    font-size: 0.99rem;
+    margin-bottom: 20px;
+}
+
+/* 🌿 泡泡 */
+header::before,
+header::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+}
+/* 左上泡泡 */
+header::before {
+    width: 70px;height: 70px;left: 8%;top: 0;
+    background: rgba(180, 215, 190, 0.55);
+    box-shadow:
+        0 0 20px rgba(140, 190, 155, 0.18),
+        inset 8px 8px 15px rgba(255,255,255,0.35);
+    animation: bubbleFloat 5s ease-in-out infinite;
+}
+/* 右下泡泡 */
+header::after {
+    width: 35px;height: 35px; right: 12%;top: 60px;
+    background: rgba(170, 210, 185, 0.30);
+    box-shadow:
+        0 0 15px rgba(140, 190, 155, 0.15),
+        inset 5px 5px 10px rgba(255,255,255,0.4);
+    animation: bubbleFloat 4s ease-in-out infinite reverse;
+}
+/* 輕微漂浮 */
+@keyframes bubbleFloat {
+    0%, 100% {transform: translateY(0) scale(1); }
+    50% { transform: translateY(-8px) scale(1.04); }
+}
+
+
+/* =========================
+       4. 伺服器選區
+========================= */
+    .server-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    /*卡片*/
+    .server-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 26px 15px;
+      min-height: 120px;
+      border-radius: 20px;
+      color: #fff;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(50, 80, 60, 0.15);
+      transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+      cursor: pointer;
+    }
+    .server-card:hover {transform: translateY(-3px);border-radius: 12px; }
+    .server-card i {margin-bottom: 10px; opacity: 0.9;}
+    .server-card h2 {font-size: 1.25rem;font-weight: bold; margin-bottom: 5px;}
+    .server-card span { font-size: 0.85rem; opacity: 0.85;}
+
+/* 卡片的漸層背景 */
+    .bg19-dark { background: linear-gradient(130deg, #0f5257, #0b3c40); }
+    .bg18-dark { background: linear-gradient(130deg, #2d4a1d, #1e3313); }
+    .bg09-dark { background: linear-gradient(130deg, #1f2b42, #121a29); }
+    .bg14-dark { background: linear-gradient(130deg, #513010, #331d0f); }
+
+
+/* =========================
+       5. 特色賣點
+ ========================= */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .feature-card {
+      background: rgba(255, 255, 255, 0.92);
+      padding: 20px 10px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(50, 80, 60, 0.08);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .feature-card i {
+      font-size: 1.5rem;
+      color: #527B60;
+      margin-bottom: 10px;
+    }
+
+    .feature-card h3 {font-size: 0.95rem;
+      color: #365441;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+    .feature-card p {font-size: 0.8rem;color: #777; }
+
+/* =========================
+       6. 聯絡按鈕
+========================= */
+    .contact-btn-wrapper {margin-bottom: 25px; }
+    .btn-contact {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #06C755;
+      border: 2px solid #6B9B78;
+      color: #fff;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      transition:background-color 0.2s,transform 0.2s;
+    }
+    .btn-contact:hover {background-color: #6B9B78;transform: translateY(-2px); }
+
+
+/* =========================
+       7. 使用說明
+========================= */
+    .instructions-card {
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 10px;
+      padding: 25px 20px;
+      text-align: left;
+      box-shadow: 0 2px 8px rgba(50, 80, 60, 0.08);
+    }
+    .instructions-card h3 {
+      font-size: 1.05rem;
+      color: #356B4B;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    .instructions-card ol { list-style: none; counter-reset: custom-counter;}
+    .instructions-card li {counter-increment: custom-counter;font-size: 0.9rem;color: #555; margin-bottom: 12px; line-height: 1.5;
+    }
+    .instructions-card li strong {color: #4E8060; font-weight: bold;}
+
+/* =========================
+       8. 手機版
+========================= */
+    @media (max-width: 600px) {
+      .server-grid {grid-template-columns: 1fr;}
+      .features-grid {grid-template-columns: 1fr;}
+      header h1 {font-size: 1.9rem;}
+      body { padding: 25px 12px; }
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>【百分百】金庸商城</h1>
+      <p>遊戲補給一站購齊</p>
+    </header>
+
+
+    <!-- =========================
+         伺服器卡片
+         ========================= -->
+    <main class="server-grid">
+      <a href="19S.html"
+         class="server-card bg19-dark">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <h2>19嵩山區</h2>
+        <span>進入商品清單</span>
+      </a>
+
+      <a href="18S.html"
+         class="server-card bg18-dark">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <h2>18五仙區</h2>
+        <span>進入商品清單</span>
+      </a>
+
+      <a href="09S.html"
+         class="server-card bg09-dark">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <h2>09倚天區</h2>
+        <span>進入商品清單</span>
+      </a>
+
+      <a href="14S.html"
+         class="server-card bg14-dark">
+        <i class="fa-regular fa-rectangle-list"></i>
+        <h2>14鹿鼎區</h2>
+        <span>進入商品清單</span>
+      </a>
+    </main>
+
+
+    <!-- =========================
+         特色賣點區
+         ========================= -->
+    <section class="features-grid">
+      <div class="feature-card">
+        <i class="fa-solid fa-clipboard-list"></i>
+        <h3>完整商品清單</h3>
+        <p>超過15分類，數百種商品</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-mobile-screen-button"></i>
+        <h3>手機友善</h3>
+        <p>一鍵複製・輕鬆分享傳送</p>
+      </div>
+
+      <div class="feature-card">
+        <i class="fa-solid fa-sack-dollar"></i>
+        <h3>多種付款方式</h3>
+        <p>轉帳・ATM・刷卡 等</p>
+      </div>
+    </section>
+
+
+    <!-- =========================
+         聯絡客服
+         ========================= -->
+    <div class="contact-btn-wrapper">
+      <a href="https://line.me/ti/p/7KQQFWwtR5"
+         target="_blank" class="btn-contact">
+        <i class="fa-solid fa-comment"></i>
+        聯絡百分百
+      </a>
+    </div>
+
+
+    <!-- =========================
+         使用說明
+         ========================= -->
+    <section class="instructions-card">
+      <h3>
+        <i class="fa-solid fa-bullhorn"></i>
+        使用說明
+      </h3>
+      <ol>
+        <li>
+          <strong>選擇伺服器</strong>
+          （19嵩山區、18五仙區、09倚天區、14鹿鼎區）
+        </li>
+
+        <li>
+          <strong>填寫玩家資料</strong>（ID、付款方式）
+        </li>
+
+        <li>
+          <strong>選擇商品並輸入數量</strong>
+        </li>
+
+        <li>
+          <strong>點選帳單按鈕</strong>，選擇分享方式（複製/分享/Email）
+        </li>
+
+        <li>
+          <strong>將清單傳給百分百</strong>，等待確認交易
+        </li>
+      </ol>
+    </section>
+  </div>
+
+</body>
+</html>
