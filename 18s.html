@@ -1425,15 +1425,14 @@ function buildOrderText() {
     } else if (pay === '支付寶') {
         totalDisplay = `${total} /4= ¥${Math.round(total / 4)}`;
     } else if (pay === '轉帳' || pay === 'LinePay' || pay === '街口支付') {
-        totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元 (已享95折)`;
+        totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元\n(已享95折)`;
     }
 
     return `補給單📢傳給百分百以確認交易
-伺服器🌐 ${CONFIG.serverName}
-交易：${pay}
-角色：${user}
+🌐${CONFIG.serverName}▬角色：${user}
 ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
 ${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
+交易：${pay}
 備註：${memo}
 總計：${index-1}項 / ${totalQty}個
 總額：$${totalDisplay}`;
