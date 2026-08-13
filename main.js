@@ -514,14 +514,7 @@ function buildOrderText() {
     totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元\n(已享95折)`;
   }
 
-  return `補給單📢傳給百分百以確認交易
-      🌐${CONFIG.serverName}▬角色：${user}
-      ▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-      ${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬
-      交易：${pay}
-      備註：${memo}
-      總計：${index - 1}項 / ${totalQty}個
-      總額：$${totalDisplay}`;
+  return `補給單📢傳給百分百以確認交易\n🌐${CONFIG.serverName}▬角色：${user}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n備註：${memo}\n交易：${pay}\n總計：${index - 1}項 / ${totalQty}個\n總額：$${totalDisplay}`;
 } //`
 
 // ==============================================
