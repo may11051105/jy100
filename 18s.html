@@ -4,7 +4,7 @@
     <!-- 1. 基本設定與 Open Graph (分享卡片) -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>【百分百】金庸商城18</title>
+    <title>【百分百】金庸商城</title>
 
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://may11051105.github.io/jy100/" />
@@ -17,9 +17,7 @@
 
     <!-- 2. 載入 CSS (防畫面空白閃爍) -->
     <script>
-      document.write(
-        '<link rel="stylesheet" href="style.css?v=' + Date.now() + '">',
-      )
+      document.write('<link rel="stylesheet" href="style.css?v=' + Date.now() + '">', );
       //document.write('<link rel="stylesheet" href="https://may11051105.github.io/jy100/style.css?v=' + Date.now() + '">');
     </script>
 
@@ -80,13 +78,11 @@
       const CONFIG = {
         serverId: '18',
         serverName: '18五仙',
-        storeName: '🎮 18五仙【百分百】金庸商城',
         sheet: 'products18',
-        firebaseNode: 'products18', //向Firebase抓取products節點
-        cacheKey: 'jin_mall_products18', //建立獨立的快取key
+        firebaseNode: 'products18',
+        cacheKey: 'jin_mall_products18',
         loadingText: '👽',
         secretDiv: 'secret-products18',
-        orderTitle: '補給單📢傳給百分百以確認交易',
       }
     </script>
   </head>
@@ -94,7 +90,7 @@
   <body class="dark">
     <div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
     <header>
-      <h1></h1>
+      <h1>【百分百】金庸商城</h1>
       <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a>
     </header>
     <div id="top-anchor"></div>
@@ -362,7 +358,7 @@
         <div id="list-p10-5"></div>
         <h3>【寶石(地)】套裝朱雀*5顆</h3>
         <div id="list-p10-6"></div>
-        <h3>【寶石(天)】玄武甲1顆+麒麟帽靴2顆</h3>
+        <h3>【寶石(天)】玄武衣1顆+麒麟帽靴2顆</h3>
         <div id="list-p10-7"></div>
       </div>
       <div id="p11" class="tab-content">
@@ -585,7 +581,7 @@
 
     <!-- 6. 載入 JS (CONFIG後 </body>前) -->
     <script>
-      document.write('<script src="main.js?v=' + Date.now() + '"><\/script>')
+      document.write('<script src="main.js?v=' + Date.now() + '"><\/script>');
       //document.write('<script src="https://may11051105.github.io/jy100/main.js?v=' + Date.now() + '"><\/script>');
     </script>
   </body>
