@@ -684,7 +684,14 @@ function showLiveToast(message = "⚡ 商品資料已更新") {
 // ==============================================
 //--初始化時就監聽
 // ==============================================
-document.querySelector("header h1").textContent = CONFIG.storeName;
+document.title = `【百分百】金庸商城 - ${CONFIG.serverId}區`;
+window.addEventListener('DOMContentLoaded', () => {
+    const h1 = document.querySelector("header h1");
+    if (h1) {// 取得原本 h1 的文字，並在後面加上 CONFIG
+      h1.textContent = `${CONFIG.serverName}${h1.textContent}`;
+    }
+  });
+
 document.getElementById("loading-toast").innerHTML =
   `獲取最新資料中<span class="bounce">${CONFIG.loadingText}</span>`;
 document.getElementById("pay-method").addEventListener("change", updateTotal);
