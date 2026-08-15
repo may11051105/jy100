@@ -468,7 +468,7 @@ function handleAction(type) {
   const text = buildOrderText();
   if (!text) return alert("未選商品！無法複製清單");
 
-  if (type === 1 || type === 2) {
+  if (type === 1 || type === 2 || type === 3) {
     navigator.clipboard.writeText(text).then(() => showLiveToast("✅ 已複製清單"));
     if (type === 2) window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
   } else if (type === 3) {
