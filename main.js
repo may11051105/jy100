@@ -468,16 +468,30 @@ function handleAction(type) {
   const text = buildOrderText();
   if (!text) return alert("未選商品！無法複製清單");
 
+  // 複製 / LINE / EMAIL 都先複製一份
   if (type === 1 || type === 2 || type === 3) {
-    navigator.clipboard.writeText(text).then(() => showLiveToast("✅ 已複製清單"));
-    if (type === 2) window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
-  } else if (type === 3) {
+
+    navigator.clipboard.writeText(text).then(() => {
+      if (type === 1 || type === 2) {
+        showLiveToast("📋 已複製清單");
+      }
+    }).catch(() => {
+      // 剪貼簿失敗時
+    });
+  }
+
+  // LINE
+  if (type === 2) {
+    window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
+  }
+
+  // EMAIL
+  if (type === 3) {
     const mailUrl =
       `mailto:may11051105@gmail.com` +
       `?subject=${encodeURIComponent("金庸商城訂單")}` +
       `&body=${encodeURIComponent(text)}`;
 
-    // 使用 <a> 觸發 mailto，手機 mail 相容性較好
     const link = document.createElement("a");
     link.href = mailUrl;
     link.style.display = "none";
