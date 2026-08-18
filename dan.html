@@ -1,0 +1,1137 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>百分百丹藥紀錄戰力統計表_金庸群俠傳Online</title>
+    <style>
+  :root {
+    --bg: #f4f8f5;   /*淺*/
+    --bg1: #d4f1c7;
+    --bg2: #348053;
+    --bg3: #154311;  /*深*/
+    --primary: #1e293b;
+    --accent: #2563eb;
+    --card: #ffffff;
+    --text: #333;
+    --border: #95d9a6;
+    --border1: #4e986c;
+    --border2: #26382d;
+  }
+  /* ============================= */
+  /* 全域設定 */
+  /* ============================= */
+  ::-webkit-scrollbar {width: 10px;height: 10px;} /* Chrome / Edge / Safari */
+  ::-webkit-scrollbar-thumb { border-radius: 20px; background: var(--bg2);}
+  ::-webkit-scrollbar-corner { background: var(--bg3);}
+  * {/* Firefox + iOS */
+    scrollbar-width: thin;
+    scrollbar-color: var(--bg2) transparent;
+    -webkit-overflow-scrolling: touch;
+    box-sizing: border-box; padding: 0; margin: 0;
+  }
+  body {
+    font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+    max-width: 480px; margin: auto; padding: 0px;
+    background:
+      radial-gradient(circle at 10% 10%, #e4f1e7 0%, transparent 40%),
+      radial-gradient(circle at 90% 20%, #edf5ef 0%, transparent 42%),
+      radial-gradient(circle at 20% 90%, #dcebe0 0%, transparent 45%),
+      radial-gradient(circle at 85% 85%, #e6f1e8 0%, transparent 40%), #f4f8f5;
+    color: #333;
+    -webkit-overflow-scrolling: touch;
+  }
+  html { scroll-behavior: smooth;}
+
+  /* =========================
+         App 外框
+      ========================= */
+  .app {width: 100%;max-width: 520px;min-height: 100vh;margin: auto;padding-bottom: 100px; /*底部預留空間*/}
+  .app-title {font-size: 25px;font-weight: 800;color: #315c43; margin-bottom: 5px; }
+  .app-subtitle {font-size: 13px;color: #718078;}
+.top-fixed {position: sticky;top: 0;}/*固定位*/
+  /* =========================
+         #1.頂部導覽列 Header
+      ========================= */
+  header {
+    background: linear-gradient(150deg, var(--bg1), var(--bg));
+    padding: 10px;top: 0; z-index: 10;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid var(--border2);
+    font-weight: bold;
+  }
+  .header-title {font-size: 1.3rem;  }
+  .header-btns {display: flex; gap: 5px;}
+  .header-btn {
+    padding: 6px 10px;
+    font-size: 0.9rem;color: white;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    background: var(--bg3);
+    }
+ .header-btn:hover {filter: brightness(1.5);}
+ /* =========================
+   輸入角色名
+========================= */
+.player-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: rgba(255,255,255,0.7);
+    border-bottom: 1px solid var(--border);
+}
+
+.player-box label {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    color: var(--bg3);
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.player-box input {
+    flex: 1;
+    min-width: 0;
+    padding: 7px 9px;
+    border: 1px solid var(--border1);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    background: #fff;
+}
+
+.player-box input:focus {
+    border-color: var(--bg2);
+    box-shadow: 0 0 0 2px rgba(52,128,83,0.12);
+}
+/*搜尋*/
+.search-box {
+    padding: 8px 10px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--border1);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    outline: none;
+    background: #fff;
+}
+
+.search-box input:focus {
+    border-color: var(--bg2);
+    box-shadow: 0 0 0 2px rgba(52,128,83,0.12);
+}
+
+
+/* =========================
+   #2.主分類頁籤 Main Tabs
+========================= */
+  .main-nav {
+    display: flex;
+    border-bottom: 1px solid var(--border1);
+    background: var(--bg);   
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  .main-tab {
+    padding: 10px 12px;
+    border: none;
+    background: var(--bg); 
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--bg2); 
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    flex-shrink: 0;
+  }
+
+  .main-tab.active {
+    color: var(--bg3); 
+    border: 1px solid var(--bg2); 
+    border-bottom: 3px solid var(--bg2); 
+  }
+
+/* =========================
+   #3.小分類按鈕 Sub Tabs
+========================= */
+  .sub-nav {
+    display: flex;
+    gap: 6px;
+    padding: 10px;
+    background: none; 
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  .sub-btn {
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 2px solid var(--bg2);
+    background: var(--bg);
+    color: var(--bg2);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .sub-btn.active {
+    background: var(--bg2);
+    color: var(--bg);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+/* =========================
+   #4. 內容面板 
+========================= */
+  .container {
+    max-width: 600px;
+    font-size: 0.9rem;
+  }
+  .content-panel {
+    display: none;
+  }
+  .content-panel.active {
+    display: block;
+  }
+  .card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 15px 1px;
+    margin-bottom: 2px;
+    border: 1px solid var(--border);
+  }
+
+  .pill-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px dashed var(--border);
+  }
+  .pill-item:last-child {
+    border-bottom: none;
+  }
+
+  .counter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .counter-btn {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: #fff;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .count-val {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+/* =========================
+   丹藥列表
+========================= */
+.pill-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.pill-table td {
+    padding: 1px;
+    vertical-align: middle;
+}
+
+/* 第 1 欄：名稱 */
+.pill-name {
+    width: 100px;
+    font-weight: bold;
+    white-space: nowrap;
+    background: var(--bg);
+}
+.pill-name::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height:5px;
+    margin-right: 1px;
+    background: var(--bg3);
+    border-radius: 50%;
+    vertical-align: middle;
+}
+
+/* 第 2 欄：效果 */
+.pill-effect {width: auto;}
+
+/* 第 3 欄：數量 */
+.pill-count {
+    white-space: nowrap;
+    text-align: center;
+    background: var(--bg);
+}
+
+/* 第 4 欄：累計 */
+.pill-total {width: 120px;}
+
+/* 長文字統一處理 */
+.pill-text {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color:#777;
+}
+
+/* 數量輸入 */
+.pill-count-input {
+    width: 50px;
+    padding: 3px;
+    border: 1px solid var(--border1);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* =========================
+   Modal 彈出視窗（戰鬥屬性統計）
+========================= */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    justify-content: center;
+    align-items: center;
+  }
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 440px;
+  }
+
+
+
+</style>
+<!-- 4. Firebase 函式庫 -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <!-- 5. Firebase 初始化 與 個別專屬CONFIG  -->
+    <script>
+      // Firebase 初始化
+      const firebaseConfig = {
+        apiKey: 'AIzaSyDF8YUyotMS75qsGoRQidcgZ7_J9MJbGE8',
+        authDomain: 'jzmenu-a79cd.firebaseapp.com',
+        databaseURL:
+          'https://jzmenu-a79cd-default-rtdb.asia-southeast1.firebasedatabase.app',
+        projectId: 'jzmenu-a79cd',
+        storageBucket: 'jzmenu-a79cd.firebasestorage.app',
+        messagingSenderId: '943506327571',
+        appId: '1:943506327571:web:babf4d63d0cc57d67097e6',
+        measurementId: 'G-XF1L0E5P6E',
+      }
+      firebase.initializeApp(firebaseConfig)
+      const dbFirebase = firebase.database()
+
+      /* =============================
+      // CONFIG專屬 集中管理##
+         ============================= */
+      const CONFIG = {
+        serverId: '09',
+        serverName: '09倚天',
+        sheet: 'products09',
+        firebaseNode: 'products09',
+        cacheKey: 'jin_mall_products09',
+        loadingText: '👻👻',
+        secretDiv: 'secret-products09',
+      }
+    </script>
+  </head>
+  
+  <body>
+<div class="app"><div class="top-fixed"><!--固定區塊-->
+    <!-- #1. 頂部導覽列 Header -->
+    <header>
+      <div class="header-title">大俠成長紀錄</div>
+      <div class="header-btns">
+        <button class="header-btn" onclick="toggleModal(true)" title="統計表">⚔高手戰力</button>
+        <a href="https://may11051105.github.io/jy100/" target="_blank" class="header-btn" title="百分百金庸商城">江湖補給</a>
+      </div>
+    </header>
+    
+    <div class="player-box">
+    <label for="player-name">👤大俠尊名</label>
+    <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="30">
+    </div>
+    
+    <div class="player-box">
+    <input type="search" id="pill-search" placeholder="🔎 搜尋關鍵字..." autocomplete="off">
+    </div>
+    
+    <!-- #2. 主分類（橫向滑動選單） -->
+    <nav class="main-nav">
+      <button class="main-tab active" onclick="switchMainTab('一般丹')">一般丹</button>
+      <button class="main-tab" onclick="switchMainTab('多能丹')">多功能丹</button>
+      <button class="main-tab" onclick="switchMainTab('氣血修為')">氣血修為</button>
+      <button class="main-tab" onclick="switchMainTab('常駐')">常駐</button>
+      <button class="main-tab" onclick="switchMainTab('被動')">被動</button>
+      <button class="main-tab" onclick="switchMainTab('裝備')">神器裝備</button>
+    </nav>
+</div>
+
+<!-- #3. 小分類與內容 -->
+<!-- 產生小分類 -->
+<div id="battle-sub-nav" class="sub-nav"></div>
+
+<!-- 產生丹藥或其他名稱內容 -->
+<div id="battle-items" class="container"></div>
+
+
+ <!-- =====================
+       #4. 戰鬥屬性統計 Modal 
+    ====================== -->  
+    <div id="stats-modal" class="modal">
+      <div class="modal-content">
+        <h3 style="margin-bottom:12px;">📊 戰鬥屬性總結</h3>
+        <p style="margin-bottom:8px;">
+          總加成攻擊：<span
+            id="stat-atk"
+            style="font-weight:bold; color:#e11d48;"
+            >0</span>
+        </p>
+        <p style="margin-bottom:8px;">
+          總加成防禦：<span
+            id="stat-def"
+            style="font-weight:bold; color:#2563eb;"
+            >0</span>
+        </p>
+        <p style="margin-bottom:16px;">
+          總加成血量：<span
+            id="stat-hp"
+            style="font-weight:bold; color:#16a34a;"
+            >0</span>
+        </p>
+        <button
+          class="btn-header btn-stats"
+          style="width:100%; padding:10px;"
+          onclick="toggleModal(false)">
+          關閉
+        </button>
+      </div>
+    </div>
+</div>
+
+
+<script>
+// ==============================================
+// 載入戰力統計資料
+// ==============================================
+let battleDB = [];
+let pillSearchText = "";
+
+async function loadBattleStats() {
+    try {
+        console.log("🌐 正在從 Firebase 讀取 [battleStats]...");
+        const snapshot =
+            await dbFirebase.ref("戰力統計").once("value");
+        const data = snapshot.val();
+        if (!data) {
+            console.warn("⚠️ battleStats 沒有資料");
+            return;
+        }
+        battleDB =
+            Array.isArray(data)
+                ? data
+                : Object.values(data);
+        console.log("✅ 戰力統計資料讀取成功！");
+        console.log("📦 共讀取", battleDB.length, "筆資料");
+        switchMainTab("一般丹");// 預設開啟第一個主分類
+        console.table(battleDB);
+        
+    } catch (error) {
+        console.error(
+            "❌ 讀取 battleStats 失敗：",
+            error
+        );
+    }
+}
+
+// ==============================================
+// Firebase → 自動產生小分類按鈕
+// ==============================================
+function renderSubTabs(mainCategory, mainItems) {
+    const subNav = document.getElementById("battle-sub-nav");
+    subNav.innerHTML = "";
+    const subCategories = [
+        ...new Set(
+            mainItems
+                .map(item => String(item.小分類 || "").trim())
+                .filter(Boolean)
+        )
+    ];
+
+    console.log(
+        `📂 ${mainCategory} 找到 ${subCategories.length} 個小分類：`,
+        subCategories
+    );
+
+    subCategories.forEach((subName, index) => {
+        const button = document.createElement("button");
+        button.className = "sub-btn";
+        if (index === 0) {
+            button.classList.add("active");
+        }
+
+        button.textContent = subName;
+        button.onclick = function () {
+            subNav.querySelectorAll(".sub-btn")
+                .forEach(btn =>
+                    btn.classList.remove("active")
+                );
+            button.classList.add("active");
+            renderBattleItems(
+                mainCategory,
+                subName
+            );
+        };
+
+        subNav.appendChild(button);
+    });
+
+    if (subCategories.length > 0) {
+        renderBattleItems(
+            mainCategory,
+            subCategories[0]
+        );
+    }
+}
+
+// ==============================================
+// 格式化
+// ==============================================
+//格式化數字
+function cleanNumber(value, decimals = 10) {
+    if (!Number.isFinite(Number(value))) return 0;
+    const num = Number(value);
+    return Number(
+        num.toFixed(decimals)
+    );
+}
+// 格式化戰力效果：0.03 → 3%
+function formatEffect(label, value) {
+    if (value === null || value === undefined) {
+        return "";
+    }
+
+    const text = String(value).trim();
+    // 空白
+    if (!text) {return "";}
+
+    const num = cleanNumber(value);
+    //非數字0
+    if (num === 0) {return "";}
+    // 小於 1 → 為百分比
+    if (num > 0 && num < 1) {
+        const percent = cleanNumber(num * 100, 6);
+        return `,${label}+${percent}%`;
+    }
+    // 一般數值
+    return `,${label}+${cleanNumber(num)}`;
+}
+
+
+
+
+// ==============================================
+// 計算單顆丹藥 × 已食用數量
+// ==============================================
+function calculateTotalEffects(item, count) {
+    const totalEffects = [];
+    const effectFields = [
+        ["攻", item.攻擊],
+        ["防", item.防禦],
+        ["爆", item.爆擊],
+        ["爆傷", item.爆傷],
+        ["抗爆", item.抗爆],
+        ["命中", item.命中],
+        ["閃", item.閃避],
+        ["反", item.反擊],
+        ["血", item.氣血],
+    ];
+
+    effectFields.forEach(([label, value]) => {
+        const num = Number(value);
+        if (!Number.isFinite(num) || num === 0) {
+            return;
+        }
+
+        const total = cleanNumber(num * count);
+        // 小於1=為百分比
+        if (num > 0 && num < 1) {
+            const percent = cleanNumber(total * 100, 6);
+            totalEffects.push(
+                `,${label}+${percent}%`
+            );
+        } else {
+            totalEffects.push(
+                `,${label}+${cleanNumber(total)}`
+            );
+        }
+    });
+    return totalEffects.length > 0
+        ? totalEffects.join(" ")
+        : "無關戰力";
+}
+
+
+// ==============================================
+// 列表渲染 → 自動產生丹藥列表
+// ==============================================
+function renderBattleItems(mainCategory, subCategory) {
+    const container = document.getElementById("battle-items");
+    if (!container) {
+        console.warn("⚠️ 找不到丹藥列表容器：battle-items");
+        return;
+    }
+
+    container.innerHTML = "";
+    // ======================================
+    // ① 取得要顯示的資料
+    // ======================================
+    let items;
+
+    if (pillSearchText) {
+        // 全域搜尋：整份 battleDB
+        items = battleDB.filter(item => {
+            const name = String(item.名稱 || "").trim();
+            const effects = [
+                formatEffect("攻", item.攻擊),
+                formatEffect("防", item.防禦),
+                formatEffect("爆", item.爆擊),
+                formatEffect("爆傷", item.爆傷),
+                formatEffect("抗爆", item.抗爆),
+                formatEffect("命中", item.命中),
+                formatEffect("閃", item.閃避),
+                formatEffect("反", item.反擊),
+                formatEffect("血", item.氣血),
+                String(item.其它功能 || "").trim()
+            ]
+            .filter(Boolean)
+            .join(" ");
+
+            // 第一欄：名稱
+            // 第二欄：效果
+            const searchText =
+                `${name} ${effects}`.toLowerCase();
+            return searchText.includes(pillSearchText);
+        });
+
+    } else {
+
+        // 一般瀏覽：主分類＋小分類
+        items = battleDB.filter(item =>
+            String(item.主分類 || "").trim() === mainCategory &&
+            String(item.小分類 || "").trim() === subCategory
+        );
+    }
+
+
+    // ======================================
+    // ② 沒有搜尋結果
+    // ======================================
+    if (items.length === 0) {
+
+        container.innerHTML = `
+            <div class="card" style="text-align:center; padding:20px; color:#777;">
+                ${
+                    pillSearchText
+                    ? `⚠️ 找不到「${pillSearchText}」相關丹藥`
+                    : `⚠️ 找不到符合「${subCategory}」的丹藥資料`
+                }
+            </div>
+        `;
+
+        return;
+    }
+
+
+    // ======================================
+    // ③ 建立丹藥列表
+    // ======================================
+    items.forEach(item => {
+        const name = String(item.名稱 || "無資料");
+        const limit = Number(item.上限) || 0;
+        const main = String(item.主分類 || "");
+        const sub = String(item.小分類 || "");
+        const pillKey =
+            `${main}__${sub}__${name}`;
+
+        // 已食用數量
+        const savedCount =
+            Number(playerRecord.pills[pillKey]) || 0;
+
+        const count =
+            Math.max(0, Math.min(savedCount, limit));
+
+
+        // ======================================
+        // 效果文字
+        // ======================================
+        const effects = [
+            formatEffect("攻", item.攻擊),
+            formatEffect("防", item.防禦),
+            formatEffect("爆", item.爆擊),
+            formatEffect("爆傷", item.爆傷),
+            formatEffect("抗爆", item.抗爆),
+            formatEffect("命中", item.命中),
+            formatEffect("閃", item.閃避),
+            formatEffect("反", item.反擊),
+            formatEffect("血", item.氣血),
+            String(item.其它功能 || "").trim()
+        ]
+        .filter(Boolean);
+
+
+        const effectText =
+            effects.length > 0
+            ? effects.join(" ")
+            : "無資料";
+
+
+        // ======================================
+        // 累計效果
+        // ======================================
+        const totalEffectText =
+            calculateTotalEffects(item, count);
+
+
+        // ======================================
+        // 建立卡片
+        // ======================================
+        const card =
+            document.createElement("div");
+        card.className = "card";
+
+        card.innerHTML = `
+            <table class="pill-table">
+
+                <tr>
+
+                    <!-- 第一欄：名稱 -->
+                    <td class="pill-name">
+                        ${name}
+
+                        ${
+                            pillSearchText
+                            ? `<br>
+                               <small style="
+                                   color:#888;
+                                   font-weight:normal;
+                               ">
+                                   [${main}-${sub}]
+                               </small>`
+                            : ""
+                        }
+                    </td>
+
+
+                    <!-- 第二欄：效果 -->
+                    <td
+                        class="pill-text pill-effect"
+                        title="${effectText}"
+                    >
+                        ${effectText}
+                    </td>
+
+                </tr>
+
+
+                <tr>
+
+                    <!-- 已食用 -->
+                    <td class="pill-count">
+
+                        <input
+                            type="number"
+                            class="pill-count-input"
+                            value="${count}"
+                            min="0"
+                            max="${limit}"
+                            data-pill-key="${pillKey}"
+                            data-limit="${limit}"
+                        >
+
+                        <span>/${limit}</span>
+
+                    </td>
+
+
+                    <!-- 累計效果 -->
+                    <td
+                        class="pill-text pill-total"
+                        title="${totalEffectText}"
+                    >
+                        ${totalEffectText}
+                    </td>
+
+                </tr>
+
+            </table>
+        `;
+
+
+        // ======================================
+        // 數量輸入
+        // ======================================
+        const input =
+            card.querySelector(".pill-count-input");
+        input.addEventListener("input", function () {
+            let value = Number(this.value);
+            if (!Number.isFinite(value)) {
+                value = 0;
+            }
+
+            value = Math.max(0, Math.min(value, limit));
+            this.value = value;
+
+            // 儲存
+            playerRecord.pills[pillKey] = value;
+            savePlayerRecord();
+
+            // 更新累計
+            const totalElement =
+                card.querySelector(".pill-total");
+            if (totalElement) {
+                const updatedTotal =
+                    calculateTotalEffects(item, value);
+                totalElement.textContent =
+                    updatedTotal;
+
+                totalElement.title =
+                    updatedTotal;
+            }
+
+        });
+
+
+        container.appendChild(card);
+
+    });
+}
+
+// ==============================================
+// 搜尋觸發
+// ==============================================
+function searchPills() {
+    const input =
+        document.getElementById("pill-search");
+    pillSearchText =
+        input
+            ? input.value.trim().toLowerCase()
+            : "";
+    // 取得目前分類
+    const activeMain =
+        document.querySelector(".main-tab.active");
+    const mainCategory =
+        activeMain
+            ? activeMain.textContent.trim()
+            : "";
+    const activeSub =
+        document.querySelector(".sub-btn.active");
+    const subCategory =
+        activeSub
+            ? activeSub.textContent.trim()
+            : "";
+    renderBattleItems(
+        mainCategory,
+        subCategory
+    );
+}
+
+
+
+
+// ==============================
+// 切換主分類
+// ==============================
+function switchMainTab(mainCategory) {
+    // 先清除舊內容
+    document.getElementById("battle-sub-nav").innerHTML = "";
+    document.getElementById("battle-items").innerHTML = "";
+
+    // 1. 主頁籤 Active
+    document.querySelectorAll(".main-tab")
+        .forEach(btn => {
+            btn.classList.remove("active");
+            if (btn.getAttribute("onclick") ===
+                `switchMainTab('${mainCategory}')`) {
+                btn.classList.add("active");
+            }
+        });
+    
+    // 2. 找出目前主分類的資料
+    const mainItems = battleDB.filter(item =>
+        String(item.主分類 || "").trim() === mainCategory
+    );
+    console.log(
+        `📂 主分類：${mainCategory}，找到 ${mainItems.length} 筆資料`
+    );
+    // 沒有資料
+    if (mainItems.length === 0) {
+        console.log(`ℹ️ ${mainCategory} 資料待更新`);
+        document.getElementById("battle-items").innerHTML = `
+            <div class="card" style="text-align:center;">
+                <div style="font-size:1.1rem; margin-bottom:6px;">
+                    📦 ${mainCategory}</div>
+                <div style="color:#777;">資料待更新</div>
+            </div>
+        `;
+        return;
+    }
+    
+    // 3. 產生當前主分類的小分類
+    renderSubTabs(mainCategory, mainItems);
+}
+
+
+
+// ==============================================
+// 玩家紀錄 LocalStorage
+// ==============================================
+const STORAGE_KEY = "jin_pill_battle_record";
+let playerRecord = {
+    playerName: "",
+    pills: {},
+    playerStats: {
+        攻擊: 0,
+        防禦: 0,
+        爆擊: 0,
+        爆傷: 0,
+        抗爆: 0,
+        命中: 0,
+        閃避: 0,
+        反擊: 0,
+        氣血: 0
+    }
+};
+
+
+// ==============================================
+// 讀取玩家紀錄
+// ==============================================
+function loadPlayerRecord() {
+    try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) {
+            console.log("📂 尚無大俠紀錄");
+            return;
+        }
+        const data = JSON.parse(saved);
+        if (typeof data !== "object" || data === null) {
+            return;
+        }
+        playerRecord = {
+        playerName: String(data.playerName || ""),
+        pills: data.pills || {},
+        playerStats: {
+        攻擊: Number(data.playerStats?.攻擊) || 0,
+        防禦: Number(data.playerStats?.防禦) || 0,
+        爆擊: Number(data.playerStats?.爆擊) || 0,
+        爆傷: Number(data.playerStats?.爆傷) || 0,
+        抗爆: Number(data.playerStats?.抗爆) || 0,
+        命中: Number(data.playerStats?.命中) || 0,
+        閃避: Number(data.playerStats?.閃避) || 0,
+        反擊: Number(data.playerStats?.反擊) || 0,
+        氣血: Number(data.playerStats?.氣血) || 0
+    }
+};
+
+        console.log("✅ 大俠紀錄已讀取");
+        console.log(playerRecord);
+
+        // 讀回玩家名稱
+        const nameInput = document.getElementById("player-name");
+        if (nameInput) {
+            nameInput.value = playerRecord.playerName;
+        }
+    } catch (error) {
+        console.error("❌ 讀取大俠紀錄失敗：", error);
+
+    }
+}
+
+
+// ==============================================
+// 儲存玩家紀錄
+// ==============================================
+function savePlayerRecord() {
+    try {
+        localStorage.setItem(
+            STORAGE_KEY,
+            JSON.stringify(playerRecord)
+        );
+        console.log("💾 大俠紀錄已儲存");
+    } catch (error) {
+        console.error("❌ 儲存大俠紀錄失敗：", error);
+    }
+}
+
+
+// ==============================================
+// 儲存玩家名稱
+// ==============================================
+function savePlayerName() {
+    const input = document.getElementById("player-name");
+    if (!input) return;
+    playerRecord.playerName = input.value.trim();
+    savePlayerRecord();
+    console.log("👤大俠尊名：", playerRecord.playerName);
+}
+
+
+//戰力計算中心
+function calculatePlayerStats() {
+    const stats = {
+        攻擊: 0,
+        防禦: 0,
+        爆擊: 0,
+        爆傷: 0,
+        抗爆: 0,
+        命中: 0,
+        閃避: 0,
+        反擊: 0,
+        氣血: 0
+    };
+
+    // ======================================
+    // ① 丹藥效果
+    // ======================================
+    battleDB.forEach(item => {
+        const name = String(item.名稱 || "");
+        const main = String(item.主分類 || "");
+        const sub = String(item.小分類 || "");
+        const pillKey =
+            `${main}__${sub}__${name}`;//`
+
+        const count =
+            Number(playerRecord.pills[pillKey]) || 0;
+        if (count <= 0) return;
+        const fields = [
+            ["攻擊", item.攻擊],
+            ["防禦", item.防禦],
+            ["爆擊", item.爆擊],
+            ["爆傷", item.爆傷],
+            ["抗爆", item.抗爆],
+            ["命中", item.命中],
+            ["閃避", item.閃避],
+            ["反擊", item.反擊],
+            ["氣血", item.氣血]
+        ];
+
+        fields.forEach(([key, value]) => {
+            const num = Number(value);
+            if (!Number.isFinite(num)) return;
+            stats[key] += num * count;
+        });
+    });
+
+
+    // ======================================
+    // ② 玩家自行輸入
+    // ======================================
+
+    const playerStats =
+        playerRecord.playerStats || {};
+    Object.keys(stats).forEach(key => {
+        const value =
+            Number(playerStats[key]) || 0;
+        stats[key] += value;
+    });
+
+
+    // ======================================
+    // ③ 統一整理數字
+    // ======================================
+
+    Object.keys(stats).forEach(key => {
+        stats[key] = cleanNumber(stats[key], 6);
+    });
+
+    return stats;
+}
+//Modal戰力表
+function updateStatsModal() {
+    const stats = calculatePlayerStats();
+    document.getElementById("stat-atk").textContent =
+        cleanNumber(stats.攻擊);
+    document.getElementById("stat-def").textContent =
+        cleanNumber(stats.防禦);
+    document.getElementById("stat-hp").textContent =
+        cleanNumber(stats.氣血);
+}
+
+// 開關屬性統計視窗
+function toggleModal(show) {
+    if (show) {
+        updateStatsModal();
+    }
+    document.getElementById("stats-modal").style.display =
+        show ? "flex" : "none";
+}
+      
+      
+ 
+//初始化
+document.addEventListener("DOMContentLoaded", () => {
+    loadPlayerRecord();//先讀取紀錄
+    // 大俠名變更時儲存
+    const nameInput = document.getElementById("player-name");
+    if (nameInput) {
+        nameInput.addEventListener("change", savePlayerName);
+        nameInput.addEventListener("blur", savePlayerName);
+    }
+
+    // 搜尋
+    const searchInput = document.getElementById("pill-search");
+    if (searchInput) {
+        // 1. 輸入時即時搜尋
+        searchInput.addEventListener("input", searchPills);
+
+        // 2. 按下 Esc 鍵時清空搜尋並還原頁面
+        searchInput.addEventListener("keydown", (e) => {
+            if (e.key === "Escape") {
+                searchInput.value = "";
+                searchPills();
+            }
+        });
+    }
+
+
+    loadBattleStats();//載入資料庫
+});
+
+
+
+    </script>
+  </body>
+</html>
