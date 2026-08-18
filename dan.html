@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>百分百丹藥紀錄戰力統計表_金庸群俠傳Online</title>
+    <title>百分百金庸商城_丹藥紀錄戰力統計表_金庸群俠傳Online</title>
     <style>
   :root {
     --bg: #f4f8f5;   /*淺*/
@@ -409,10 +409,14 @@
     <div class="player-box">
     <label for="player-name">👤大俠尊名</label>
     <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="30">
-    </div>
+    <!-- 新增清空/重置按鈕 -->
+    <button class="header-btn" onclick="resetPlayerData()" style="background:#dc2626; whitespace:nowrap;">重置/換角</button>
+</div>
     
     <div class="player-box">
     <input type="search" id="pill-search" placeholder="🔎 搜尋關鍵字..." autocomplete="off">
+    <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
+   <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)">
     </div>
     
     <!-- #2. 主分類（橫向滑動選單） -->
@@ -443,7 +447,7 @@
     <!-- 被截圖/列印的區域開始 -->
     <div id="capture-area" style="background: #ffffff; padding: 12px; border-radius: 8px;">
       <h3 style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px; color: var(--bg3);">
-        📊 戰力統計與採購清單
+        📊 戰力統計與願望清單
       </h3>
       
       <!-- 總累計戰力 -->
@@ -469,6 +473,7 @@
       <div style="display: flex; gap: 6px; align-items: center;">
         <select id="export-format" style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border1); background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--bg3);">
           <option value="txt">📄 記事本 (.txt)</option>
+          <option value="json">💾 備份檔 (.json)</option>
           <option value="png">🖼️ 圖檔 (.png)</option>
           <option value="pdf">📕 PDF (.pdf)</option>
         </select>
@@ -491,7 +496,9 @@
   </div>
 </div>
 
+<div id="toast-msg" style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:20px; z-index:999; font-size:0.9rem;"></div>
 
+<!--結束尾籤-->
 </div>
 <script>
 // ==============================================
@@ -1046,8 +1053,6 @@ function savePlayerRecord() {
         console.error("❌ 儲存大俠紀錄失敗：", error);
     }
 }
-
-
 // ==============================================
 // 儲存玩家名稱
 // ==============================================
@@ -1057,6 +1062,30 @@ function savePlayerName() {
     playerRecord.playerName = input.value.trim();
     savePlayerRecord();
     console.log("👤大俠尊名：", playerRecord.playerName);
+}
+// ==============================================
+// 清空／更換角色資料
+// ==============================================
+function resetPlayerData() {
+    if (confirm("⚠️ 確定要清空目前所有紀錄嗎？清空後資料無法復原喔！（建議先下載備份）")) {
+        // 1. 重置記憶體中的紀錄
+        playerRecord = {
+            playerName: "",
+            pills: {},
+            playerStats: { 攻擊: 0, 防禦: 0, 爆擊: 0, 爆傷: 0, 抗爆: 0, 命中: 0, 閃避: 0, 反擊: 0, 氣血: 0 }
+        };
+        
+        // 2. 清除 LocalStorage
+        localStorage.removeItem(STORAGE_KEY);
+        
+        // 3. 清空介面輸入框與重新渲染
+        const nameInput = document.getElementById("player-name");
+        if (nameInput) nameInput.value = "";
+        
+        // 重新讀取目前分頁的丹藥列表
+        searchPills();
+        showToast("🧹 資料已成功清空，若有下載備份，匯入 JSON 檔案，可取回大俠資料~");
+    }
 }
 
 
@@ -1070,15 +1099,13 @@ function calculatePlayerStats() {
     };
     
     const neededList = []; // 紀錄還需多少顆
-
     // ① 計算丹藥戰力 & 收集未吃滿清單
     battleDB.forEach(item => {
         const name = String(item.名稱 || "");
         const main = String(item.主分類 || "");
         const sub = String(item.小分類 || "");
         const limit = Number(item.上限) || 0;
-        const pillKey = `${main}__${sub}__${name}`;
-
+        const pillKey = `${main}__${sub}__${name}`;//`
         const count = Number(playerRecord.pills[pillKey]) || 0;
         
         // 累計戰力
@@ -1119,6 +1146,7 @@ function calculatePlayerStats() {
     return { stats, neededList };
 }
 
+
 // ==============================================
 // 渲染 Modal 畫面內容
 // ==============================================
@@ -1141,6 +1169,13 @@ function updateStatsModal() {
             .join("");
     }
 }
+// 開關統計視窗
+function toggleModal(show) {
+    if (show) { updateStatsModal();}
+    document.getElementById("stats-modal").style.display =
+        show ? "flex" : "none";
+}
+
 
 // ==============================================
 // 產生分享格式文字
@@ -1163,14 +1198,42 @@ function generateShareText() {
             text += `${item.name}: 還需 ${item.needed} 顆\n`;
         });
     }
-    
     return text;
 }
 
-// ==============================================
-// 三大按鈕功能：下載備份 / 複製 / 分享
-// ==============================================
+// 匯入 JSON 檔案
+function importDataBackup(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedData = JSON.parse(e.target.result);
+            // 驗證匯入的資料格式
+            if (importedData && typeof importedData === 'object' && importedData.pills) {
+                playerRecord = importedData;
+                savePlayerRecord(); // 寫入 LocalStorage[cite: 1]
+                // 更新 UI[cite: 1]
+                const nameInput = document.getElementById("player-name");
+                if (nameInput) nameInput.value = playerRecord.playerName || "";
+                
+                searchPills(); // 重新渲染畫面[cite: 1]
+                showToast(`✅ 成功載入大俠【${playerRecord.playerName || '無名'}】的紀錄！`);
+            } else {
+                alert("❌ 備份檔案格式不正確！");
+            }
+        } catch (err) {
+            console.error("匯入失敗：", err);
+            alert("❌ 讀取檔案失敗，請確認是否為正確的 JSON 備份檔！");
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = ""; // 清空 input 讓同檔名可重複觸發
+}
 
+// ==============================================
+// 按鈕功能：下載備份 / 複製 / 分享
+// ==============================================
 // 1. 匯出完整 JSON 備份檔案
 function exportDataBackup() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(playerRecord, null, 2));
@@ -1213,32 +1276,7 @@ async function shareToLineOrOther() {
     }
 }
 
-// 開關屬性統計視窗
-function toggleModal(show) {
-    if (show) {
-        updateStatsModal();
-    }
-    document.getElementById("stats-modal").style.display =
-        show ? "flex" : "none";
-}
-      
- // ==============================================
-// 依玩家選擇的格式進行下載 (txt / png / pdf)
-// ==============================================
-function exportSelectedFormat() {
-    const format = document.getElementById("export-format").value;
-    const playerName = playerRecord.playerName || "大俠";
-
-    if (format === "txt") {
-        downloadTxtFile(playerName);
-    } else if (format === "png") {
-        downloadPngImage(playerName);
-    } else if (format === "pdf") {
-        downloadPdfDocument();
-    }
-}
-
-// 1. 下載記事本 (.txt)
+// 4. 下載記事本 (.txt)
 function downloadTxtFile(playerName) {
     const textContent = generateShareText();
     const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
@@ -1250,17 +1288,14 @@ function downloadTxtFile(playerName) {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
 }
-
-// 2. 下載圖檔 (.png)
+// 5. 下載圖檔 (.png)
 function downloadPngImage(playerName) {
     const captureTarget = document.getElementById("capture-area");
     if (!captureTarget) return;
-
     // 提示計算中
     const btn = event.target;
     const originalText = btn.textContent;
     btn.textContent = "⏳ 圖片生成中...";
-
     html2canvas(captureTarget, {
         scale: 2, // 提升圖片解析度
         backgroundColor: "#ffffff"
@@ -1278,13 +1313,39 @@ function downloadPngImage(playerName) {
         btn.textContent = originalText;
     });
 }
-
-// 3. 下載 PDF (.pdf)
+// 6. 下載 PDF (.pdf)
 function downloadPdfDocument() {
     // 呼叫瀏覽器列印，使用者可直接選擇「另存為 PDF」
-    window.print();
-}     
- 
+    window.print(); }  
+
+ // ==============================================
+// 依玩家選擇的格式進行下載 (txt / png / pdf / json)
+// ==============================================
+function exportSelectedFormat() {
+    const format = document.getElementById("export-format").value; 
+    const playerName = playerRecord.playerName || "大俠"; 
+
+    if (format === "txt") { 
+        downloadTxtFile(playerName); 
+    } else if (format === "png") { 
+        downloadPngImage(playerName); 
+    } else if (format === "pdf") { 
+        downloadPdfDocument(); 
+    } else if (format === "json") { // 新增分支
+        exportDataBackup(); // 呼叫原本程式碼中的 exportDataBackup() 
+    }
+}
+
+// Toast
+ function showToast(message) {
+    const toast = document.getElementById("toast-msg");
+    if (!toast) return;
+    toast.textContent = message;
+    toast.style.display = "block";
+    setTimeout(() => {
+        toast.style.display = "none";
+    }, 2000); // 2 秒後自動消失
+}
  
 // ==============================================
 //初始化
@@ -1303,16 +1364,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchInput) {
         // 1. 輸入時即時搜尋
         searchInput.addEventListener("input", searchPills);
-
         // 2. 按下 Esc 鍵時清空搜尋並還原頁面
         searchInput.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 searchInput.value = "";
-                searchPills();
-            }
-        });
-    }
-
+                searchPills();}
+        });}
 
     loadBattleStats();//載入資料庫
 });
