@@ -406,19 +406,23 @@
       </div>
     </header>
     
-    <div class="player-box">
-    <label for="player-name">👤大俠尊名</label>
-    <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="30">
-    <!-- 新增清空/重置按鈕 -->
-    <button class="header-btn" onclick="resetPlayerData()" style="background:#dc2626; whitespace:nowrap;">重置/換角</button>
+<!-- 紀錄多位大俠 -->
+<div class="player-box">
+  <label for="player-name">👤大俠尊名</label>
+  <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="30">
+  <label for="role-select">👥選擇高手</label>
+  <select id="role-select" onchange="handleRoleSelect(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border1); background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--bg3);">
+    <!-- JS 會動態生成選項 -->
+  </select>
 </div>
-    
+
+
     <div class="player-box">
     <input type="search" id="pill-search" placeholder="🔎 搜尋關鍵字..." autocomplete="off">
     <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)">
     </div>
-    
+
     <!-- #2. 主分類（橫向滑動選單） -->
     <nav class="main-nav">
       <button class="main-tab active" onclick="switchMainTab('一般丹')">一般丹</button>
@@ -718,7 +722,6 @@ function renderBattleItems(mainCategory, subCategory) {
     // ② 沒有搜尋結果
     // ======================================
     if (items.length === 0) {
-
         container.innerHTML = `
             <div class="card" style="text-align:center; padding:20px; color:#777;">
                 ${
@@ -747,10 +750,8 @@ function renderBattleItems(mainCategory, subCategory) {
         // 已食用數量
         const savedCount =
             Number(playerRecord.pills[pillKey]) || 0;
-
         const count =
             Math.max(0, Math.min(savedCount, limit));
-
 
         // ======================================
         // 效果文字
@@ -769,12 +770,10 @@ function renderBattleItems(mainCategory, subCategory) {
         ]
         .filter(Boolean);
 
-
         const effectText =
             effects.length > 0
             ? effects.join(" ")
             : "無資料";
-
 
         // ======================================
         // 累計效果
@@ -782,53 +781,36 @@ function renderBattleItems(mainCategory, subCategory) {
         const totalEffectText =
             calculateTotalEffects(item, count);
 
-
         // ======================================
         // 建立卡片
         // ======================================
         const card =
             document.createElement("div");
         card.className = "card";
-
         card.innerHTML = `
             <table class="pill-table">
-
                 <tr>
-
                     <!-- 第一欄：名稱 -->
                     <td class="pill-name">
                         ${name}
-
                         ${
                             pillSearchText
                             ? `<br>
-                               <small style="
-                                   color:#888;
-                                   font-weight:normal;
-                               ">
+                               <small style=" color:#777; font-weight:normal;">
                                    [${main}-${sub}]
                                </small>`
-                            : ""
-                        }
+                            : ""}
                     </td>
-
 
                     <!-- 第二欄：效果 -->
-                    <td
-                        class="pill-text pill-effect"
-                        title="${effectText}"
-                    >
+                    <td class="pill-text pill-effect" title="${effectText}">
                         ${effectText}
                     </td>
-
                 </tr>
 
-
                 <tr>
-
                     <!-- 已食用 -->
                     <td class="pill-count">
-
                         <input
                             type="number"
                             class="pill-count-input"
@@ -836,24 +818,17 @@ function renderBattleItems(mainCategory, subCategory) {
                             min="0"
                             max="${limit}"
                             data-pill-key="${pillKey}"
-                            data-limit="${limit}"
-                        >
+                            data-limit="${limit}">
 
                         <span>/${limit}</span>
-
                     </td>
-
 
                     <!-- 累計效果 -->
-                    <td
-                        class="pill-text pill-total"
-                        title="${totalEffectText}"
-                    >
+                    <td class="pill-text pill-total"
+                        title="${totalEffectText}">
                         ${totalEffectText}
                     </td>
-
                 </tr>
-
             </table>
         `;
 
@@ -884,13 +859,10 @@ function renderBattleItems(mainCategory, subCategory) {
                     calculateTotalEffects(item, value);
                 totalElement.textContent =
                     updatedTotal;
-
                 totalElement.title =
                     updatedTotal;
             }
-
         });
-
 
         container.appendChild(card);
 
@@ -925,7 +897,6 @@ function searchPills() {
         subCategory
     );
 }
-
 
 
 
@@ -974,117 +945,208 @@ function switchMainTab(mainCategory) {
 
 
 // ==============================================
-// 玩家紀錄 LocalStorage
+// 多角色 LocalStorage 資料管理
 // ==============================================
-const STORAGE_KEY = "jin_pill_battle_record";
+const STORAGE_KEY = "jin_pill_battle_record_multi";
+// 多角色主要資料結構
+let multiPlayerDB = {
+    currentRole: "", // 目前選取
+    roles: {}
+};
+// 全域使用的單一角色（保持相容性）
 let playerRecord = {
     playerName: "",
     pills: {},
-    playerStats: {
-        攻擊: 0,
-        防禦: 0,
-        爆擊: 0,
-        爆傷: 0,
-        抗爆: 0,
-        命中: 0,
-        閃避: 0,
-        反擊: 0,
-        氣血: 0
-    }
+    playerStats: { 攻擊: 0, 防禦: 0, 爆擊: 0, 爆傷: 0, 抗爆: 0, 命中: 0, 閃避: 0, 反擊: 0, 氣血: 0 }
 };
 
 
 // ==============================================
-// 讀取玩家紀錄
+// 讀取紀錄
 // ==============================================
 function loadPlayerRecord() {
     try {
         const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) {
-            console.log("📂 尚無大俠紀錄");
-            return;
-        }
-        const data = JSON.parse(saved);
-        if (typeof data !== "object" || data === null) {
-            return;
-        }
-        playerRecord = {
-        playerName: String(data.playerName || ""),
-        pills: data.pills || {},
-        playerStats: {
-        攻擊: Number(data.playerStats?.攻擊) || 0,
-        防禦: Number(data.playerStats?.防禦) || 0,
-        爆擊: Number(data.playerStats?.爆擊) || 0,
-        爆傷: Number(data.playerStats?.爆傷) || 0,
-        抗爆: Number(data.playerStats?.抗爆) || 0,
-        命中: Number(data.playerStats?.命中) || 0,
-        閃避: Number(data.playerStats?.閃避) || 0,
-        反擊: Number(data.playerStats?.反擊) || 0,
-        氣血: Number(data.playerStats?.氣血) || 0
-    }
-};
-
-        console.log("✅ 大俠紀錄已讀取");
-        console.log(playerRecord);
-
-        // 讀回玩家名稱
-        const nameInput = document.getElementById("player-name");
-        if (nameInput) {
-            nameInput.value = playerRecord.playerName;
+        if (saved) {
+            const data = JSON.parse(saved);
+            if (data && typeof data === "object" && data.roles) {
+                multiPlayerDB = data;
+            }
         }
     } catch (error) {
-        console.error("❌ 讀取大俠紀錄失敗：", error);
+        console.error("❌ 讀取紀錄失敗：", error);
+    }
 
+    updateRoleSelectOptions();
+
+    // 如果先前有選取的角色，直接載入
+    if (multiPlayerDB.currentRole && multiPlayerDB.roles[multiPlayerDB.currentRole]) {
+        loadRoleData(multiPlayerDB.currentRole);
+    } else {
+        clearCurrentRecordUI();
     }
 }
 
 
 // ==============================================
-// 儲存玩家紀錄
+// 儲存目前角色 (自動儲存)
 // ==============================================
 function savePlayerRecord() {
     try {
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(playerRecord)
-        );
-        console.log("💾 大俠紀錄已儲存");
+        const pName = playerRecord.playerName.trim();
+        if (pName) {
+            multiPlayerDB.roles[pName] = JSON.parse(JSON.stringify(playerRecord));
+            multiPlayerDB.currentRole = pName;
+        }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(multiPlayerDB));
+        updateRoleSelectOptions();
     } catch (error) {
-        console.error("❌ 儲存大俠紀錄失敗：", error);
+        console.error("❌ 儲存失敗：", error);
     }
 }
 // ==============================================
-// 儲存玩家名稱
+// 角色下拉選單（含 新增 與 刪除）
+// ==============================================
+function updateRoleSelectOptions() {
+    const select = document.getElementById("role-select");
+    if (!select) return;
+    let html = `<option value="__NEW__">➕[新手加入]</option>`;
+    // 加入已有角色
+    const roleNames = Object.keys(multiPlayerDB.roles);
+    roleNames.forEach(roleName => {
+        const isSelected = (roleName === multiPlayerDB.currentRole) ? "selected" : "";
+        html += `<option value="${roleName}" ${isSelected}>👤 ${roleName}</option>`;
+    });
+
+    // 若當前已有效角色，才顯示「刪除當前」選項
+    if (multiPlayerDB.currentRole && multiPlayerDB.roles[multiPlayerDB.currentRole]) {
+        html += `<option value="__DELETE__" style="color: red;">🗑️ [刪除當前高手：${multiPlayerDB.currentRole}]</option>`;
+    }
+    select.innerHTML = html;
+}
+
+
+// 下拉選單動作分流處理
+function handleRoleSelect(value) {
+    if (value === "__NEW__") {
+        // 僅清空畫面，不刪除任何資料
+        clearCurrentRecordUI();
+        showToast("✨ 已重置，新高手加入即可建立檔案！");
+    } else if (value === "__DELETE__") {
+        // 執行刪除當前角色
+        deleteCurrentRole();
+    } else {
+        // 切換至選取的角色
+        loadRoleData(value);
+        showToast(`🔄 已切換至大俠：${value}`);
+    }
+}
+
+/*/ 下拉選單切換事件 handling
+function switchRole(selectedRole) {
+    if (selectedRole === "__NEW__") {
+        if (confirm("⚠️ 是否要清空畫面並建立新角色？")) {
+            clearCurrentRecordUI();
+            showToast("✨ 已準備好建立新角色！");
+        } else {
+            // 若取消，回歸選取當前角色
+            updateRoleSelectOptions();
+        }
+    } else {
+        loadRoleData(selectedRole);
+        showToast(`🔄 已切換至角色：${selectedRole}`);
+    }
+}*/
+
+// 載入特定角色資料到畫面
+function loadRoleData(roleName) {
+    if (!multiPlayerDB.roles[roleName]) return;
+    
+    multiPlayerDB.currentRole = roleName;
+    playerRecord = JSON.parse(JSON.stringify(multiPlayerDB.roles[roleName]));
+
+    const nameInput = document.getElementById("player-name");
+    if (nameInput) {
+        nameInput.value = playerRecord.playerName || "";
+    }
+    searchPills(); // 重載列表與食用
+    savePlayerRecord(); // 儲存目前的 currentRole 狀態
+}
+
+// // 清空畫面 (不影響 LocalStorage 已存角色)
+function clearCurrentRecordUI() {
+    multiPlayerDB.currentRole = "";
+    playerRecord = {
+        playerName: "",
+        pills: {},
+        playerStats: { 攻擊: 0, 防禦: 0, 爆擊: 0, 爆傷: 0, 抗爆: 0, 命中: 0, 閃避: 0, 反擊: 0, 氣血: 0 }
+    };
+
+    const nameInput = document.getElementById("player-name");
+    if (nameInput) nameInput.value = "";
+
+    updateRoleSelectOptions();
+    searchPills();
+}
+
+// ==============================================
+// 儲存/更新玩家名稱 (多角色相容版)
 // ==============================================
 function savePlayerName() {
     const input = document.getElementById("player-name");
     if (!input) return;
-    playerRecord.playerName = input.value.trim();
+
+    const newName = input.value.trim();
+    const oldName = playerRecord.playerName ? playerRecord.playerName.trim() : "";
+
+    // 1. 若名字沒變或打空白，不做處理
+    if (!newName || newName === oldName) {
+        input.value = oldName; // 若打空白，自動還原舊名
+        return;
+    }
+
+    // 2. 判斷是否為「修改現有角色名稱」
+    if (oldName && multiPlayerDB.roles[oldName]) {
+        // 跳出提示問使用者意圖
+        const isRename = confirm(
+            `❓ ⚠️偵測到大俠名稱變更：\n\n` +
+            `【按下 確定】: 將原大俠「${oldName}」改名為「${newName}」\n` +
+            `【按下 取消】: 保留「${oldName}」，並以「${newName}」建立全新大俠`
+        );
+
+        if (isRename) {
+            // 使用者要「改名」：刪除舊 key
+            delete multiPlayerDB.roles[oldName];
+            showToast(`✏️ 大俠已改名為：${newName}`);
+        } else {
+            // 使用者要「開新角色」：複製一份當前資料給新角色，保留舊角色
+            showToast(`✨ 新加入大俠已建檔：${newName}`);
+        }
+    } else {
+        showToast(`✨ 新高手已建檔：${newName}`);
+    }
+
+    // 3. 更新記憶體資料與當前選取角色
+    playerRecord.playerName = newName;
+    multiPlayerDB.currentRole = newName;
+
+    // 4. 自動儲存並更新下拉選單
     savePlayerRecord();
-    console.log("👤大俠尊名：", playerRecord.playerName);
 }
-// ==============================================
-// 清空／更換角色資料
-// ==============================================
-function resetPlayerData() {
-    if (confirm("⚠️ 確定要清空目前所有紀錄嗎？清空後資料無法復原喔！（建議先下載備份）")) {
-        // 1. 重置記憶體中的紀錄
-        playerRecord = {
-            playerName: "",
-            pills: {},
-            playerStats: { 攻擊: 0, 防禦: 0, 爆擊: 0, 爆傷: 0, 抗爆: 0, 命中: 0, 閃避: 0, 反擊: 0, 氣血: 0 }
-        };
-        
-        // 2. 清除 LocalStorage
-        localStorage.removeItem(STORAGE_KEY);
-        
-        // 3. 清空介面輸入框與重新渲染
-        const nameInput = document.getElementById("player-name");
-        if (nameInput) nameInput.value = "";
-        
-        // 重新讀取目前分頁的丹藥列表
-        searchPills();
-        showToast("🧹 資料已成功清空，若有下載備份，匯入 JSON 檔案，可取回大俠資料~");
+
+// 刪除當前角色
+function deleteCurrentRole() {
+    const roleToDelete = multiPlayerDB.currentRole;
+    if (!roleToDelete || !multiPlayerDB.roles[roleToDelete]) return;
+
+    if (confirm(`⚠️ 確定踢除大俠「${roleToDelete}」嗎？此動作無法復原！（建議先下載JSON備份）`)) {
+        delete multiPlayerDB.roles[roleToDelete];
+        clearCurrentRecordUI();
+        savePlayerRecord();
+        showToast(`🗑️ 已成功踢除：${roleToDelete}，若有下載備份，匯入 JSON 檔案，可取回大俠資料~`);
+    } else {
+        // 若點擊取消，還原下拉選單選取狀態
+        updateRoleSelectOptions();
     }
 }
 
