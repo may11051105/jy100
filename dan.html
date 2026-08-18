@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
@@ -407,41 +407,47 @@
 <div id="battle-items" class="container"></div>
 
 
- <!-- =====================
-       #4. 戰鬥屬性統計 Modal 
-    ====================== -->  
-    <div id="stats-modal" class="modal">
-      <div class="modal-content">
-        <h3 style="margin-bottom:12px;">📊 戰鬥屬性總結</h3>
-        <p style="margin-bottom:8px;">
-          總加成攻擊：<span
-            id="stat-atk"
-            style="font-weight:bold; color:#e11d48;"
-            >0</span>
-        </p>
-        <p style="margin-bottom:8px;">
-          總加成防禦：<span
-            id="stat-def"
-            style="font-weight:bold; color:#2563eb;"
-            >0</span>
-        </p>
-        <p style="margin-bottom:16px;">
-          總加成血量：<span
-            id="stat-hp"
-            style="font-weight:bold; color:#16a34a;"
-            >0</span>
-        </p>
-        <button
-          class="btn-header btn-stats"
-          style="width:100%; padding:10px;"
-          onclick="toggleModal(false)">
-          關閉
-        </button>
+<!-- =====================
+     #4. 戰鬥屬性統計 Modal 
+====================== -->  
+<div id="stats-modal" class="modal">
+  <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+    <h3 style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px;">📊 戰力統計與採購清單</h3>
+    
+    <!-- 總累計戰力 -->
+    <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+      <h4 style="margin-bottom: 6px; color: var(--bg3);">【總累計戰力】</h4>
+      <div id="stat-summary-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85rem; color: #444;">
+        <!-- JS 動態寫入屬性 -->
       </div>
     </div>
+
+    <!-- 剩餘需求 / 購買清單 -->
+    <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 16px;">
+      <h4 style="margin-bottom: 6px; color: var(--bg3);">【剩餘需求 / 購買清單】</h4>
+      <ul id="stat-needed-list" style="padding-left: 20px; font-size: 0.85rem; color: #c2410c; max-height: 150px; overflow-y: auto;">
+        <!-- JS 動態寫入清單 -->
+      </ul>
+    </div>
+
+    <!-- 按鈕操作區 -->
+    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
+      <button class="header-btn" style="flex:1;" onclick="exportDataBackup()">📥 下載備份</button>
+      <button class="header-btn" style="flex:1;" onclick="copyShareText()">📋 複製文字</button>
+      <button class="header-btn" style="flex:1;" onclick="shareToLineOrOther()">🔗 分享</button>
+    </div>
+
+    <button
+      class="header-btn"
+      style="width:100%; padding:8px; background: #64748b;"
+      onclick="toggleModal(false)">
+      關閉
+    </button>
+  </div>
 </div>
 
 
+</div>
 <script>
 // ==============================================
 // 載入戰力統計資料
@@ -1009,85 +1015,157 @@ function savePlayerName() {
 }
 
 
-//戰力計算中心
+// ==============================================
+// 戰力與剩餘需求計算核心
+// ==============================================
 function calculatePlayerStats() {
     const stats = {
-        攻擊: 0,
-        防禦: 0,
-        爆擊: 0,
-        爆傷: 0,
-        抗爆: 0,
-        命中: 0,
-        閃避: 0,
-        反擊: 0,
-        氣血: 0
+        攻擊: 0, 防禦: 0, 爆擊: 0, 爆傷: 0,
+        抗爆: 0, 命中: 0, 閃避: 0, 反擊: 0, 氣血: 0
     };
+    
+    const neededList = []; // 紀錄還需多少顆
 
-    // ======================================
-    // ① 丹藥效果
-    // ======================================
+    // ① 計算丹藥戰力 & 收集未吃滿清單
     battleDB.forEach(item => {
         const name = String(item.名稱 || "");
         const main = String(item.主分類 || "");
         const sub = String(item.小分類 || "");
-        const pillKey =
-            `${main}__${sub}__${name}`;//`
+        const limit = Number(item.上限) || 0;
+        const pillKey = `${main}__${sub}__${name}`;
 
-        const count =
-            Number(playerRecord.pills[pillKey]) || 0;
-        if (count <= 0) return;
+        const count = Number(playerRecord.pills[pillKey]) || 0;
+        
+        // 累計戰力
         const fields = [
-            ["攻擊", item.攻擊],
-            ["防禦", item.防禦],
-            ["爆擊", item.爆擊],
-            ["爆傷", item.爆傷],
-            ["抗爆", item.抗爆],
-            ["命中", item.命中],
-            ["閃避", item.閃避],
-            ["反擊", item.反擊],
-            ["氣血", item.氣血]
+            ["攻擊", item.攻擊], ["防禦", item.防禦], ["爆擊", item.爆擊],
+            ["爆傷", item.爆傷], ["抗爆", item.抗爆], ["命中", item.命中],
+            ["閃避", item.閃避], ["反擊", item.反擊], ["氣血", item.氣血]
         ];
 
         fields.forEach(([key, value]) => {
             const num = Number(value);
-            if (!Number.isFinite(num)) return;
-            stats[key] += num * count;
+            if (Number.isFinite(num) && count > 0) {
+                stats[key] += num * count;
+            }
         });
+
+        // 收集剩餘需求
+        if (limit > 0 && count < limit) {
+            neededList.push({
+                name: name,
+                needed: limit - count
+            });
+        }
     });
 
-
-    // ======================================
-    // ② 玩家自行輸入
-    // ======================================
-
-    const playerStats =
-        playerRecord.playerStats || {};
+    // ② 加上玩家自行輸入面板數值
+    const playerStats = playerRecord.playerStats || {};
     Object.keys(stats).forEach(key => {
-        const value =
-            Number(playerStats[key]) || 0;
+        const value = Number(playerStats[key]) || 0;
         stats[key] += value;
     });
 
-
-    // ======================================
-    // ③ 統一整理數字
-    // ======================================
-
+    // ③ 清理小數點
     Object.keys(stats).forEach(key => {
         stats[key] = cleanNumber(stats[key], 6);
     });
 
-    return stats;
+    return { stats, neededList };
 }
-//Modal戰力表
+
+// ==============================================
+// 渲染 Modal 畫面內容
+// ==============================================
 function updateStatsModal() {
-    const stats = calculatePlayerStats();
-    document.getElementById("stat-atk").textContent =
-        cleanNumber(stats.攻擊);
-    document.getElementById("stat-def").textContent =
-        cleanNumber(stats.防禦);
-    document.getElementById("stat-hp").textContent =
-        cleanNumber(stats.氣血);
+    const { stats, neededList } = calculatePlayerStats();
+    
+    // 1. 渲染屬性
+    const summaryContainer = document.getElementById("stat-summary-list");
+    summaryContainer.innerHTML = Object.entries(stats)
+        .map(([attr, val]) => `<div><strong>${attr}:</strong> ${val}</div>`)
+        .join("");
+
+    // 2. 渲染剩餘需求
+    const neededContainer = document.getElementById("stat-needed-list");
+    if (neededList.length === 0) {
+        neededContainer.innerHTML = `<li style="color:#16a34a;">🎉 恭喜！所有丹藥均已食用完畢！</li>`;
+    } else {
+        neededContainer.innerHTML = neededList
+            .map(item => `<li><strong>${item.name}:</strong> 還需 ${item.needed} 顆</li>`)
+            .join("");
+    }
+}
+
+// ==============================================
+// 產生分享格式文字
+// ==============================================
+function generateShareText() {
+    const { stats, neededList } = calculatePlayerStats();
+    const pName = playerRecord.playerName || "無名大俠";
+    
+    let text = `【大俠：${pName} 的戰力統計】\n\n`;
+    text += `【總累計戰力】\n`;
+    Object.entries(stats).forEach(([attr, val]) => {
+        text += `${attr}: ${val}\n`;
+    });
+
+    text += `\n【剩餘需求 / 購買清單】\n`;
+    if (neededList.length === 0) {
+        text += `丹藥已全數吃滿！\n`;
+    } else {
+        neededList.forEach(item => {
+            text += `${item.name}: 還需 ${item.needed} 顆\n`;
+        });
+    }
+    
+    return text;
+}
+
+// ==============================================
+// 三大按鈕功能：下載備份 / 複製 / 分享
+// ==============================================
+
+// 1. 匯出完整 JSON 備份檔案
+function exportDataBackup() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(playerRecord, null, 2));
+    const downloadAnchor = document.createElement('a');
+    const fileName = `${playerRecord.playerName || '大俠'}_戰力備份.json`;
+    
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", fileName);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+}
+
+// 2. 複製分享文字到剪貼簿
+function copyShareText() {
+    const text = generateShareText();
+    navigator.clipboard.writeText(text).then(() => {
+        alert("📋 戰力統計文字已成功複製到剪貼簿！");
+    }).catch(err => {
+        console.error("複製失敗：", err);
+        alert("複製失敗，請手動複製。");
+    });
+}
+
+// 3. 原生 Web Share API (支援手機彈出 LINE / 簡訊等)
+async function shareToLineOrOther() {
+    const text = generateShareText();
+    if (navigator.share) {
+        try {
+            await navigator.share({
+                title: '百分百丹藥紀錄戰力統計',
+                text: text,
+            });
+        } catch (err) {
+            console.log("取消分享或分享失敗", err);
+        }
+    } else {
+        // 不支援 Web Share 時回退至複製
+        copyShareText();
+    }
 }
 
 // 開關屬性統計視窗
