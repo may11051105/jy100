@@ -328,10 +328,37 @@
     width: 90%;
     max-width: 440px;
   }
-
-
+/* =========================
+   PDF / 列印專用樣式
+========================= */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #stats-modal, #stats-modal * {
+    visibility: visible;
+  }
+  #stats-modal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    background: white;
+  }
+  .modal-content {
+    box-shadow: none;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+  /* 隱藏選單與按鈕 */
+  #export-format, button, select {
+    display: none !important;
+  }
+}
 
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <!-- 4. Firebase 函式庫 -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
@@ -412,37 +439,55 @@
 ====================== -->  
 <div id="stats-modal" class="modal">
   <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
-    <h3 style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px;">📊 戰力統計與採購清單</h3>
     
-    <!-- 總累計戰力 -->
-    <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
-      <h4 style="margin-bottom: 6px; color: var(--bg3);">【總累計戰力】</h4>
-      <div id="stat-summary-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85rem; color: #444;">
-        <!-- JS 動態寫入屬性 -->
+    <!-- 被截圖/列印的區域開始 -->
+    <div id="capture-area" style="background: #ffffff; padding: 12px; border-radius: 8px;">
+      <h3 style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px; color: var(--bg3);">
+        📊 戰力統計與採購清單
+      </h3>
+      
+      <!-- 總累計戰力 -->
+      <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+        <h4 style="margin-bottom: 6px; color: var(--bg3);">【總累計戰力】</h4>
+        <div id="stat-summary-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85rem; color: #444;">
+          <!-- JS 動態寫入屬性 -->
+        </div>
+      </div>
+
+      <!-- 剩餘需求 / 清單 -->
+      <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+        <h4 style="margin-bottom: 6px; color: var(--bg3);">【剩餘需求 / 願望清單】</h4>
+        <ul id="stat-needed-list" style="padding-left: 20px; font-size: 0.85rem; color: #c2410c; max-height: 150px; overflow-y: auto;">
+          <!-- JS 動態寫入清單 -->
+        </ul>
       </div>
     </div>
+    <!-- 被截圖/列印的區域結束 -->
 
-    <!-- 剩餘需求 / 購買清單 -->
-    <div style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 16px;">
-      <h4 style="margin-bottom: 6px; color: var(--bg3);">【剩餘需求 / 購買清單】</h4>
-      <ul id="stat-needed-list" style="padding-left: 20px; font-size: 0.85rem; color: #c2410c; max-height: 150px; overflow-y: auto;">
-        <!-- JS 動態寫入清單 -->
-      </ul>
+    <!-- 操作區：下載選項與按鈕 -->
+    <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; gap: 6px; align-items: center;">
+        <select id="export-format" style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border1); background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--bg3);">
+          <option value="txt">📄 記事本 (.txt)</option>
+          <option value="png">🖼️ 圖檔 (.png)</option>
+          <option value="pdf">📕 PDF (.pdf)</option>
+        </select>
+        <button class="header-btn" style="flex: 1; padding: 8px;" onclick="exportSelectedFormat()">📥 下載戰力表</button>
+      </div>
+
+      <div style="display: flex; gap: 6px;">
+        <button class="header-btn" style="flex: 1;" onclick="copyShareText()">📋 複製文字</button>
+        <button class="header-btn" style="flex: 1;" onclick="shareToLineOrOther()">🔗 分享</button>
+      </div>
+
+      <button
+        class="header-btn"
+        style="width:100%; padding:8px; background: #64748b;"
+        onclick="toggleModal(false)">
+        關閉
+      </button>
     </div>
 
-    <!-- 按鈕操作區 -->
-    <div style="display: flex; gap: 6px; margin-bottom: 8px;">
-      <button class="header-btn" style="flex:1;" onclick="exportDataBackup()">📥 下載備份</button>
-      <button class="header-btn" style="flex:1;" onclick="copyShareText()">📋 複製文字</button>
-      <button class="header-btn" style="flex:1;" onclick="shareToLineOrOther()">🔗 分享</button>
-    </div>
-
-    <button
-      class="header-btn"
-      style="width:100%; padding:8px; background: #64748b;"
-      onclick="toggleModal(false)">
-      關閉
-    </button>
   </div>
 </div>
 
@@ -1110,7 +1155,7 @@ function generateShareText() {
         text += `${attr}: ${val}\n`;
     });
 
-    text += `\n【剩餘需求 / 購買清單】\n`;
+    text += `\n【剩餘需求 / 願望清單】\n`;
     if (neededList.length === 0) {
         text += `丹藥已全數吃滿！\n`;
     } else {
@@ -1130,7 +1175,7 @@ function generateShareText() {
 function exportDataBackup() {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(playerRecord, null, 2));
     const downloadAnchor = document.createElement('a');
-    const fileName = `${playerRecord.playerName || '大俠'}_戰力備份.json`;
+    const fileName = `${playerRecord.playerName || '大俠'}_戰力備份.json`;//`
     
     downloadAnchor.setAttribute("href", dataStr);
     downloadAnchor.setAttribute("download", fileName);
@@ -1156,7 +1201,7 @@ async function shareToLineOrOther() {
     if (navigator.share) {
         try {
             await navigator.share({
-                title: '百分百丹藥紀錄戰力統計',
+                title: '大俠丹藥紀錄戰力統計',
                 text: text,
             });
         } catch (err) {
@@ -1177,9 +1222,73 @@ function toggleModal(show) {
         show ? "flex" : "none";
 }
       
-      
+ // ==============================================
+// 依玩家選擇的格式進行下載 (txt / png / pdf)
+// ==============================================
+function exportSelectedFormat() {
+    const format = document.getElementById("export-format").value;
+    const playerName = playerRecord.playerName || "大俠";
+
+    if (format === "txt") {
+        downloadTxtFile(playerName);
+    } else if (format === "png") {
+        downloadPngImage(playerName);
+    } else if (format === "pdf") {
+        downloadPdfDocument();
+    }
+}
+
+// 1. 下載記事本 (.txt)
+function downloadTxtFile(playerName) {
+    const textContent = generateShareText();
+    const blob = new Blob([textContent], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${playerName}_戰力統計表.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+}
+
+// 2. 下載圖檔 (.png)
+function downloadPngImage(playerName) {
+    const captureTarget = document.getElementById("capture-area");
+    if (!captureTarget) return;
+
+    // 提示計算中
+    const btn = event.target;
+    const originalText = btn.textContent;
+    btn.textContent = "⏳ 圖片生成中...";
+
+    html2canvas(captureTarget, {
+        scale: 2, // 提升圖片解析度
+        backgroundColor: "#ffffff"
+    }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = `${playerName}_戰力統計圖.png`;
+        link.href = canvas.toDataURL("image/png");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        btn.textContent = originalText;
+    }).catch(err => {
+        console.error("生成圖片失敗：", err);
+        alert("生成圖片失敗，請重試！");
+        btn.textContent = originalText;
+    });
+}
+
+// 3. 下載 PDF (.pdf)
+function downloadPdfDocument() {
+    // 呼叫瀏覽器列印，使用者可直接選擇「另存為 PDF」
+    window.print();
+}     
  
+ 
+// ==============================================
 //初始化
+// ==============================================
 document.addEventListener("DOMContentLoaded", () => {
     loadPlayerRecord();//先讀取紀錄
     // 大俠名變更時儲存
@@ -1207,9 +1316,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     loadBattleStats();//載入資料庫
 });
-
-
-
     </script>
   </body>
 </html>
