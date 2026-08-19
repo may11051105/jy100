@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>百分百金庸商城_丹藥紀錄戰力統計表_金庸群俠傳Online</title>
+    <title>丹藥紀錄戰力統計_百分百金庸商城</title>
     <style>
   :root {
     --bg: #f4f8f5;   /*淺*/
@@ -46,10 +46,11 @@
   /* =========================
          App 外框
       ========================= */
-  .app {width: 100%;max-width: 520px;min-height: 100vh;margin: auto;padding-bottom: 100px; /*底部預留空間*/}
+  .app {width: 100%;max-width: 520px;min-height: 100vh;margin: auto;padding-bottom:60px; /*底部預留空間*/}
   .app-title {font-size: 25px;font-weight: 800;color: #315c43; margin-bottom: 5px; }
   .app-subtitle {font-size: 13px;color: #718078;}
 .top-fixed {position: sticky;top: 0;}/*固定位*/
+
   /* =========================
          #1.頂部導覽列 Header
       ========================= */
@@ -76,7 +77,8 @@
     background: var(--bg3);
     }
  .header-btn:hover {filter: brightness(1.5);}
- /* =========================
+ 
+/* =========================
    輸入角色名
 ========================= */
 .player-box {
@@ -93,13 +95,14 @@
     font-size: 0.85rem;
     color: var(--bg3);
     font-weight: bold;
-    white-space: nowrap;
-}
+    white-space: nowrap;}
 
-.player-box input {
+.player-box input,
+.player-box select {
     flex: 1;
-    min-width: 0;
-    padding: 7px 9px;
+    min-width:10px;
+    width: 50%;
+    padding: 7px;
     border: 1px solid var(--border1);
     border-radius: 8px;
     font-size: 0.9rem;
@@ -108,12 +111,13 @@
 }
 
 .player-box input:focus {
-    border-color: var(--bg2);
+    border-color: var(--bg3);
     box-shadow: 0 0 0 2px rgba(52,128,83,0.12);
 }
-/*搜尋*/
-.search-box {
-    padding: 8px 10px;
+
+
+/*搜尋
+.search-box { padding: 8px 10px;
 }
 
 .search-box input {
@@ -126,10 +130,7 @@
     background: #fff;
 }
 
-.search-box input:focus {
-    border-color: var(--bg2);
-    box-shadow: 0 0 0 2px rgba(52,128,83,0.12);
-}
+}*/
 
 
 /* =========================
@@ -144,7 +145,7 @@
   }
 
   .main-tab {
-    padding: 10px 12px;
+    padding: 10px;
     border: none;
     background: var(--bg); 
     font-size: 0.95rem;
@@ -158,7 +159,7 @@
   .main-tab.active {
     color: var(--bg3); 
     border: 1px solid var(--bg2); 
-    border-bottom: 3px solid var(--bg2); 
+    border-width: 3px 1px 3px 1px;
   }
 
 /* =========================
@@ -406,31 +407,32 @@
       </div>
     </header>
     
-<!-- 紀錄多位大俠 -->
+<!-- 當前角色 -->
 <div class="player-box">
   <label for="player-name">👤大俠尊名</label>
-  <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="30">
-  <label for="role-select">👥選擇高手</label>
-  <select id="role-select" onchange="handleRoleSelect(this.value)" style="padding: 6px; border-radius: 8px; border: 1px solid var(--border1); background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--bg3);">
-    <!-- JS 會動態生成選項 -->
-  </select>
+  <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="10">
+  <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
+  <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)">
 </div>
-
-
+<!-- 紀錄多位大俠 -->
     <div class="player-box">
+    <label for="role-select">👥選擇大俠</label>
+    <select id="role-select" onchange="handleRoleSelect(this.value)">
+    <!-- JS 動態生成選項 -->
+  </select>
     <input type="search" id="pill-search" placeholder="🔎 搜尋關鍵字..." autocomplete="off">
-    <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
-   <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)">
+    
     </div>
+
 
     <!-- #2. 主分類（橫向滑動選單） -->
     <nav class="main-nav">
       <button class="main-tab active" onclick="switchMainTab('一般丹')">一般丹</button>
-      <button class="main-tab" onclick="switchMainTab('多能丹')">多功能丹</button>
+      <button class="main-tab" onclick="switchMainTab('多能丹')">多功能</button>
       <button class="main-tab" onclick="switchMainTab('氣血修為')">氣血修為</button>
       <button class="main-tab" onclick="switchMainTab('常駐')">常駐</button>
       <button class="main-tab" onclick="switchMainTab('被動')">被動</button>
-      <button class="main-tab" onclick="switchMainTab('裝備')">神器裝備</button>
+      <button class="main-tab" onclick="switchMainTab('裝備')">神器</button>
     </nav>
 </div>
 
@@ -449,7 +451,7 @@
   <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
     
     <!-- 被截圖/列印的區域開始 -->
-    <div id="capture-area" style="background: #ffffff; padding: 12px; border-radius: 8px;">
+    <div id="capture-area" style="background: #ffffff; padding: 6px; border-radius: 8px;">
       <h3 style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px; color: var(--bg3);">
         📊 戰力統計與願望清單
       </h3>
@@ -505,12 +507,12 @@
 <!--結束尾籤-->
 </div>
 <script>
-// ==============================================
-// 載入戰力統計資料
-// ==============================================
 let battleDB = [];
 let pillSearchText = "";
 
+// ==============================================
+// 載入戰力統計資料
+// ==============================================
 async function loadBattleStats() {
     try {
         console.log("🌐 正在從 Firebase 讀取 [battleStats]...");
@@ -548,12 +550,10 @@ function renderSubTabs(mainCategory, mainItems) {
         ...new Set(
             mainItems
                 .map(item => String(item.小分類 || "").trim())
-                .filter(Boolean)
-        )
+                .filter(Boolean) )
     ];
 
-    console.log(
-        `📂 ${mainCategory} 找到 ${subCategories.length} 個小分類：`,
+    console.log(`📂 ${mainCategory} 找到 ${subCategories.length} 個小分類：`,
         subCategories
     );
 
@@ -1020,7 +1020,7 @@ function updateRoleSelectOptions() {
 
     // 若當前已有效角色，才顯示「刪除當前」選項
     if (multiPlayerDB.currentRole && multiPlayerDB.roles[multiPlayerDB.currentRole]) {
-        html += `<option value="__DELETE__" style="color: red;">🗑️ [刪除當前高手：${multiPlayerDB.currentRole}]</option>`;
+        html += `<option value="__DELETE__" style="color: red;">🗑️ [踢除當前：${multiPlayerDB.currentRole}]</option>`;
     }
     select.innerHTML = html;
 }
@@ -1406,7 +1406,7 @@ function exportSelectedFormat() {
     toast.style.display = "block";
     setTimeout(() => {
         toast.style.display = "none";
-    }, 2000); // 2 秒後自動消失
+    }, 3000); // 2 秒後自動消失
 }
  
 // ==============================================
