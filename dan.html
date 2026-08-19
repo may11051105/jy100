@@ -410,7 +410,7 @@
 <!-- 當前角色 -->
 <div class="player-box">
   <label for="player-name">👤大俠尊名</label>
-  <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="10">
+  <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="10" autocomplete="off">
   <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
   <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)">
 </div>
@@ -847,6 +847,23 @@ function renderBattleItems(mainCategory, subCategory) {
             value = Math.max(0, Math.min(value, limit));
             this.value = value;
 
+            // 🎯 觸發輸入丹藥數量時：若未填寫尊名，才自動命名（高手 + 月日）
+            let currentName = playerRecord.playerName ? playerRecord.playerName.trim() : "";
+            if (!currentName) {
+                const now = new Date();
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const day = String(now.getDate()).padStart(2, '0');
+                currentName = `高手${month}${day}`;
+                
+                playerRecord.playerName = currentName;
+                
+                // 同步更新畫面輸入框
+                const nameInput = document.getElementById("player-name");
+                if (nameInput) {
+                    nameInput.value = currentName;
+                }
+            }
+
             // 儲存
             playerRecord.pills[pillKey] = value;
             savePlayerRecord();
@@ -993,7 +1010,7 @@ function loadPlayerRecord() {
 // ==============================================
 function savePlayerRecord() {
     try {
-        const pName = playerRecord.playerName.trim();
+        const pName = playerRecord.playerName ? playerRecord.playerName.trim() : "";
         if (pName) {
             multiPlayerDB.roles[pName] = JSON.parse(JSON.stringify(playerRecord));
             multiPlayerDB.currentRole = pName;
@@ -1042,21 +1059,6 @@ function handleRoleSelect(value) {
     }
 }
 
-/*/ 下拉選單切換事件 handling
-function switchRole(selectedRole) {
-    if (selectedRole === "__NEW__") {
-        if (confirm("⚠️ 是否要清空畫面並建立新角色？")) {
-            clearCurrentRecordUI();
-            showToast("✨ 已準備好建立新角色！");
-        } else {
-            // 若取消，回歸選取當前角色
-            updateRoleSelectOptions();
-        }
-    } else {
-        loadRoleData(selectedRole);
-        showToast(`🔄 已切換至角色：${selectedRole}`);
-    }
-}*/
 
 // 載入特定角色資料到畫面
 function loadRoleData(roleName) {
@@ -1141,7 +1143,12 @@ function deleteCurrentRole() {
 
     if (confirm(`⚠️ 確定踢除大俠「${roleToDelete}」嗎？此動作無法復原！（建議先下載JSON備份）`)) {
         delete multiPlayerDB.roles[roleToDelete];
+        //先清空資料與畫面
         clearCurrentRecordUI();
+        //強制清空名稱輸入框（確保舊大名不殘留）
+        const nameInput = document.getElementById("player-name");
+        if (nameInput) { nameInput.value = "";}
+        // 儲存變更並顯示提示
         savePlayerRecord();
         showToast(`🗑️ 已成功踢除：${roleToDelete}，若有下載備份，匯入 JSON 檔案，可取回大俠資料~`);
     } else {
@@ -1426,7 +1433,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (searchInput) {
         // 1. 輸入時即時搜尋
         searchInput.addEventListener("input", searchPills);
-        // 2. 按下 Esc 鍵時清空搜尋並還原頁面
+        // 2. Esc 鍵清空搜尋並還原頁面
         searchInput.addEventListener("keydown", (e) => {
             if (e.key === "Escape") {
                 searchInput.value = "";
