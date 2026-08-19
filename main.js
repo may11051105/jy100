@@ -462,43 +462,36 @@ function removeItem(name) {
 }
 
 //-- 處理按鈕行為: 複製、並提供寄信選項
-function handleAction(type) {
-  if (window.event) window.event.stopPropagation();
+async function handleAction(type) {
+  const orderText = buildOrderText();
+  if (!orderText) return showLiveToast("⚠️ 未選商品！無法處理");
 
-  const text = buildOrderText();
-  if (!text) return alert("未選商品！無法複製清單");
+  // 1. 組合最終發送與複製的完整文字
+  const text = `${orderText}\n\n👉 ${window.location.href}`;
 
-  // 複製 / LINE / EMAIL 都先複製一份
-  if (type === 1 || type === 2 || type === 3) {
-
-    navigator.clipboard.writeText(text).then(() => {
-      if (type === 1 || type === 2) {
-        showLiveToast("📋 已複製清單");
-      }
-    }).catch(() => {
-      // 剪貼簿失敗時
-    });
+  // 2. 100% 先複製到剪貼簿（解決 Yahoo 等 App 亂碼時的備用方案）
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (err) {
+    console.warn("剪貼簿複製失敗：", err);
   }
 
-  // LINE
-  if (type === 2) {
+  // 3. 根據按鈕類型執行動作
+  if (type === 1) {
+    // 僅複製
+    showLiveToast("✅ 已複製清單");
+  } else if (type === 2) {
+    // 複製 + 開啟 LINE
+    showLiveToast("✅ 已複製清單，準備開啟 LINE");
     window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
-  }
-
-  // EMAIL
-  if (type === 3) {
-    const mailUrl =
-      `mailto:may11051105@gmail.com` +
-      `?subject=${encodeURIComponent("金庸商城訂單")}` +
-      `&body=${encodeURIComponent(text)}`;
-
-    const link = document.createElement("a");
-    link.href = mailUrl;
-    link.style.display = "none";
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  } else if (type === 3) {
+    // 複製 + 開啟 Email (如果 Yahoo Mail 亂碼，使用者可以直接貼上)
+    showLiveToast("✅ 已複製清單！若郵件內文亂碼請直接貼上");
+    
+    const mailUrl = `mailto:may11051105@gmail.com?subject=${encodeURIComponent("金庸商城訂單")}&body=${encodeURIComponent(text)}`;
+    
+    // 直接調用即可，不需要動態創建 <a> 標籤
+    window.location.href = mailUrl;
   }
 }
 
