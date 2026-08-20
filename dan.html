@@ -62,7 +62,7 @@
       .top-fixed {position: sticky;top: 0;}/*固定位*/
 
         /* =========================
-               #1.頂部導覽列 Header
+               *1. 頂部導覽列 Header
             ========================= */
         header {
           background: linear-gradient(150deg, var(--bg1), var(--bg));
@@ -89,7 +89,7 @@
        .header-btn:hover {filter: brightness(1.5);}
 
       /* =========================
-         輸入角色名
+         *2. 輸入角色名
       ========================= */
       .player-box {
           display: flex;
@@ -108,7 +108,7 @@
           white-space: nowrap;}
 
       .player-box input,
-      .player-box select {
+      .player-box select{
           flex: 1;
           min-width:10px;
           width: 50%;
@@ -126,7 +126,7 @@
       }
 
       /* =========================
-         #2.主分類頁籤 Main Tabs
+         *3. 主分類頁籤 Main Tabs
       ========================= */
         .main-nav {
           display: flex;
@@ -155,7 +155,7 @@
         }
 
       /* =========================
-         #3.小分類按鈕 Sub Tabs
+         *4. 小分類按鈕 Sub Tabs
       ========================= */
         .sub-nav {
           display: flex;
@@ -182,7 +182,7 @@
         }
 
       /* =========================
-         #4. 內容面板
+         *4. 內容面板
       ========================= */
         .container {
           max-width: 600px;
@@ -234,88 +234,116 @@
           font-weight: bold;
         }
 
-      /* =========================
-         丹藥列表
-      ========================= */
-      .pill-table {
-          width: 100%;
-          table-layout: fixed;
-          border-collapse: collapse;
-      }
 
-      .pill-table td {padding: 1px;vertical-align: middle;
-      }
+/* =========================
+   丹藥表格 - 基礎結構與通用格線
+   ========================= */
+.pill-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+}
 
-      /* 第 1 欄：名稱 */
-      .pill-name {
-          width: 110px;
-          font-weight: bold;
-          white-space: nowrap;
-          background: var(--bg);
-      }
-      .pill-name::before {
-          content: "";
-          display: inline-block;
-          width: 5px;
-          height:5px;
-          margin-right: 1px;
-          background: var(--bg3);
-          border-radius: 50%;
-          vertical-align: middle;
-      }
+/* 統一管理表格儲存格內邊距與對齊 */
+.pill-table th,
+.pill-table td {
+    padding: 4px 6px;
+    vertical-align: middle;
+    text-align: left;
+}
+/* 表頭與表身邊框樣式 */
+.pill-table thead tr {
+    font-size: 0.8rem;
+    color: #666;
+    border-bottom: 1px solid #ddd;
+}
 
-      /* 第 2 欄：效果 */
-      .pill-effect {width: auto;}
+.pill-table tbody tr {
+    font-size: 0.85rem;
+    border-bottom: 1px dashed #eee;
+}
 
-      /* 第 3 欄：數量 */
-      .pill-count {
-          white-space: nowrap;
-          text-align: center;
-          background: var(--bg);
-      }
+/* =========================
+   獨立欄位與通用文字元件
+   ========================= */
+/* 共用背景設定 (名稱欄與數量欄) */
+.pill-name,
+.pill-count,
+.threshold-header {
+    background: var(--bg);
+}
 
-      /* 第 4 欄：累計 */
-      .pill-total {width: 120px;}
+/* 第 1 欄：名稱 (含圓點標籤) */
+.pill-name {
+    width: 110px;
+    font-weight: bold;
+    white-space: nowrap;
+}
 
-      /* 長文字統一處理 */
-      .pill-text {
-          min-width: 0;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          color:#777;
-      }
+.pill-name::before {
+    content: "";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-right: 1px;
+    background: var(--bg3);
+    border-radius: 50%;
+    vertical-align: middle;
+}
 
-      /* 數量輸入 */
-      .pill-count-input {
-          width: 50px;
-          padding: 3px;
-          border: 1px solid var(--border1);
-          border-radius: 5px;
-          text-align: center;
-          font-size: 0.8rem;
-          font-weight: bold;
-      }
+/* 第 2、3、4 欄寬度與置中 */
+.pill-effect { width: auto; }
+.pill-total  { width: 120px; }
+.pill-count,
+.pill-table .col-status {
+    text-align: center;
+    white-space: nowrap;
+}
 
-/* 門檻型 - 頂部收集數區塊 */
+.pill-table .col-status { width: 65px; }
+
+/* 長文字溢出省略處理 */
+.pill-text {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #777;
+}
+
+/* =========================
+   輸入框樣式
+   ========================= */
+.pill-count-input {
+    width: 50px;
+    padding: 3px;
+    border: 1px solid var(--border1);
+    border-radius: 5px;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* 門檻型 - 頂部收集數區塊輸入框 */
+.threshold-header .pill-count-input {
+    width: 60px;
+    font-size: 1rem;
+}
+
+/* =========================
+   門檻區塊與解鎖狀態
+   ========================= */
 .threshold-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    background: var(--bg);
     padding: 8px;
     border-radius: 6px;
     font-weight: bold;
     color: var(--bg3);
 }
 
-.threshold-header .pill-count-input {
-    width: 60px;
-    font-size: 1rem;
-}
-
-/* 門檻型 - 當前加成提示框 */
 .threshold-summary-box {
     margin-bottom: 10px;
     padding: 6px 8px;
@@ -325,51 +353,13 @@
     color: #0369a1;
 }
 
-/* 門檻表格樣式 */
-.pill-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+/* 解鎖狀態列 */
+.pill-table tr.unlocked { color: #15803d; font-weight: bold; }
+.pill-table tr.locked   { color: #94a3b8; }
 
-.pill-table thead tr {
-    font-size: 0.8rem;
-    color: #666;
-    border-bottom: 1px solid #ddd;
-}
-
-.pill-table th,
-.pill-table td {
-    padding: 6px 2px;
-    text-align: left;
-}
-
-.pill-table th {
-    padding-top: 4px;
-    padding-bottom: 4px;
-}
-
-.pill-table tbody tr {
-    border-bottom: 1px dashed #eee;
-    font-size: 0.85rem;
-}
-
-/* 欄位對齊與對應解鎖狀態 */
-.pill-table .col-status {
-    text-align: center;
-    width: 65px;
-}
-
-.pill-table tr.unlocked {
-    color: #15803d;
-    font-weight: bold;
-}
-
-.pill-table tr.locked {
-    color: #94a3b8;
-}
 
       /* =========================
-         Modal 彈出視窗（戰鬥屬性統計）
+        *5. Modal 彈出視窗（戰鬥屬性統計）
       ========================= */
         .modal {
           display: none;
@@ -390,6 +380,35 @@
           width: 90%;
           max-width: 440px;
         }
+   /* =========================
+        提示: toast
+      ========================= */     
+.toast-msg {
+    display: none; 
+    position: fixed; 
+    bottom: 80px; 
+    right: 20px;            /* 改為靠右定位 */
+    background: var(--bg2); 
+    color: #fff; 
+    padding: 10px 20px; 
+    border-radius: 20px; 
+    z-index: 9999; 
+    font-size: 0.9rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.toast-msg.show {display: block;animation: toastSlideInOut 3.5s forwards ease-in-out;}
+/* 定義滑動軌跡 */
+@keyframes toastSlideInOut {
+    0% {transform: translateX(120%); /* 初始：隱藏在螢幕外 */
+        opacity: 0;}
+    10% {transform: translateX(0);    /* 滑入到定位 */
+        opacity: 1;}
+    90% {transform: translateX(0);    /* 保持停留 */
+        opacity: 1;}
+    100% {transform: translateX(120%); /* 滑出隱藏 */
+        opacity: 0;}
+}
+        
       /* =========================
          PDF / 列印專用樣式
       ========================= */
@@ -462,133 +481,84 @@
 
   <body>
     <div class="app">
-      <div class="top-fixed">
-        <!--固定區塊-->
-        <!-- #1. 頂部導覽列 Header -->
+      <div class="top-fixed"><!--固定區塊-->
+<!-- =====================
+     *1. 頂部導覽列 Header
+====================== -->
         <header>
           <div class="header-title">大俠成長紀錄</div>
           <div class="header-btns">
-            <button
-              class="header-btn"
-              onclick="toggleModal(true)"
-              title="統計表"
-            >
-              ⚔高手戰力
-            </button>
-            <a
-              href="https://may11051105.github.io/jy100/"
-              target="_blank"
-              class="header-btn"
-              title="百分百金庸商城"
-              >江湖補給</a
-            >
+            <button class="header-btn" onclick="toggleModal(true)" title="統計表"> ⚔高手戰力</button>
+            <a href="https://may11051105.github.io/jy100/" target="_blank" class="header-btn" title="百分百金庸商城">江湖補給</a>
           </div>
         </header>
-
-        <!-- 當前角色 -->
+<!-- =====================
+      *2. 登錄大俠資料
+====================== -->
+        <!-- 當前大俠 -->
         <div class="player-box">
           <label for="player-name">👤大俠尊名</label>
-          <input
-            type="text"
-            id="player-name"
-            placeholder="敢問大俠尊姓大名"
-            maxlength="10"
-            autocomplete="off"
-          />
-          <button
-            class="header-btn"
-            onclick="document.getElementById('import-file').click()"
-          >
-            📤匯入JSON
-          </button>
-          <input
-            type="file"
-            id="import-file"
-            accept=".json"
-            style="display:none;"
-            onchange="importDataBackup(event)"
-          />
+          <input type="text" id="player-name" placeholder="敢問大俠尊姓大名" maxlength="10" autocomplete="off"/>
+          <button class="header-btn" onclick="document.getElementById('import-file').click()">📤匯入JSON</button>
+          <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importDataBackup(event)"/>
         </div>
-        <!-- 紀錄多位大俠 -->
+        
+        <!-- 選擇或更新大俠 -->
         <div class="player-box">
           <label for="role-select">👥選擇大俠</label>
-          <select id="role-select" onchange="handleRoleSelect(this.value)">
-            <!-- JS 動態生成選項 -->
-          </select>
-          <input
-            type="search"
-            id="pill-search"
-            placeholder="🔎 搜尋關鍵字..."
-            autocomplete="off"
-          />
+          <select id="role-select" onchange="handleRoleSelect(this.value)"><!-- JS 動態生成 --></select>
+          <input type="search" id="pill-search" placeholder="🔎 搜尋關鍵字..." autocomplete="off"/><!--搜尋 -->
         </div>
-
-        <!-- #2. 主分類（橫向滑動選單） -->
+<!-- =====================
+      *3. 主分類（橫向滑動主選單）
+====================== -->
         <nav class="main-nav">
-          <button class="main-tab active" onclick="switchMainTab('一般丹')">
-            一般丹
-          </button>
-          <button class="main-tab" onclick="switchMainTab('多能丹')">
-            多功能
-          </button>
-          <button class="main-tab" onclick="switchMainTab('氣血修為')">
-            氣血修為
-          </button>
+          <button class="main-tab active" onclick="switchMainTab('一般丹')">一般丹</button>
+          <button class="main-tab" onclick="switchMainTab('多能丹')">多功能</button>
+          <button class="main-tab" onclick="switchMainTab('氣血修為')">氣血修為</button>
           <button class="main-tab" onclick="switchMainTab('常駐')">常駐</button>
           <button class="main-tab" onclick="switchMainTab('被動')">被動</button>
           <button class="main-tab" onclick="switchMainTab('神器')">神器</button>
         </nav>
       </div>
+<!-- =====================
+      *4. 小分類與內容 
+====================== -->
+      
+      <div id="battle-sub-nav" class="sub-nav"><!-- 產生小分類 --></div>
+      <div id="battle-items" class="container"><!-- 產生丹藥或其他名稱內容 --></div>
 
-      <!-- #3. 小分類與內容 -->
-      <!-- 產生小分類 -->
-      <div id="battle-sub-nav" class="sub-nav"></div>
-
-      <!-- 產生丹藥或其他名稱內容 -->
-      <div id="battle-items" class="container"></div>
-
-      <!-- =====================
-     #4. 戰鬥屬性統計 Modal 
+<!-- =====================
+     *5. 戰鬥屬性統計 Modal 
 ====================== -->
       <div id="stats-modal" class="modal">
         <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
           <!-- 被截圖/列印的區域開始 -->
-          <div
-            id="capture-area"
-            style="background: #ffffff; padding: 6px; border-radius: 8px;"
-          >
-            <h3
-              style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px; color: var(--bg3);"
-            >
-              📊 戰力統計與願望清單
+          <div id="capture-area"
+            style="background: #ffffff; padding: 6px; border-radius: 8px;">
+            <h3 
+            style="margin-bottom:12px; border-bottom: 2px solid var(--border1); padding-bottom: 6px; color: var(--bg3);">📊 戰力統計與願望清單
             </h3>
 
             <!-- 總累計戰力 -->
             <div
-              style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;"
-            >
-              <h4 style="margin-bottom: 6px; color: var(--bg3);">
-                【總累計戰力】
+              style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
+              <h4 style="margin-bottom: 6px; color: var(--bg3);">【總累計戰力】
               </h4>
-              <div
-                id="stat-summary-list"
-                style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85rem; color: #444;"
-              >
-                <!-- JS 動態寫入屬性 -->
+              <div id="stat-summary-list"
+                style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; font-size: 0.85rem; color: #444;">
+                <!-- JS 動態屬性 -->
               </div>
             </div>
 
             <!-- 剩餘需求 / 清單 -->
             <div
-              style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;"
-            >
+              style="background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 12px;">
               <h4 style="margin-bottom: 6px; color: var(--bg3);">
                 【剩餘需求 / 願望清單】
               </h4>
-              <ul
-                id="stat-needed-list"
-                style="padding-left: 20px; font-size: 0.85rem; color: #c2410c; max-height: 150px; overflow-y: auto;"
-              >
+              <ul id="stat-needed-list"
+                style="padding-left: 20px; font-size: 0.85rem; color: #c2410c; max-height: 150px; overflow-y: auto;">
                 <!-- JS 動態寫入清單 -->
               </ul>
             </div>
@@ -596,63 +566,39 @@
           <!-- 被截圖/列印的區域結束 -->
 
           <!-- 操作區：下載選項與按鈕 -->
-          <div
-            style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;"
-          >
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <select
-                id="export-format"
-                style="flex: 1; padding: 8px; border-radius: 8px; border: 1px solid var(--border1); background: #fff; font-size: 0.9rem; font-weight: bold; color: var(--bg3);"
-              >
-                <option value="txt">📄 記事本 (.txt)</option>
-                <option value="json">💾 備份檔 (.json)</option>
-                <option value="png">🖼️ 圖檔 (.png)</option>
-                <option value="pdf">📕 PDF (.pdf)</option>
-              </select>
-              <button
-                class="header-btn"
-                style="flex: 1; padding: 8px;"
-                onclick="exportSelectedFormat()"
-              >
-                📥 下載戰力表
-              </button>
-            </div>
+         <div style="display: flex; flex-direction: column; gap: 1px;">
+  <!-- 第一排：下拉選單 + 下載按鈕 -->
+  <div class="player-box">
+    <select id="export-format">
+      <option value="txt">📄 記事本 (.txt)</option>
+      <option value="json">💾 備份檔 (.json)</option>
+      <option value="png">🖼️ 圖檔 (.png)</option>
+      <option value="pdf">📕 PDF (.pdf)</option>
+    </select>
+    <button class="header-btn" style="flex: 1;" onclick="exportSelectedFormat()">📥 下載戰力表</button>
+  </div>
 
-            <div style="display: flex; gap: 6px;">
-              <button
-                class="header-btn"
-                style="flex: 1;"
-                onclick="copyShareText()"
-              >
-                📋 複製文字
-              </button>
-              <button
-                class="header-btn"
-                style="flex: 1;"
-                onclick="shareToLineOrOther()"
-              >
-                🔗 分享
-              </button>
-            </div>
-
-            <button
-              class="header-btn"
+  <!-- 第二排：複製 + 分享按鈕 -->
+  <div class="player-box"> 
+    <button class="header-btn" style="flex: 1;" onclick="copyShareText()">📋 複製文字</button>
+    <button class="header-btn" style="flex: 1;" onclick="shareToLineOrOther()">🔗 分享</button>
+  </div>
+</div>
+            <button class="header-btn"
               style="width:100%; padding:8px; background: #64748b;"
-              onclick="toggleModal(false)"
-            >
-              關閉
-            </button>
+              onclick="toggleModal(false)">關閉</button>
           </div>
         </div>
-      </div>
+     
+      
+<!-- toast -->
+<div class="toast-msg"></div>
 
-      <div
-        id="toast-msg"
-        style="display:none; position:fixed; bottom:80px; left:50%; transform:translateX(-50%); background:rgba(0,0,0,0.8); color:#fff; padding:10px 20px; border-radius:20px; z-index:999; font-size:0.9rem;"
-      ></div>
+<!-- 觸發測試按鈕 -->
+<button onclick="showToast('測試專用 別亂點 小心把你送出去')">【別點我】</button>
 
-      <!--結束尾籤-->
-    </div>
+<!--結束尾籤-->
+</div>
     <script>
       let battleDB = [];
       let pillSearchText = "";
@@ -681,12 +627,11 @@
               num.toFixed(decimals)
           );
       }
-      /**
-       * 格式化單一屬性字串
+      /**** 格式化單一屬性字串
        * @param {string} label - 屬性簡稱 (如 '攻')
        * @param {number} totalValue - 計算後的總數值 (單顆數值 * 數量)
        * @param {number} baseValue - 單顆丹藥的基礎數值 (用來判斷是否為百分比)
-      */
+      ****/
       // 格式化戰力效果：0.03 → 3%
       function formatEffect(label, value) {
           if (value === null || value === undefined) {
@@ -735,8 +680,7 @@
           const subNav = document.getElementById("battle-sub-nav");
           subNav.innerHTML = "";
           const subCategories = [
-              ...new Set(
-                  mainItems
+              ...new Set( mainItems
                       .map(item => String(item.小分類 || "").trim())
                       .filter(Boolean) )
           ];
@@ -760,25 +704,12 @@
                           btn.classList.remove("active")
                       );
                   button.classList.add("active");
-                  renderBattleItems(
-                      mainCategory,
-                      subName
-                  );
+                  renderBattleItems( mainCategory, subName );
               };
-
               subNav.appendChild(button);
           });
-
-          if (subCategories.length > 0) {
-              renderBattleItems(
-                  mainCategory,
-                  subCategories[0]
-              );
-          }
+          if (subCategories.length > 0) { renderBattleItems( mainCategory, subCategories[0] ); }
       }
-
-
-
 
 
       // ==============================================
@@ -792,23 +723,19 @@
           const totalEffects = [];
 
           ATTRIBUTES_MAP.forEach(attr => {
-              // 1. 取得這顆丹藥「單顆」的基礎數值
+          //-- 1. 取得丹藥「單顆」的基礎數值
               const baseNum = Number(item[attr.key]);
-              // 如果這顆丹藥原本就「沒有」屬性 (0、空白、NaN)，直接跳過不顯示！
+                //如果丹藥原本就「沒有」屬性 (0、空白、NaN)，直接跳過不顯示
               if (!Number.isFinite(baseNum) || baseNum === 0) return;
-
-              // 2. 計算累計數值 (單價 * 食用數量)
+          //-- 2. 計算累計數值 (單價 * 食用數量)
               const total = cleanNumber(baseNum * count);
-
-              // 3. 判斷是百分比還是一般整數 (依據單顆數值是否在 0 ~ 1 之間)
+          //-- 3. 判斷是百分比還是一般整數 (依據單顆數值是否在 0 ~ 1 之間)
               if (baseNum > 0 && baseNum < 1) {
                   const percent = cleanNumber(total * 100, 6);
                   totalEffects.push(`${attr.short}+${percent}%,`);
-              } else {
-                  totalEffects.push(`${attr.short}+${cleanNumber(total)},`);}
+              } else { totalEffects.push(`${attr.short}+${cleanNumber(total)},`);}
           });
-
-          // 4. 如果 9 個屬性通通都沒有設定
+          //-- 4. 如果 9 個屬性通通都沒有設定
           return totalEffects.length > 0 ? totalEffects.join(' ') : '無關戰力';
       }
 
@@ -821,13 +748,10 @@
           if (!container) return;
           container.innerHTML = "";
 
-          //判斷：上限有 # 符號就自動切換成收集介面！
+          //#判斷：上限有 # 符號就自動切換成收集介面！
           const isThresholdType = isThresholdSubCategory(subCategory);
-
           if (isThresholdType && !pillSearchText) {
-              // ======================================
-              // A. 門檻型渲染 (造型、八卦、神器等)
-              // ======================================
+              // #A. 門檻型渲染 (造型、八卦、神器等)
               const savedKey = `THRESHOLD__${mainCategory}__${subCategory}`;
               const currentAmount = Number(playerRecord.pills[savedKey]) || 0;
               const result = calculateThresholdStats(subCategory, currentAmount);
@@ -836,16 +760,14 @@
               card.className = "card";
               card.style.padding = "10px";
 
-              card.innerHTML = `
-                  <div class="threshold-header">
-    <div>
-        📊 目前進度：
+              card.innerHTML = `<div class="threshold-header">
+    <div>📊 當前進度：
         <input type="number" class="pill-count-input" id="threshold-input" value="${currentAmount}" min="0">
     </div>
 </div>
 
 <div class="threshold-summary-box">
-    <strong>✨ 當前累計加成：</strong><br>
+    <strong>✨當前累計：</strong><br>
     <span id="threshold-summary">${result.summaryText}</span>
 </div>
 
@@ -862,50 +784,36 @@
     </tbody>
               `;
 
-              // 綁定數字輸入監聽 (門檻型專用)
+              // #B. 綁定數字輸入監聽 (門檻型專用)
               const input = card.querySelector("#threshold-input");
               input.addEventListener("input", function() {
                   let val = Number(this.value);
                   if (!Number.isFinite(val)) { val = 0; }
-
                   // 1. 動態取得該小分類的「最高門檻上限」 (例如 #24 -> 24)
                   const maxThreshold = getMaxThresholdForSubCategory(subCategory);
-
                   // 2. 進行範圍卡死 (大於最高門檻就強制彈回 maxThreshold)
                   if (maxThreshold > 0) {
                       val = Math.max(0, Math.min(val, maxThreshold));
-                  } else {
-                      val = Math.max(0, val);
-                  }
-
+                  } else { val = Math.max(0, val);}
                   // 3. 把校正後的數值寫回畫面輸入框 (輸入 300 會自動變成 24)
                   this.value = val;
-
                   // 4. 確保玩家已有名稱
                   ensurePlayerName();
-
                   // 5. 儲存紀錄
                   playerRecord.pills[savedKey] = val;
                   savePlayerRecord();
-
                   // 6. 局部更新戰力與表格
                   const updatedResult = calculateThresholdStats(subCategory, val);
-
                   const summarySpan = card.querySelector("#threshold-summary");
-                  if (summarySpan) {
-                      summarySpan.textContent = updatedResult.summaryText;
-                  }
-
+                  if (summarySpan) { summarySpan.textContent = updatedResult.summaryText; }
                   const tbody = card.querySelector("#threshold-table-body");
-if (tbody) {
-    tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
-}
+if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus); }
               });
 
               container.appendChild(card);
               return;
           }
-
+          
           // ======================================
           // ① 取得要顯示的資料
           // ======================================
@@ -942,7 +850,7 @@ if (tbody) {
                   String(item.小分類 || "").trim() === subCategory
               );
           }
-
+          
           // ======================================
           // ② 沒有搜尋結果
           // ======================================
@@ -954,7 +862,6 @@ if (tbody) {
                           : `⚠️ 找不到符合「${subCategory}」的資料`
                       }
                   </div> `;
-
               return;
           }
 
@@ -976,9 +883,7 @@ if (tbody) {
               const count =
                   Math.max(0, Math.min(savedCount, limit));
 
-              // ======================================
               // 效果文字
-              // ======================================
               const effects = [
                   formatEffect("攻", item.攻擊),
                   formatEffect("防", item.防禦),
@@ -998,15 +903,11 @@ if (tbody) {
                   ? effects.join(" ")
                   : "無資料";
 
-              // ======================================
               // 累計效果
-              // ======================================
               const totalEffectText =
                   calculateTotalEffects(item, count);
 
-              // ======================================
               // 建立卡片
-              // ======================================
               const card =
                   document.createElement("div");
               card.className = "card";
@@ -1034,38 +935,31 @@ if (tbody) {
                           </td>
                       </tr>
                   </table> `;
-              // ======================================
-              // 數量輸入
-              // ======================================
+// ======================================
+// 數量輸入
+// ======================================
               const input = card.querySelector(".pill-count-input");
-
-      input.addEventListener("input", function () {
+              input.addEventListener("input", function () {
           let value = Number(this.value);
           if (!Number.isFinite(value)) { value = 0; }
 
-          // 【核心修正點】動態判斷真正的上限 limit
+          // 【核心】動態判斷真正的上限 limit
           let realLimit = 0;
           const subCategory = String(item.小分類 || "").trim();
 
           // 如果這是一個門檻型分類，上限應該是「最高門檻數值」
           if (isThresholdSubCategory(subCategory)) {
               realLimit = getMaxThresholdForSubCategory(subCategory);
-          } else {
-              // 如果是一般丹藥，採用一般的 parseMaxLimit
-              realLimit = parseMaxLimit(item.上限);
-          }
-
+          } else { // 如果是一般丹藥，採用一般的 parseMaxLimit
+              realLimit = parseMaxLimit(item.上限);}
           // 如果有找到上限 (>0)，才進行截斷限制
           if (realLimit > 0) {
               value = Math.max(0, Math.min(value, realLimit));
-          } else {
-              value = Math.max(0, value); // 無上限時僅限制大於等於 0
-          }
-
-          // 將矯正後的數字寫回 input 欄位 (300 會自動變成 24)
+          } else { value = Math.max(0, value);} // 無上限時僅限制大於等於 0
+          // 將矯正後的數字寫回 input 欄位 (ex: 輸入300 會自動變成套裝上限 24)
           this.value = value;
 
-          // 1. 確保玩家已有名稱 (呼叫共用函式)
+          // 確保玩家已有名稱 (呼叫共用函式)
           ensurePlayerName();
 
           // 儲存
@@ -1076,7 +970,6 @@ if (tbody) {
           const totalElement = card.querySelector(".pill-total");
           if (totalElement) {
               let updatedTotal = "";
-
               if (isThresholdSubCategory(subCategory)) {
                   // 門檻型：呼叫門檻計算，取 summaryText
                   const thresholdResult = calculateThresholdStats(subCategory, value);
@@ -1085,12 +978,10 @@ if (tbody) {
                   // 普通丹藥：計算單筆丹藥加總
                   updatedTotal = calculateTotalEffects(item, value);
               }
-
               totalElement.textContent = updatedTotal;
               totalElement.title = updatedTotal;
           }
       });
-
               container.appendChild(card);
 
           });
@@ -1098,8 +989,9 @@ if (tbody) {
       
 
       // ==============================================
-      // 1. 判斷該小分類是否為「門檻/收集型系統」
-      //   (只要該小分類中有任何一筆資料的上限帶有 '#' 或 'Y' )
+      //### 判斷小分類是否為「門檻/收集型系統」
+      // ==============================================
+      //  #1. 該小分類中有任何一筆資料的上限欄位 帶有 '#' 或 'Y' 
       // ==============================================
       function isThresholdSubCategory(subCategory) {
           if (!subCategory) return false;
@@ -1109,58 +1001,45 @@ if (tbody) {
           );
       }
       // ==============================================
-      // 2. 從上限欄位解析出真正的門檻數字 (如: "#4" 或 "Y4" -> 4)
+      // #2. 從上限欄位解析出真正的門檻數字 (如: "#4" 或 "Y4" -> 4)
       // ==============================================
       function getThresholdValue(item) {
           const raw = String(item.上限 || "").replace(/[^0-9]/g, ""); // 濾掉非數字字元
           return Number(raw) || 0;
       }
-
-
-
       // ==============================================
-      // 取得該小分類的「最高門檻值」 (例如: 從 #1,#5,#24 中找出 24)
+      // #3. 取得該小分類的「最高門檻值」 (例如: 從 #1,#5,#24 中找出 24)
       // ==============================================
       function getMaxThresholdForSubCategory(subCategory) {
           if (!subCategory) return 0;
-
           // 找出該小分類所有的門檻項目
           const items = battleDB.filter(item =>
               String(item.小分類 || "").trim() === subCategory
           );
-
           if (items.length === 0) return 0;
-
           // 將所有門檻轉為數字，並找出最大值
           const thresholdValues = items.map(item => getThresholdValue(item));
           return Math.max(...thresholdValues);
       }
 
 
-
-
-
       // ==============================================
-      // 計算門檻型系統（自動解析符號）
+      // #4. 計算門檻型系統（自動解析符號）
       // ==============================================
       function calculateThresholdStats(subCategory, currentAmount) {
           const thresholdItems = battleDB.filter(item =>
               String(item.小分類 || "").trim() === subCategory
           );
           const activeStats = { 攻擊:0, 防禦:0, 爆擊:0, 爆傷:0, 抗爆:0, 命中:0, 閃避:0, 反擊:0, 氣血:0 };
-
           thresholdItems.forEach(item => {
               const threshold = getThresholdValue(item); // 使用解析工具取得門檻數字
-
               // 判斷是否達成門檻
               if (currentAmount >= threshold && threshold > 0) {
               // 透過 key 取出全名與數值
               const fields = ATTRIBUTES_MAP.map(attr => [attr.key, item[attr.key]]);
                   fields.forEach(([fullLabel, val]) => {
                       const num = Number(val);
-                      if (Number.isFinite(num) && num !== 0) {
-                          activeStats[fullLabel] += num;
-                      }
+                      if (Number.isFinite(num) && num !== 0) { activeStats[fullLabel] += num; }
                   });
               }
           });
@@ -1170,7 +1049,6 @@ if (tbody) {
               .filter(([_, val]) => val > 0)
               .map(([label, val]) => formatEffect(label.substring(0,2), val).replace(',', ''))
               .join(" ");
-
           return {
               activeStats,
               summaryText: summaryText || "無屬性加成",
@@ -1186,11 +1064,13 @@ if (tbody) {
                           formatEffect("抗爆", item.抗爆), formatEffect("命中", item.命中),
                           formatEffect("閃", item.閃避), formatEffect("反", item.反擊),
                           formatEffect("血", item.氣血), String(item.其它功能 || "").trim()
-                      ].filter(Boolean).join(" ")
+                      ]
+                      .filter(Boolean).join(" ")
                   };
               })
           };
       }
+
 
 
 
@@ -1350,7 +1230,6 @@ if (tbody) {
           select.innerHTML = html;
       }
 
-
       // 下拉選單動作分流處理
       function handleRoleSelect(value) {
           if (value === "__NEW__") {
@@ -1462,6 +1341,7 @@ if (tbody) {
               updateRoleSelectOptions();
           }
       }
+
 
 
       // ==============================================
@@ -1814,19 +1694,19 @@ function generateTableRowsHtml(itemsStatus) {
 }
 
 
-      // Toast
-       function showToast(message) {
-          const toast = document.getElementById("toast-msg");
-          if (!toast) return;
-          toast.textContent = message;
-          toast.style.display = "block";
-          setTimeout(() => {
-              toast.style.display = "none";
-          }, 3000); // 2 秒後自動消失
-      }
-
-
-
+      // Toast 
+let toastTimer = null;
+function showToast(message) {
+    const toast = document.querySelector('.toast-msg');
+    toast.textContent = message;
+    toast.classList.remove('show'); //防連續
+    clearTimeout(toastTimer);
+    void toast.offsetWidth; // 強制重繪 (Reflow)
+    toast.classList.add('show');
+    toastTimer = setTimeout(() => { //結束後清除 class
+        toast.classList.remove('show');
+    }, 4000);
+}
 
 
       // ==============================================
