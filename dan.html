@@ -247,7 +247,7 @@
 /* 統一管理表格儲存格內邊距與對齊 */
 .pill-table th,
 .pill-table td {
-    padding: 4px 6px;
+    padding: 4px;
     vertical-align: middle;
     text-align: left;
 }
@@ -269,28 +269,48 @@
 /* 共用背景設定 (名稱欄與數量欄) */
 .pill-name,
 .pill-count,
-.threshold-header {
+.threshold-header,
+.pill-table tbody td:first-child {
     background: var(--bg);
 }
 
-/* 第 1 欄：名稱 (含圓點標籤) */
-.pill-name {
-    width: 110px;
+/* ==========================================
+   第 1 欄：名稱 (適用一般丹藥與門檻項目)
+   ========================================== */
+.pill-name,
+.pill-table th:first-child,
+.pill-table tbody td:first-child {
+    width: 110px !important; /* 強制固定與丹藥列表同寬 */
+    max-width: 110px;
     font-weight: bold;
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
-.pill-name::before {
+/* 綠色小圓點 */
+.pill-name::before,
+.pill-table tbody td:first-child::before {
     content: "";
     display: inline-block;
     width: 5px;
     height: 5px;
-    margin-right: 1px;
+    margin-right: 3px;
     background: var(--bg3);
     border-radius: 50%;
     vertical-align: middle;
 }
 
+/* ==========================================
+   第 2 欄：門檻效果文字 (吸收多餘寬度)
+   ========================================== */
+.pill-table th:nth-child(2),
+.pill-table tbody td:nth-child(2) {
+    width: auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 /* 第 2、3、4 欄寬度與置中 */
 .pill-effect { width: auto; }
 .pill-total  { width: 120px; }
@@ -302,7 +322,7 @@
 
 .pill-table .col-status { width: 65px; }
 
-/* 長文字溢出省略處理 */
+/* 長文字溢出省略處理 (包含一般丹藥與門檻表格欄位) */
 .pill-text {
     min-width: 0;
     white-space: nowrap;
@@ -310,6 +330,12 @@
     text-overflow: ellipsis;
     color: #777;
 }
+
+/* 解鎖時讓第一欄與第二欄的文字顏色恢復為高亮深色 */
+.pill-table tr.unlocked td {
+    color: inherit;
+}
+
 
 /* =========================
    輸入框樣式
@@ -1051,7 +1077,7 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
               .join(" ");
           return {
               activeStats,
-              summaryText: summaryText || "無屬性加成",
+              summaryText: summaryText || "無屬性效果",
               itemsStatus: thresholdItems.map(item => {
                   const threshold = getThresholdValue(item);
                   return {
@@ -1370,7 +1396,10 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
       // ==============================================
       // 戰力與剩餘需求計算核心
       // ==============================================
-      function calculatePlayerStats() {
+     // ==============================================
+// 戰力與剩餘需求計算核心 (自動偵測所有門檻分類)
+// ==============================================
+function calculatePlayerStats() {
     // 初始化物件
     const stats = {};
     ATTRIBUTES_MAP.forEach(attr => { stats[attr.key] = 0; });
@@ -1380,16 +1409,16 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
     battleDB.forEach(item => {
         const name = String(item.名稱 || "");
         const main = String(item.主分類 || "");
-        const sub = String(item.小分類 || "");
+        const sub = String(item.小分類 || "").trim();
         const limit = parseMaxLimit(item.上限) || 0;
 
-        // 跳過門檻型的個別計算（下方統一用 threshold 算）
-        if (["造型", "稱號", "足跡"].includes(sub)) return;
+        // ✅ 修正：改用動態判斷，只要是門檻型小分類（上限帶有 # 或 Y）就跳過一般單顆乘算
+        if (isThresholdSubCategory(sub)) return;
 
         const pillKey = `${main}__${sub}__${name}`;
         const count = Number(playerRecord.pills[pillKey]) || 0;
 
-        // ✅ 修正：直接讀取單顆丹藥 item[attr.key] 的數值進行乘算
+        // 讀取單顆丹藥 item[attr.key] 的數值進行乘算
         if (count > 0) {
             ATTRIBUTES_MAP.forEach(attr => {
                 const baseValue = Number(item[attr.key]);
@@ -1408,16 +1437,25 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
         }
     });
 
-    // ② 計算門檻型系統（造型/稱號等）的戰力
-    const thresholdSubCategories = ["造型", "稱號", "足跡"]; // 可自行擴充
-    thresholdSubCategories.forEach(sub => {
-        // 尋找對應的主分類鍵
+    // ② 自動找出資料庫中「所有」門檻型小分類並計算戰力
+    // (自動收集所有帶有 # 或 Y 的小分類，如八卦燈、武林帖、造型、稱號...等)
+    const allThresholdSubs = [
+        ...new Set(
+            battleDB
+                .filter(item => isThresholdSubCategory(String(item.小分類 || "").trim()))
+                .map(item => String(item.小分類 || "").trim())
+        )
+    ];
+
+    allThresholdSubs.forEach(sub => {
+        // 尋找對應的主分類名稱以拼湊 key
         const matchedItem = battleDB.find(i => String(i.小分類 || "").trim() === sub);
         if (matchedItem) {
             const main = String(matchedItem.主分類 || "").trim();
             const savedKey = `THRESHOLD__${main}__${sub}`;
             const currentAmount = Number(playerRecord.pills[savedKey]) || 0;
 
+            // 計算該門檻分類下解鎖的屬性
             const result = calculateThresholdStats(sub, currentAmount);
             Object.entries(result.activeStats).forEach(([key, val]) => {
                 stats[key] += val;
@@ -1709,8 +1747,8 @@ function generateTableRowsHtml(itemsStatus) {
     if (!itemsStatus || !Array.isArray(itemsStatus)) return "";
     return itemsStatus.map(st => `
         <tr class="${st.isUnlocked ? 'unlocked' : 'locked'}">
-            <td>${st.name}</td>
-            <td>${st.effectText}</td>
+            <td class="pill-text">${st.name}</td>
+            <td class="pill-text" title="${st.effectText}">${st.effectText}</td>
             <td class="col-status">
                 ${st.isUnlocked ? '✅ 已解鎖' : '🔒 未達成'}
             </td>
