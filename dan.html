@@ -1281,7 +1281,7 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
       // ==============================================
       // 儲存/更新玩家名稱 (多角色相容版)
       // ==============================================
-      function savePlayerName() {
+     function savePlayerName() {
           const input = document.getElementById("player-name");
           if (!input) return;
 
@@ -1299,8 +1299,8 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
               // 跳出提示問使用者意圖
               const isRename = confirm(
                   `❓ ⚠️偵測到大俠名稱變更：\n\n` +
-                  `按下【 確定 】: 將原名「${oldName}」改名為「${newName}」\n` +
-                  `按下【 取消 】: 保留「${oldName}」，並以「${newName}」建立全新手`
+                  `按【 確定 】: 將原名「${oldName}」改名為「${newName}」\n` +
+                  `按【 取消 】: 保留「${oldName}」，並以「${newName}」建立全新手`
               );
 
               if (isRename) {
@@ -1308,18 +1308,41 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
                   delete multiPlayerDB.roles[oldName];
                   showToast(`✏️ 大俠已改名為：${newName}`);
               } else {
-                  // 「開新角色」：複製一份當前資料給新角色，保留舊角色
-                  showToast(`✨ 新加入大俠已建檔：${newName}`);
-              }
-          } else {showToast(`✨ 新手已建檔：${newName}`);}
-
+                 // 選【取消】：舊角色必須完整保留，新角色則從空白開始。
+            // 先把舊角色完整複製一份，避免後面的初始化/儲存流程影響舊資料。
+            const oldRoleData = JSON.parse(JSON.stringify(
+                multiPlayerDB.roles[oldName] || playerRecord
+            ));
+            // 確保舊角色一定留在 roles 裡。
+            multiPlayerDB.roles[oldName] = oldRoleData;
+            // 初始化目前畫面與 playerRecord，建立「全新手」的空白資料。
+            clearCurrentRecordUI();
+            // 新角色只設定名稱，其餘資料初始化
+            playerRecord.playerName = newName;
+            multiPlayerDB.currentRole = newName;
+            const nameInput = document.getElementById("player-name");
+            if (nameInput) nameInput.value = newName;
+            // 儲存：此時 roles 會同時包含「舊角色 + 新角色」。
+            savePlayerRecord();
+            showToast(`✨ 已建立全新大俠：${newName}；「${oldName}」資料已保留`);
+            return; // 不再執行下面的改名共用流程
+        }
+    } else {
+        // 沒有舊角色：直接建立新角色
+        playerRecord.playerName = newName;
+        multiPlayerDB.currentRole = newName;
+        savePlayerRecord();
+        showToast(`✨ 新手已建檔：${newName}`);
+        return;
+    }
           // 3. 更新記憶體資料與當前選取角色
           playerRecord.playerName = newName;
           multiPlayerDB.currentRole = newName;
 
-          // 4. 自動儲存並更新下拉選單
-          savePlayerRecord();
+          savePlayerRecord();// 4. 自動儲存並更新下拉選單
       }
+
+
 
       // 刪除當前角色
       function deleteCurrentRole() {
@@ -1348,72 +1371,74 @@ if (tbody) { tbody.innerHTML = generateTableRowsHtml(updatedResult.itemsStatus);
       // 戰力與剩餘需求計算核心
       // ==============================================
       function calculatePlayerStats() {
-          //  初始化物件
-          const stats = {};
-          ATTRIBUTES_MAP.forEach(attr => { stats[attr.key] = 0; });
-          const neededList = []; // 紀錄還需多少顆/套
+    // 初始化物件
+    const stats = {};
+    ATTRIBUTES_MAP.forEach(attr => { stats[attr.key] = 0; });
+    const neededList = []; // 紀錄還需多少顆/套
 
-          // ① 計算一般丹藥戰力 & 收集未吃滿清單
-          battleDB.forEach(item => {
-              const name = String(item.名稱 || "");
-              const main = String(item.主分類 || "");
-              const sub = String(item.小分類 || "");
-              const limit = parseMaxLimit(item.上限) || 0;
+    // ① 計算一般丹藥戰力 & 收集未吃滿清單
+    battleDB.forEach(item => {
+        const name = String(item.名稱 || "");
+        const main = String(item.主分類 || "");
+        const sub = String(item.小分類 || "");
+        const limit = parseMaxLimit(item.上限) || 0;
 
-              // 跳過門檻型的個別計算（下方統一用 threshold 算）
-              if (["造型", "稱號", "足跡"].includes(sub)) return;
+        // 跳過門檻型的個別計算（下方統一用 threshold 算）
+        if (["造型", "稱號", "足跡"].includes(sub)) return;
 
-              const pillKey = `${main}__${sub}__${name}`;
-              const count = Number(playerRecord.pills[pillKey]) || 0;
-              const fields = ATTRIBUTES_MAP.map(attr => [attr.key, stats[attr.key]]);
+        const pillKey = `${main}__${sub}__${name}`;
+        const count = Number(playerRecord.pills[pillKey]) || 0;
 
-              // 繪製面板
-              fields.forEach(([key, value]) => {
-                  const num = Number(value);
-                  if (Number.isFinite(num) && count > 0) {
-                      stats[key] += num * count;
-                  }
-              });
+        // ✅ 修正：直接讀取單顆丹藥 item[attr.key] 的數值進行乘算
+        if (count > 0) {
+            ATTRIBUTES_MAP.forEach(attr => {
+                const baseValue = Number(item[attr.key]);
+                if (Number.isFinite(baseValue) && baseValue !== 0) {
+                    stats[attr.key] += baseValue * count;
+                }
+            });
+        }
 
-              if (limit > 0 && count < limit) {
-                  neededList.push({
-                      name: name,
-                      needed: limit - count
-                  });
-              }
-          });
+        // 收集未吃滿清單
+        if (limit > 0 && count < limit) {
+            neededList.push({
+                name: name,
+                needed: limit - count
+            });
+        }
+    });
 
-          // ② 計算門檻型系統（造型/稱號等）的戰力
-          const thresholdSubCategories = ["造型", "稱號", "足跡"]; // 可自行擴充
-          thresholdSubCategories.forEach(sub => {
-              // 尋找對應的主分類鍵
-              const matchedItem = battleDB.find(i => String(i.小分類 || "").trim() === sub);
-              if (matchedItem) {
-                  const main = String(matchedItem.主分類 || "").trim();
-                  const savedKey = `THRESHOLD__${main}__${sub}`;
-                  const currentAmount = Number(playerRecord.pills[savedKey]) || 0;
+    // ② 計算門檻型系統（造型/稱號等）的戰力
+    const thresholdSubCategories = ["造型", "稱號", "足跡"]; // 可自行擴充
+    thresholdSubCategories.forEach(sub => {
+        // 尋找對應的主分類鍵
+        const matchedItem = battleDB.find(i => String(i.小分類 || "").trim() === sub);
+        if (matchedItem) {
+            const main = String(matchedItem.主分類 || "").trim();
+            const savedKey = `THRESHOLD__${main}__${sub}`;
+            const currentAmount = Number(playerRecord.pills[savedKey]) || 0;
 
-                  const result = calculateThresholdStats(sub, currentAmount);
-                  Object.entries(result.activeStats).forEach(([key, val]) => {
-                      stats[key] += val;
-                  });
-              }
-          });
+            const result = calculateThresholdStats(sub, currentAmount);
+            Object.entries(result.activeStats).forEach(([key, val]) => {
+                stats[key] += val;
+            });
+        }
+    });
 
-          // ③ 加上玩家自行輸入面板數值...
-          const playerStats = playerRecord.playerStats || {};
-          Object.keys(stats).forEach(key => {
-              const value = Number(playerStats[key]) || 0;
-              stats[key] += value;
-          });
+    // ③ 加上玩家自行輸入面板數值...
+    const playerStats = playerRecord.playerStats || {};
+    Object.keys(stats).forEach(key => {
+        const value = Number(playerStats[key]) || 0;
+        stats[key] += value;
+    });
 
-          // ④ 清理小數點
-          Object.keys(stats).forEach(key => {
-              stats[key] = cleanNumber(stats[key], 6);
-          });
+    // ④ 清理小數點
+    Object.keys(stats).forEach(key => {
+        stats[key] = cleanNumber(stats[key], 6);
+    });
 
-          return { stats, neededList };
-      }
+    return { stats, neededList };
+}
 
 
       // ==============================================
