@@ -700,20 +700,50 @@ function showLiveToast(message = "⚡ 商品資料已更新") {
 }
 
 // ==============================================
-//--初始化時就監聽
+//-- 初始化設定
 // ==============================================
 document.title = `【百分百】金庸商城 - ${CONFIG.serverId}區`;
-window.addEventListener('DOMContentLoaded', () => {
-    const h1 = document.querySelector("header h1");
-    if (h1) {// 取得原本 h1 的文字，並在後面加上 CONFIG
-      h1.textContent = `${CONFIG.serverName}${h1.textContent}`;
-    }
-  });
 
-document.getElementById("loading-toast").innerHTML =
-  `獲取最新資料中<span class="bounce">${CONFIG.loadingText}</span>`;
-document.getElementById("pay-method").addEventListener("change", updateTotal);
+// ==============================================
+//-- DOM 載入完成後執行的初始化與監聽
+// ==============================================
+window.addEventListener('DOMContentLoaded', () => {
+  // 1. 修改 Header 標題
+  const h1 = document.querySelector("header h1");
+  if (h1) {
+    h1.textContent = `${CONFIG.serverName}${h1.textContent}`;
+  }
+
+  // 2. 角色名稱 LocalStorage 自動記憶邏輯
+  const userIdInput = document.getElementById("user-id");
+  if (userIdInput) {
+    // 頁面載入時：自動填入上次存下的角色名
+    const savedName = localStorage.getItem("shop_saved_user_id");
+    if (savedName) {
+      userIdInput.value = savedName;
+    }
+
+    // 當玩家輸入或修改名字時：即時儲存至 localStorage
+    userIdInput.addEventListener("input", () => {
+      localStorage.setItem("shop_saved_user_id", userIdInput.value.trim());
+    });
+  }
+
+  // 3. 讀取提示文字與付款方式監聽
+  const loadingToast = document.getElementById("loading-toast");
+  if (loadingToast) {
+    loadingToast.innerHTML = `獲取最新資料中<span class="bounce">${CONFIG.loadingText}</span>`;
+  }
+
+  const payMethod = document.getElementById("pay-method");
+  if (payMethod) {
+    payMethod.addEventListener("change", updateTotal);
+  }
+});
+
+// ==============================================
 //-- Firebase 動態監聽 + 提示
+// ==============================================
 let isInitialLoad = true;
 dbFirebase.ref(CONFIG.firebaseNode).on("value", (snapshot) => {
   const data = snapshot.val();
@@ -733,5 +763,5 @@ dbFirebase.ref(CONFIG.firebaseNode).on("value", (snapshot) => {
   }
 });
 
-loadProducts(); //畫面初始化
+loadProducts(); // 畫面初始化
 loadSettings();
