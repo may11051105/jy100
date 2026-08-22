@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>丹藥紀錄戰力統計_百分百金庸商城</title>
@@ -11,10 +11,9 @@
     <meta property="og:description" content="江湖補給 一站滿足" />
     <meta
       property="og:image"
-      content="https://may11051105.github.io/jy100/100.png"
-    />
+      content="https://may11051105.github.io/jy100/100.png"/>
 
-    <style>
+<style>
       :root {
         --bg: #f4f8f5; /*淺*/
         --bg1: #d4f1c7;
@@ -128,9 +127,9 @@
         filter: brightness(1.5);
       }
 
-      /* =========================
-                           *輸入角色名
-                        ========================= */
+/* =========================
+*輸入角色名
+========================= */
       .player-box {
         display: flex;
         align-items: center;
@@ -165,9 +164,9 @@
         box-shadow: 0 0 0 2px rgba(52, 128, 83, 0.12);
       }
 
-      /* =========================
-                           *主分類頁籤 Main Tabs
-                        ========================= */
+/* =========================
+*主分類頁籤 Main Tabs
+========================= */
       .main-nav {
         display: flex;
         border-bottom: 1px solid var(--border1);
@@ -194,9 +193,9 @@
         border-width: 3px 1px 3px 1px;
       }
 
-      /* =========================
-                           *小分類按鈕 Sub Tabs
-                        ========================= */
+/* =========================
+*小分類按鈕 Sub Tabs
+========================= */
       .sub-nav {
         display: flex;
         gap: 6px;
@@ -221,9 +220,9 @@
         font-weight: 600;
       }
 
-      /* =========================
-                           *卡片容器 面板
-                        ========================= */
+/* =========================
+*卡片容器 面板
+========================= */
       .container {
         max-width: 600px;
         font-size: 0.9rem;
@@ -236,9 +235,9 @@
         border: 1px solid var(--border);
       }
 
-      /* =========================
-                     *丹藥表格 pill-table - 基礎結構與共用
-                     ========================= */
+/* =========================
+*丹藥表格 pill-table - 基礎結構與共用
+========================= */
       .pill-table {
         width: 100%;
         table-layout: fixed;
@@ -260,9 +259,9 @@
         border-bottom: 1px solid #ddd;
       } /*門檻型標題*/
 
-      /* =========================
-               *獨立欄位與通用文字元件
-               ========================= */
+/* =========================
+*獨立欄位與通用文字元件
+========================= */
       /*第 1 欄：名稱 (共用一般丹藥與門檻項目)*/
       .pill-name,
       .pill-table th:first-child,
@@ -287,9 +286,9 @@
         border-radius: 50%;
         vertical-align: middle;
       }
-      /* ==========================================
-               第 2 欄：門檻效果文字 (吸收多餘寬度)
-               ========================================== */
+/* ==========================================
+第 2 欄：門檻效果文字 (吸收多餘寬度)
+========================================== */
       /* 表格長文字溢出省略處理 */
       .pill-text,
       .pill-table th:nth-child(2),
@@ -426,12 +425,11 @@
           display: none !important;
         }
       }
-    </style>
+</style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
     <script>
       const firebaseConfig = {
         apiKey: 'AIzaSyDF8YUyotMS75qsGoRQidcgZ7_J9MJbGE8',
@@ -446,10 +444,11 @@
       }
       firebase.initializeApp(firebaseConfig)
       const dbFirebase = firebase.database()
-    </script>
-  </head>
+</script>
+</head>
 
-  <body>
+
+<body>
     <div class="app">
       <div class="top-fixed">
         <header>
@@ -526,7 +525,8 @@
         </nav>
       </div>
 
-      <div id="top" style="top: 0px;"></div><!-- 錨點跳到此 --->
+      <div id="top" style="top: 0px;"></div>
+      <!-- 錨點跳到此 --->
       <div id="battle-sub-nav" class="sub-nav"></div>
       <div id="battle-items" class="container"></div>
 
@@ -643,487 +643,883 @@
           </button>
         </div>
       </div>
-
+      
       <div class="toast-msg"></div>
+      
+      
+ <div><a href="#top">↑ 回分類 ↑</a></div>
       <!-- toast測試按鈕 -->
       <button style="text-align: left" onclick="showToast('測試專用 勿驚')">
         🔒紀錄說明｜資料僅儲存在您目前的瀏覽器，不會自動上傳雲端。<br />
         ⚠️不同裝置｜換瀏覽器、換裝置、清除資料，紀錄將不復存在，需重新紀錄。<br />
         💾備份檔案｜若需要跨電腦保存，建議下載備份(.json)。
       </button>
-      <div><a href="#top">↑ 回分類 ↑</a></div>
-      
-      
-    </div><!--結尾 結束籤-->
+     
+</div><!--結尾 結束籤-->
     
-    <script>
-      let battleDB = []
-      let pillSearchText = ''
-      // ==============================================
-      // 【工具 1】統一管理屬性.全域常數定義
-      // ==============================================
-      const ATTRIBUTES_MAP = [
-        { short: '攻', full: '攻擊', key: '攻擊' },
-        { short: '防', full: '防禦', key: '防禦' },
-        { short: '爆', full: '爆擊', key: '爆擊' },
-        { short: '爆傷', full: '爆傷', key: '爆傷' },
-        { short: '抗爆', full: '抗爆', key: '抗爆' },
-        { short: '命中', full: '命中', key: '命中' },
-        { short: '閃', full: '閃避', key: '閃避' },
-        { short: '反', full: '反擊', key: '反擊' },
-        { short: '血', full: '氣血', key: '氣血' },
-      ]
-      // ==============================================
-      // 【工具 2】獨立的格式化邏輯
-      // ==============================================
-      //格式化數字
-      function cleanNumber(value, decimals = 10) {
-        if (!Number.isFinite(Number(value))) return 0
-        return Number(Number(value).toFixed(decimals))
-      }
 
-      // 格式化戰力效果：0.03 → 3%
+<script>
+let battleDB = []
+let pillSearchText = ''
+// ==============================================
+// 【工具 1】統一管理屬性.全域常數定義
+// ==============================================
+const ATTRIBUTES_MAP = [
+{ short: '攻', full: '攻擊', key: '攻擊' },
+{ short: '防', full: '防禦', key: '防禦' },
+{ short: '爆', full: '爆擊', key: '爆擊' },
+{ short: '爆傷', full: '爆傷', key: '爆傷' },
+{ short: '抗爆', full: '抗爆', key: '抗爆' },
+{ short: '命中', full: '命中', key: '命中' },
+{ short: '閃', full: '閃避', key: '閃避' },
+{ short: '反', full: '反擊', key: '反擊' },
+{ short: '血', full: '氣血', key: '氣血' },
+]
+// 百分比型戰力屬性
+const PERCENT_ATTRIBUTES = [
+        '爆擊',
+        '爆傷',
+        '抗爆',
+        '命中',
+        '閃避',
+        '反擊',
+      ]
+// ==============================================
+// 【工具 2】獨立的格式化邏輯
+// ==============================================
+//格式化數字
+function cleanNumber(value, decimals = 10) {
+              if (!Number.isFinite(Number(value))) return 0
+              return Number(Number(value).toFixed(decimals))
+}
+
+// 共用: 格式化戰力效果：0.03 → 3%
       function formatEffect(label, value) {
         if (value === null || value === undefined) return ''
         const num = cleanNumber(value)
         if (num === 0) return ''
-        if (num > 0 && num < 1) {
+        const percentKeys = [
+          '爆擊',
+          '爆傷',
+          '抗爆',
+          '命中',
+          '閃避',
+          '反擊',
+        ]
+        // label 可能是「爆擊」或「爆」
+        const isPercent =
+          percentKeys.includes(label) ||
+          ['爆', '爆傷', '抗爆', '命中', '閃', '反'].includes(label)
+
+        if (isPercent) {
           return `${label}+${cleanNumber(num * 100, 6)}%,`
         }
+
         return `${label}+${cleanNumber(num)},`
-      }
+}
+        // ==============================================
+      // 計算 第四欄位累計: 單顆丹藥 × 已食用數量
       // ==============================================
-      // 載入戰力資料
-      // ==============================================
-      async function loadBattleStats() {
-        try {
-          console.log('🌐 正在從資料庫讀取...')
-          const snapshot = await dbFirebase.ref('戰力統計').once('value')
-          const data = snapshot.val()
-          if (!data) return
-          battleDB = Array.isArray(data) ? data : Object.values(data)
-          console.log('✅ 成功讀取 ' + battleDB.length + ' 筆戰力資料')
-          switchMainTab('一般丹') //預設開啟第一個主分類
-        } catch (error) {
-          console.error('❌ 讀取 battleStats 失敗：', error)
-        }
-      }
-
-      // ==============================
-      // 切換主分類
-      // ==============================
-      function switchMainTab(mainCategory) {
-        pillSearchText = '' //切換主分類時，自動清空搜尋文字
-        const searchInput = document.getElementById('pill-search')
-        if (searchInput) searchInput.value = ''
-
-        document.getElementById('battle-sub-nav').innerHTML = ''
-        document.getElementById('battle-items').innerHTML = ''
-        document.querySelectorAll('.main-tab').forEach((btn) => {
-          btn.classList.remove('active')
-          if (btn.getAttribute('onclick').includes(`'${mainCategory}'`)) {
-            btn.classList.add('active')
-          }
-        })
-
-        const mainItems = battleDB.filter(
-          (item) => String(item.主分類 || '').trim() === mainCategory,
+            function calculateTotalEffects(item, count) {
+              const totalEffects = []
+              ATTRIBUTES_MAP.forEach((attr) => {
+                const baseNum = Number(item[attr.key])
+                if (!Number.isFinite(baseNum) || baseNum === 0) return
+                const total = cleanNumber(baseNum * count)
+      if (
+        ['爆', '爆傷', '抗爆', '命中', '閃', '反'].includes(attr.short)
+      ) {
+        totalEffects.push(
+          `${attr.short}+${cleanNumber(total * 100, 6)}%,`,
         )
-        if (mainItems.length === 0) {
-          document.getElementById('battle-items').innerHTML = `
-                                    <div class="card" style="text-align:center;">
-                                        <div>📦 ${mainCategory} 資料待更新</div>
-                                    </div>`
-          return
-        }
-        renderSubTabs(mainCategory, mainItems)
+      } else {
+        totalEffects.push(`${attr.short}+${cleanNumber(total)},`)
       }
-
-      // ==============================================
-      // 自動產生小分類按鈕
-      // ==============================================
-      function renderSubTabs(mainCategory, mainItems) {
-        const subNav = document.getElementById('battle-sub-nav')
-        subNav.innerHTML = ''
-        const subCategories = [
-          ...new Set(
-            mainItems
-              .map((item) => String(item.小分類 || '').trim())
-              .filter(Boolean),
-          ),
-        ]
-
-        subCategories.forEach((subName, index) => {
-          const button = document.createElement('button')
-          button.className = 'sub-btn' + (index === 0 ? ' active' : '')
-          button.textContent = subName
-
-          button.onclick = function () {
-            pillSearchText = '' //點小分類自動清空搜尋文字
-            if (document.getElementById('pill-search'))
-              document.getElementById('pill-search').value = ''
-            subNav
-              .querySelectorAll('.sub-btn')
-              .forEach((btn) => btn.classList.remove('active'))
-            button.classList.add('active')
-            renderBattleItems(mainCategory, subName)
-          }
-          subNav.appendChild(button)
-        })
-        if (subCategories.length > 0)
-          renderBattleItems(mainCategory, subCategories[0])
-      }
-
-      //--判斷小分類B
-      function checkIsSubCategoryB(items) {
-        if (!items || !Array.isArray(items) || items.length === 0) return false
-        return items.some((item) => {
-          const rawCode = String(item.代碼 || item.code || item.類型 || '')
-            .trim()
-            .toUpperCase()
-          const rawLimit = String(item.上限 || '')
-            .trim()
-            .toUpperCase()
-          return (
-            rawCode.startsWith('B') ||
-            rawLimit.startsWith('#B') ||
-            rawLimit.startsWith('B')
-          )
-        })
-      }
-
-      // ==============================================
-      // 計算單顆丹藥 × 已食用數量: 第四欄位 功能累計
-      // ==============================================
-      function calculateTotalEffects(item, count) {
-        const totalEffects = []
-        ATTRIBUTES_MAP.forEach((attr) => {
-          const baseNum = Number(item[attr.key])
-          if (!Number.isFinite(baseNum) || baseNum === 0) return
-          const total = cleanNumber(baseNum * count)
-          if (baseNum > 0 && baseNum < 1) {
-            totalEffects.push(`${attr.short}+${cleanNumber(total * 100, 6)}%,`)
-          } else {
-            totalEffects.push(`${attr.short}+${cleanNumber(total)},`)
-          }
-        })
-        //若計算屬性通通都沒設定
-        return totalEffects.length > 0 ? totalEffects.join(' ') : '無關戰力'
-      }
-
-      // ==============================================
-      // 列表渲染 → 自動產生丹藥列表
-      // ==============================================
-      function renderBattleItems(mainCategory, subCategory) {
-        const container = document.getElementById('battle-items')
-        if (!container) return
-        container.innerHTML = ''
-        let items = []
-
-        if (pillSearchText) {
-          items = battleDB.filter((item) => {
-            const name = String(item.名稱 || '').trim()
-            return name.toLowerCase().includes(pillSearchText)
           })
-        } else {
-          items = battleDB.filter(
-            (item) =>
-              String(item.主分類 || '').trim() === mainCategory &&
-              String(item.小分類 || '').trim() === subCategory,
-          )
+              //若計算屬性都沒設定
+              return totalEffects.length > 0 ? totalEffects.join(' ') : '無關戰力'
+}
+
+
+// ==============================================
+// 載入戰力資料
+// ==============================================
+async function loadBattleStats() {
+              try {
+                console.log('🌐 正在從資料庫讀取...')
+                const snapshot = await dbFirebase.ref('戰力統計').once('value')
+                const data = snapshot.val()
+                if (!data) return
+                battleDB = Array.isArray(data) ? data : Object.values(data)
+                console.log('✅ 成功讀取 ' + battleDB.length + ' 筆戰力資料')
+                switchMainTab('一般丹') //預設開啟第一個主分類
+              } catch (error) {
+                console.error('❌ 讀取 battleStats 失敗：', error)
+              }
+}
+
+// ==============================
+// 切換主分類
+// ==============================
+function switchMainTab(mainCategory) {
+              pillSearchText = '' //切換主分類時，自動清空搜尋文字
+              const searchInput = document.getElementById('pill-search')
+              if (searchInput) searchInput.value = ''
+
+              document.getElementById('battle-sub-nav').innerHTML = ''
+              document.getElementById('battle-items').innerHTML = ''
+              document.querySelectorAll('.main-tab').forEach((btn) => {
+                btn.classList.remove('active')
+                if (btn.getAttribute('onclick').includes(`'${mainCategory}'`)) {
+                  btn.classList.add('active')
+                }
+              })
+
+              const mainItems = battleDB.filter(
+                (item) => String(item.主分類 || '').trim() === mainCategory,
+              )
+              if (mainItems.length === 0) {
+                document.getElementById('battle-items').innerHTML = `
+                                          <div class="card" style="text-align:center;">
+                                              <div>📦 ${mainCategory} 資料待更新</div>
+                                          </div>`
+                return
+              }
+              renderSubTabs(mainCategory, mainItems)
+}
+
+
+
+      // ==============================================
+      // 【上限欄位總管】找出代號後判斷小分類是屬於哪種卡片
+      // NUMBER  = 純數字 → 一般丹藥
+      // HASH    = #開頭 → 卡片#  →收集／累計門檻型
+      // TYPE_B  = B開頭 → 卡片B  →等級型／對應等級屬性效果
+      // TYPE_Y  = Y開頭 → 卡片Y  →輸入型／輸入數值換算所得效果
+      // UNKNOWN = 其他
+      // ==============================================
+      function getSubCategoryType(items) {
+        if (!items || !Array.isArray(items) || items.length === 0) {
+          return 'UNKNOWN'
         }
 
-        if (!items || items.length === 0) {
-          container.innerHTML = `<div class="card" style="text-align:center; padding:20px;">⚠️ 載入資料中</div>`
-          return
-        }
+        const types = items.map((item) => {
+          const limit = String(item.上限 || '').trim()
 
-        const isSubB = checkIsSubCategoryB(items)
-
-        //#.判斷：上限有 # 符號就自動切換成收集介面
-        if (isSubB && !pillSearchText) {
-          const subBCard = renderSubCategoryBHtml(mainCategory, subCategory)
-          container.appendChild(subBCard)
-        } else if (isThresholdSubCategory(subCategory) && !pillSearchText) {
-          const savedKey = `THRESHOLD__${mainCategory}__${subCategory}`
-          const currentAmount = Number(playerRecord.pills[savedKey]) || 0
-          const result = calculateThresholdStats(subCategory, currentAmount)
-
-          const card = document.createElement('div')
-          card.className = 'card'
-          card.innerHTML = `
-                                  <div class="threshold-summary-box">
-                                      <strong>✨當前累計效果：</strong><br>
-                                      <span id="threshold-summary">${result.summaryText}</span>
-                                  </div>
-                                  <div style="margin-bottom:10px; font-weight:bold;">
-                                      📊 當前進度：
-                                      <input type="number" class="pill-count-input" id="threshold-input" value="${currentAmount}" min="0">
-                                  </div>
-                                  <table class="pill-table">
-                                      <thead>
-                                          <tr>
-                                              <th>門檻項目</th>
-                                              <th>獲得效果</th>
-                                              <th class="pill-state">狀態</th>
-                                          </tr>
-                                      </thead>
-                                      <tbody id="threshold-table-body">
-                                          ${generateTableRowsHtml(result.itemsStatus)}
-                                      </tbody>
-                                  </table>
-                                `
-          container.appendChild(card)
-
-          // #.綁定數字輸入監聽 (門檻型專用)
-          const input = card.querySelector('#threshold-input')
-          if (input) {
-            input.addEventListener('input', function () {
-              let val = Number(this.value) || 0
-              //動態取得該小分類的「門檻上限」
-              const maxThreshold = getMaxThresholdForSubCategory(subCategory)
-              if (maxThreshold > 0)
-                val = Math.max(0, Math.min(val, maxThreshold))
-              this.value = val //把校正後的數值上限寫回畫面輸入框
-              ensurePlayerName() //確保玩家已有名稱
-              playerRecord.pills[savedKey] = val //儲存紀錄
-              savePlayerRecord()
-
-              const updatedResult = calculateThresholdStats(subCategory, val)
-              card.querySelector('#threshold-summary').textContent =
-                updatedResult.summaryText
-              card.querySelector('#threshold-table-body').innerHTML =
-                generateTableRowsHtml(updatedResult.itemsStatus)
-            })
+          // 純數字 → 一般丹藥
+          if (/^\d+(?:\.\d+)?$/.test(limit)) {
+            return 'NUMBER'
           }
-        } else {
-          items.forEach((item) => {
-            const name = String(item.名稱 || '無資料')
-            const limit = parseMaxLimit(item.上限) || 0
-            const main = String(item.主分類 || '')
-            const sub = String(item.小分類 || '')
-            const pillKey = `${main}__${sub}__${name}`
 
-            const savedCount = Number(playerRecord.pills[pillKey]) || 0
-            const count = Math.max(0, Math.min(savedCount, limit))
+          // 取得上限第一個字元
+          const code = limit.charAt(0).toUpperCase()
 
-            const effects = [
-              formatEffect('攻', item.攻擊),
-              formatEffect('防', item.防禦),
-              formatEffect('爆', item.爆擊),
-              formatEffect('爆傷', item.爆傷),
-              formatEffect('抗爆', item.抗爆),
-              formatEffect('命中', item.命中),
-              formatEffect('閃', item.閃避),
-              formatEffect('反', item.反擊),
-              formatEffect('血', item.氣血),
-              String(item.其它功能 || '').trim(),
-            ].filter(Boolean)
+          if (code === '#') return 'HASH'
+          if (code === 'B') return 'TYPE_B'
+          if (code === 'Y') return 'TYPE_Y'
 
-            const effectText = effects.length > 0 ? effects.join(' ') : '無效果'
-            const totalEffectText = calculateTotalEffects(item, count)
+          return 'UNKNOWN'
+        })
 
-            const card = document.createElement('div')
-            card.className = 'card'
-            card.innerHTML = `
-                                        <table class="pill-table">
-                                            <tr>
-                                                <td class="pill-name">${name}</td>
-                                                <td class="pill-effect">${effectText}</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="pill-count">
-                                                    <input type="number" class="pill-count-input" value="${count}" min="0" max="${limit}">
-                                                    <span>/${limit}</span>
-                                                </td>
-                                                <td class="pill-total">${totalEffectText}</td>
-                                            </tr>
-                                        </table>`
+        if (types.includes('TYPE_B')) return 'TYPE_B'
+        if (types.includes('TYPE_Y')) return 'TYPE_Y'
+        if (types.includes('HASH')) return 'HASH'
+        if (types.includes('NUMBER')) return 'NUMBER'
 
-            const input = card.querySelector('.pill-count-input')
-            if (input) {
-              input.addEventListener('change', function () {
-                let value = Number(this.value) || 0
-                if (limit > 0) value = Math.max(0, Math.min(value, limit))
-                this.value = value
+        return 'UNKNOWN'
+}
+      
+// ==============================================
+// 產生小分類按鈕
+// ==============================================
+function renderSubTabs(mainCategory, mainItems) {
+              const subNav = document.getElementById('battle-sub-nav')
+              subNav.innerHTML = ''
+              const subCategories = [
+                ...new Set(
+                  mainItems
+                    .map((item) => String(item.小分類 || '').trim())
+                    .filter(Boolean),
+                ),
+              ]
+              subCategories.forEach((subName, index) => {
+                const button = document.createElement('button')
+                button.className = 'sub-btn' + (index === 0 ? ' active' : '')
+                button.textContent = subName
 
-                ensurePlayerName()
-                playerRecord.pills[pillKey] = value
-                savePlayerRecord()
+                button.onclick = function () {
+                  pillSearchText = '' //點小分類自動清空搜尋文字
+                  if (document.getElementById('pill-search'))
+                    document.getElementById('pill-search').value = ''
+                  subNav
+                    .querySelectorAll('.sub-btn')
+                    .forEach((btn) => btn.classList.remove('active'))
+                  button.classList.add('active')
+                  renderBattleItems(mainCategory, subName)
+                }
+                subNav.appendChild(button)
+              })
+              if (subCategories.length > 0)
+                renderBattleItems(mainCategory, subCategories[0])
+            }
 
-                card.querySelector('.pill-total').textContent =
-                  calculateTotalEffects(item, value)
+
+
+
+      // ==============================================
+      // 分派工作: 渲染 → 產生列表
+      // ==============================================
+            function renderBattleItems(mainCategory, subCategory) {
+              const container = document.getElementById('battle-items')
+              if (!container) return
+              container.innerHTML = ''
+              let items = []
+              if (pillSearchText) {
+                items = battleDB.filter((item) => {
+                  const name = String(item.名稱 || '').trim()
+                  return name.toLowerCase().includes(pillSearchText)
+                })
+              } else {
+                items = battleDB.filter(
+                  (item) =>
+                    String(item.主分類 || '').trim() === mainCategory &&
+                    String(item.小分類 || '').trim() === subCategory,
+                )
+              }
+
+              if (!items || items.length === 0) {
+                container.innerHTML = `<div class="card" style="text-align:center; padding:20px;">⚠️ 載入資料中</div>`
+                return
+              }
+
+              const subCategoryType = getSubCategoryType(items)
+              console.log(`📂 ${mainCategory} / ${subCategory} → ${subCategoryType}`
+      )
+
+      //--小分類 #/B/Y：(切換成非丹藥介面) --
+      // Y. 卡片Y → 手動輸入型
+      if (subCategoryType === 'TYPE_Y' && !pillSearchText) {
+        const subYCard = renderSubCategoryYHtml(mainCategory, subCategory)
+        container.appendChild(subYCard)
+
+      // B. 卡片B → 等級型
+      } else if (subCategoryType === 'TYPE_B' && !pillSearchText) {
+        const subBCard = renderSubCategoryBHtml(mainCategory, subCategory)
+        container.appendChild(subBCard)
+
+      // #. 卡片# → 收集／累計門檻型
+      } else if (subCategoryType === 'HASH' && !pillSearchText) {
+        const thresholdCard = renderThresholdCard(mainCategory, subCategory)
+        container.appendChild(thresholdCard)
+
+      // 一般丹藥
+      } else {
+        items.forEach((item) => {
+          const card = renderNormalPillCard(item)
+          container.appendChild(card)
+        })
+      }
+        }
+
+
+      //--渲染: 一般丹藥 (純數)
+      function renderNormalPillCard(item) {
+        const name = String(item.名稱 || '無資料')
+        const limit = parseMaxLimit(item.上限) || 0
+        const main = String(item.主分類 || '')
+        const sub = String(item.小分類 || '')
+        const pillKey = `${main}__${sub}__${name}`
+        const savedCount = Number(playerRecord.pills[pillKey]) || 0
+        const count = Math.max(0, Math.min(savedCount, limit))
+        const effects = getItemEffects(item)
+        const effectText = effects.length > 0 ? effects.join(' ') : '無效果'
+        const totalEffectText = calculateTotalEffects(item, count)
+        const card = document.createElement('div')
+        card.className = 'card'
+        card.innerHTML = `
+          <table class="pill-table">
+            <tr>
+              <td class="pill-name">${name}</td>
+              <td class="pill-effect">${effectText}</td>
+            </tr>
+
+            <tr>
+              <td class="pill-count">
+                <input
+                  type="number"
+                  class="pill-count-input"
+                  value="${count}"
+                  min="0"
+                  max="${limit}"
+                >
+                <span>/${limit}</span>
+              </td>
+
+              <td class="pill-total">${totalEffectText}</td>
+            </tr>
+          </table>`
+
+        const input = card.querySelector('.pill-count-input')
+
+        if (input) {
+          input.addEventListener('change', function () {
+            let value = Number(this.value) || 0
+
+            if (limit > 0) {
+              value = Math.max(0, Math.min(value, limit))
+            }
+
+            this.value = value
+
+            ensurePlayerName()
+            playerRecord.pills[pillKey] = value
+            savePlayerRecord()
+
+            card.querySelector('.pill-total').textContent =
+              calculateTotalEffects(item, value)
+          })
+        }
+
+        return card
+      }
+
+      // ==============================================
+      // 渲染：卡片 Y 手動輸入／比例換算型
+      // ==============================================
+      function renderSubCategoryYHtml(mainCategory, subCategory) {
+        const result = calculateSubCategoryYStats(
+          mainCategory,
+          subCategory,
+        )
+
+        const card = document.createElement('div')
+        card.className = 'card'
+
+        card.innerHTML = `
+          <div class="threshold-summary-box">
+            <strong>⚔️ ${subCategory} 當前累計效果：</strong><br>
+            <span class="y-summary-text"
+              style="color:#15803d; font-weight:bold;">
+              ${result.summaryText}
+            </span>
+          </div>
+
+          <table class="pill-table">
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>獲得效果</th>
+                <th style="text-align:center;">現有值 / 最大值</th>
+              </tr>
+            </thead>
+
+            <tbody class="y-tbody">
+              ${generateSubYTableRowsHtml(result.itemsStatus)}
+            </tbody>
+          </table>
+        `
+
+        bindYInputEvents(card, mainCategory, subCategory)
+
+        return card
+      }
+
+      // ==============================================
+      // 共用：生成 Y 型表格 HTML
+      // ==============================================
+      function generateSubYTableRowsHtml(itemsStatus) {
+        if (!itemsStatus || itemsStatus.length === 0) {
+          return `
+            <tr>
+              <td colspan="3" style="text-align:center;">
+                暫無資料
+              </td>
+            </tr>
+          `
+        }
+
+        return itemsStatus
+          .map(
+            (item) => `
+              <tr style="border-bottom:1px dashed #ddd;">
+                <td class="pill-name">
+                  ${item.name}
+                </td>
+
+                <td style="color:#15803d;">
+                  ${item.effectText}
+                </td>
+
+                <td style="text-align:center; width:110px;">
+                  <input
+                    type="number"
+                    class="pill-count-input y-value-input"
+                    value="${item.currentValue}"
+                    min="0"
+                    max="${item.maxValue}"
+                    data-key="${item.savedKey}"
+                    data-max="${item.maxValue}"
+                    style="width:55px;"
+                  >
+                  <span style="font-size:0.8rem;">
+                    /${item.maxValue}
+                  </span>
+                </td>
+              </tr>
+            `,
+          )
+          .join('')
+      }
+
+      // ==============================================
+      // Y 型輸入事件
+      // ==============================================
+      function bindYInputEvents(card, mainCategory, subCategory) {
+        card.querySelectorAll('.y-value-input').forEach((input) => {
+          input.addEventListener('change', function () {
+            let value = Number(this.value) || 0
+
+            const maxValue =
+              Number(this.dataset.max) || 0
+
+            value = Math.max(0, Math.min(value, maxValue))
+
+            this.value = value
+
+            const savedKey = this.dataset.key
+
+            ensurePlayerName()
+
+            playerRecord.pills[savedKey] = value
+
+            savePlayerRecord()
+
+            const updatedResult =
+              calculateSubCategoryYStats(
+                mainCategory,
+                subCategory,
+              )
+
+            card.querySelector('.y-summary-text').textContent =
+              updatedResult.summaryText
+
+            card.querySelector('.y-tbody').innerHTML =
+              generateSubYTableRowsHtml(
+                updatedResult.itemsStatus,
+              )
+
+            bindYInputEvents(
+              card,
+              mainCategory,
+              subCategory,
+            )
+          })
+        })
+      }
+
+
+
+
+      //--渲染：卡片 # 收集／累計門檻型
+      function renderThresholdCard(mainCategory, subCategory) {
+        const savedKey = `THRESHOLD__${mainCategory}__${subCategory}`
+        const currentAmount = Number(playerRecord.pills[savedKey]) || 0
+        const result = calculateThresholdStats(subCategory, currentAmount)
+
+        const card = document.createElement('div')
+        card.className = 'card'
+
+        card.innerHTML = `
+          <div class="threshold-summary-box">
+            <strong>✨當前累計效果：</strong><br>
+            <span id="threshold-summary">${result.summaryText}</span>
+          </div>
+
+          <div style="margin-bottom:10px; font-weight:bold;">
+            📊 當前進度：
+            <input
+              type="number"
+              class="pill-count-input"
+              id="threshold-input"
+              value="${currentAmount}"
+              min="0"
+            >
+          </div>
+
+          <table class="pill-table">
+            <thead>
+              <tr>
+                <th>門檻項目</th>
+                <th>獲得效果</th>
+                <th class="pill-state">狀態</th>
+              </tr>
+            </thead>
+
+            <tbody id="threshold-table-body">
+              ${generateTableRowsHtml(result.itemsStatus)}
+            </tbody>
+          </table>
+        `
+        // 綁定 # 分類的數字輸入
+        const input = card.querySelector('#threshold-input')
+
+        if (input) {
+          input.addEventListener('input', function () {
+            let val = Number(this.value) || 0
+
+            // 動態取得該小分類的門檻上限
+            const maxThreshold = getMaxThresholdForSubCategory(subCategory)
+
+            if (maxThreshold > 0) {
+              val = Math.max(0, Math.min(val, maxThreshold))
+            }
+
+            this.value = val
+
+            ensurePlayerName()
+
+            playerRecord.pills[savedKey] = val
+            savePlayerRecord()
+
+            const updatedResult = calculateThresholdStats(subCategory, val)
+
+            card.querySelector('#threshold-summary').textContent =
+              updatedResult.summaryText
+
+            card.querySelector('#threshold-table-body').innerHTML =
+              generateTableRowsHtml(updatedResult.itemsStatus)
+          })
+        }
+
+        return card
+      }
+
+            //-- #. 從上限欄位解析出門檻的純數字 (如: "#4" 或 "Y4" -> 4)
+            function getThresholdValue(item) {
+              const raw = String(item.上限 || '').replace(/[^0-9]/g, '')
+              return Number(raw) || 0
+            }
+
+            //-- #. 取得該小分類中的「最高門檻值」 (例如: 從 #1,#5,#24 中找出 24)
+            function getMaxThresholdForSubCategory(subCategory) {
+              if (!subCategory) return 0
+              const items = battleDB.filter(
+                (item) => String(item.小分類 || '').trim() === subCategory,
+              )
+              if (items.length === 0) return 0
+              return Math.max(...items.map((item) => getThresholdValue(item)))
+            }
+
+            //-- #.卡片小計. 計算累計效果（自動解析符號）
+            function calculateThresholdStats(subCategory, currentAmount) {
+              const thresholdItems = battleDB.filter(
+                (item) => String(item.小分類 || '').trim() === subCategory,
+              )
+              const activeStats = createEmptyStats();
+
+              thresholdItems.forEach((item) => {
+                const threshold = getThresholdValue(item)
+                if (currentAmount >= threshold && threshold > 0) {
+                  ATTRIBUTES_MAP.forEach((attr) => {
+                    const num = Number(item[attr.key])
+                    if (Number.isFinite(num) && num !== 0)
+                      activeStats[attr.key] += num
+                  })
+                }
+              })
+
+              const summaryText = Object.entries(activeStats)
+        .filter(([_, val]) => val > 0)
+        .map(([key, val]) => {
+          const attr = ATTRIBUTES_MAP.find((a) => a.key === key)
+          return attr ? formatEffect(attr.short, val) : ''
+        })
+        .filter(Boolean)
+        .join(' ')
+
+              return {
+                activeStats,
+                summaryText: summaryText || '無屬性效果',
+                itemsStatus: thresholdItems.map((item) => {
+                  const threshold = getThresholdValue(item)
+                  return {
+                    name: item.名稱,
+                    threshold: threshold,
+                    isUnlocked: currentAmount >= threshold && threshold > 0,
+
+                    effectText: getItemEffects(item).join(' '),
+                  }
+                }),
+              }
+            }
+
+
+      //--- 渲染: B.卡片 等級型／對應等級屬性效果
+            function renderSubCategoryBHtml(mainCategory, subCategory) {
+              const result = calculateSubCategoryBStats(mainCategory, subCategory)
+              const card = document.createElement('div')
+              card.className = 'card'
+
+              card.innerHTML = `<div class="threshold-summary-box">
+              <strong>⚔️ ${subCategory}當前總累計效果：</strong><br>
+                                          <span class="hero-summary-text" style="color: #15803d; font-weight: bold;">${result.summaryText}</span>
+                                      </div>
+                                      <table class="pill-table">
+                                          <thead>
+                                              <tr>
+                                                  <th>${subCategory}項目</th>
+                                                  <th>獲得效果</th>
+                                                  <th style="text-align:center;">當前進度</th>
+                                              </tr>
+                                          </thead>
+                                          <tbody class="hero-tbody">
+                                              ${generateSubBTableRowsHtml(result.itemsStatus, mainCategory, subCategory)}
+                                          </tbody>
+                                      </table>`
+
+              bindHeroInputEvents(card, mainCategory, subCategory)
+              return card
+            }
+
+            // ==============================================
+            //-- 卡片B 群組化:上限欄位為B開頭
+            // ==============================================
+            function parseCharacterNameAndLevel(fullName) {
+              const name = String(fullName || '').trim()
+              const match = name.match(/^(.*?)(?:(\d+)[等級]?)?$/)
+              if (match && match[2] !== undefined) {
+                return { baseName: match[1].trim(), level: parseInt(match[2], 10) }
+              }
+              return { baseName: name, level: 1 }
+            }
+
+      //--  B.卡片 累計計算
+            function calculateSubCategoryBStats(mainCategory, subCategory) {
+              const rawItems = battleDB.filter(
+                (item) =>
+                  String(item.主分類 || '').trim() === mainCategory &&
+                  String(item.小分類 || '').trim() === subCategory, //由該小分類命標題
+              )
+
+              const charactersMap = {}
+              rawItems.forEach((item) => {
+                const { baseName, level } = parseCharacterNameAndLevel(item.名稱)
+                if (!charactersMap[baseName]) {
+                  charactersMap[baseName] = {
+                    name: baseName,
+                    maxLevel: 0,
+                    levels: {},
+                  }
+                }
+                charactersMap[baseName].levels[level] = item
+                if (level > charactersMap[baseName].maxLevel) {
+                  charactersMap[baseName].maxLevel = level
+                }
+              })
+
+              const activeStats = createEmptyStats();
+
+              const itemsStatus = Object.values(charactersMap).map((hero) => {
+                const savedKey = `HERO__${mainCategory}__${subCategory}__${hero.name}`
+                const currentLevel = Number(playerRecord.pills[savedKey]) || 0
+                const currentLevelData = hero.levels[currentLevel]
+                let effectText = '未啟用 (0等)'
+
+               if (currentLevel > 0 && currentLevelData) {
+
+        // ① 畫面：顯示這一等的完整效果
+        effectText = getItemEffects(currentLevelData).join(' ')
+
+        // ② 戰力：只計算可計入戰力的數值
+        ATTRIBUTES_MAP.forEach((attr) => {
+          const val = Number(currentLevelData[attr.key])
+
+          if (Number.isFinite(val) && val !== 0) {
+            activeStats[attr.key] += val
+          }
+        })
+
+        if (!effectText) {
+          effectText = `${currentLevel}等 已解鎖`
+        }
+      }
+
+                return {
+                  name: hero.name,
+                  maxLevel: hero.maxLevel || 10,
+                  currentLevel: currentLevel,
+                  savedKey: savedKey,
+                  effectText: effectText,
+                  isUnlocked: currentLevel > 0,
+                }
+              })
+
+              const summaryText = Object.entries(activeStats)
+        .filter(([_, val]) => val > 0)
+        .map(([key, val]) => {
+          const attr = ATTRIBUTES_MAP.find((a) => a.key === key)
+          return attr ? formatEffect(attr.short, val) : ''
+        })
+        .filter(Boolean)
+        .join(' ')
+
+              return {
+                activeStats,
+                summaryText: summaryText || '無屬性加成',
+                itemsStatus,
+              }
+            }
+
+
+            function generateSubBTableRowsHtml(
+              itemsStatus,
+              mainCategory,
+              subCategory,
+            ) {
+              if (!itemsStatus || itemsStatus.length === 0)
+                return `<tr><td colspan="3" style="text-align:center;">暫無資料</td></tr>`
+
+              return itemsStatus
+                .map(
+                  (item) => `
+                                  <tr style="border-bottom:1px dashed #ddd;">
+                                      <td class="pill-name">${item.name}</td>
+                                      <td style="color:${item.isUnlocked ? '#15803d' : '#888'};">${item.effectText}</td>
+                                      <td style="text-align: center; width: 100px;">
+                                          <input
+                                              type="number"
+                                              class="pill-count-input hero-level-input"
+                                              value="${item.currentLevel}"
+                                              min="0"
+                                              max="${item.maxLevel}"
+                                              data-key="${item.savedKey}"
+                                              data-max="${item.maxLevel}"
+                                              style="width: 45px;">
+                                          <span style="font-size: 0.8rem;">/${item.maxLevel}等</span>
+                                      </td>
+                                  </tr>
+                                  `,
+                )
+                .join('')
+            }
+
+
+            function bindHeroInputEvents(card, mainCategory, subCategory) {
+              card.querySelectorAll('.hero-level-input').forEach((input) => {
+                input.addEventListener('change', function () {
+                  let val = parseInt(this.value, 10) || 0
+                  const maxLevel = parseInt(this.dataset.max, 10) || 10
+                  const savedKey = this.dataset.key
+
+                  val = Math.max(0, Math.min(val, maxLevel))
+                  this.value = val
+
+                  ensurePlayerName()
+                  playerRecord.pills[savedKey] = val
+                  savePlayerRecord()
+
+                  const updatedResult = calculateSubCategoryBStats(
+                    mainCategory,
+                    subCategory,
+                  )
+                  card.querySelector('.hero-summary-text').textContent =
+                    updatedResult.summaryText
+                  card.querySelector('.hero-tbody').innerHTML =
+                    generateSubBTableRowsHtml(
+                      updatedResult.itemsStatus,
+                      mainCategory,
+                      subCategory,
+                    )
+                  bindHeroInputEvents(card, mainCategory, subCategory)
+
+                  if (typeof updateStatsModal === 'function') updateStatsModal()
+                })
               })
             }
-            container.appendChild(card)
-          })
-        }
-      }
 
-      // ==============================================
-      //-- #. 判斷小分類是否為「門檻/收集型系統」任一筆的上限欄位帶有 '#' 或 'Y'
-      // ==============================================
-      function isThresholdSubCategory(subCategory) {
-        if (!subCategory) return false
-        return battleDB.some(
-          (item) =>
-            String(item.小分類 || '').trim() === subCategory &&
-            (String(item.上限 || '').includes('#') ||
-              String(item.上限 || '')
-                .toUpperCase()
-                .includes('Y')),
-        )
-      }
 
-      //-- #. 從上限欄位解析出門檻的純數字 (如: "#4" 或 "Y4" -> 4)
-      function getThresholdValue(item) {
-        const raw = String(item.上限 || '').replace(/[^0-9]/g, '')
-        return Number(raw) || 0
-      }
-
-      //-- #. 取得該小分類中的「最高門檻值」 (例如: 從 #1,#5,#24 中找出 24)
-      function getMaxThresholdForSubCategory(subCategory) {
-        if (!subCategory) return 0
-        const items = battleDB.filter(
-          (item) => String(item.小分類 || '').trim() === subCategory,
-        )
-        if (items.length === 0) return 0
-        return Math.max(...items.map((item) => getThresholdValue(item)))
-      }
-
-      //-- #. 計算門檻型系統（自動解析符號）
-      function calculateThresholdStats(subCategory, currentAmount) {
-        const thresholdItems = battleDB.filter(
-          (item) => String(item.小分類 || '').trim() === subCategory,
-        )
-        const activeStats = {
-          攻擊: 0,
-          防禦: 0,
-          爆擊: 0,
-          爆傷: 0,
-          抗爆: 0,
-          命中: 0,
-          閃避: 0,
-          反擊: 0,
-          氣血: 0,
-        }
-
-        thresholdItems.forEach((item) => {
-          const threshold = getThresholdValue(item)
-          if (currentAmount >= threshold && threshold > 0) {
-            ATTRIBUTES_MAP.forEach((attr) => {
-              const num = Number(item[attr.key])
-              if (Number.isFinite(num) && num !== 0)
-                activeStats[attr.key] += num
-            })
-          }
-        })
-
-        const summaryText = Object.entries(activeStats)
-          .filter(([_, val]) => val > 0)
-          .map(([label, val]) => `${label} +${cleanNumber(val)}`)
-          .join(' ')
-
-        return {
-          activeStats,
-          summaryText: summaryText || '無屬性效果',
-          itemsStatus: thresholdItems.map((item) => {
-            const threshold = getThresholdValue(item)
-            return {
-              name: item.名稱,
-              threshold: threshold,
-              isUnlocked: currentAmount >= threshold && threshold > 0,
-              effectText: ATTRIBUTES_MAP.map((attr) =>
-                formatEffect(attr.short, item[attr.key]),
-              )
-                .filter(Boolean)
-                .join(' '),
+            function parseMaxLimit(limitStr) {
+              if (!limitStr) return 0
+              const match = String(limitStr).match(/\d+/)
+              return match ? parseInt(match[0], 10) : 0
             }
-          }),
-        }
-      }
+
 
       // ==============================================
-      //-- 小分類B 群組化:上限欄位為B開頭
+      // 卡片 Y 型計算
+      // 輸入目前累計值 → 按最大值比例換算目前效果
       // ==============================================
-      function parseCharacterNameAndLevel(fullName) {
-        const name = String(fullName || '').trim()
-        const match = name.match(/^(.*?)(?:(\d+)[等級]?)?$/)
-        if (match && match[2] !== undefined) {
-          return { baseName: match[1].trim(), level: parseInt(match[2], 10) }
-        }
-        return { baseName: name, level: 1 }
-      }
-
-      function calculateSubCategoryBStats(mainCategory, subCategory) {
+      function calculateSubCategoryYStats(mainCategory, subCategory) {
         const rawItems = battleDB.filter(
           (item) =>
             String(item.主分類 || '').trim() === mainCategory &&
-            String(item.小分類 || '').trim() === subCategory, //由該小分類命標題
+            String(item.小分類 || '').trim() === subCategory,
         )
 
-        const charactersMap = {}
-        rawItems.forEach((item) => {
-          const { baseName, level } = parseCharacterNameAndLevel(item.名稱)
-          if (!charactersMap[baseName]) {
-            charactersMap[baseName] = {
-              name: baseName,
-              maxLevel: 0,
-              levels: {},
+        const activeStats = createEmptyStats()
+
+        const itemsStatus = rawItems.map((item) => {
+          const name = String(item.名稱 || '').trim()
+
+          // Y2500 → 2500
+          const maxValue = parseMaxLimit(item.上限)
+
+          const savedKey = `Y__${mainCategory}__${subCategory}__${name}`
+          const currentValue = Number(playerRecord.pills[savedKey]) || 0
+
+          const value = Math.max(0, Math.min(currentValue, maxValue))
+
+          const effectParts = []
+
+          ATTRIBUTES_MAP.forEach((attr) => {
+            const maxEffect = Number(item[attr.key])
+
+            if (!Number.isFinite(maxEffect) || maxEffect === 0) return
+
+            // 目前值 / 最大值 × 最大效果
+            const currentEffect = cleanNumber(
+              (value / maxValue) * maxEffect,
+            )
+
+            if (currentEffect !== 0) {
+              activeStats[attr.key] += currentEffect
+
+              // 小分類卡片使用短名稱：爆、閃、反...
+              effectParts.push(
+                formatEffect(attr.short, currentEffect),
+              )
             }
-          }
-          charactersMap[baseName].levels[level] = item
-          if (level > charactersMap[baseName].maxLevel) {
-            charactersMap[baseName].maxLevel = level
-          }
-        })
+          })
 
-        const activeStats = {
-          攻擊: 0,
-          防禦: 0,
-          爆擊: 0,
-          爆傷: 0,
-          抗爆: 0,
-          命中: 0,
-          閃避: 0,
-          反擊: 0,
-          氣血: 0,
-        }
+          // 其它功能只顯示，不加入戰力計算
+          const otherFunction = String(item.其它功能 || '').trim()
 
-        const itemsStatus = Object.values(charactersMap).map((hero) => {
-          const savedKey = `HERO__${mainCategory}__${subCategory}__${hero.name}`
-          const currentLevel = Number(playerRecord.pills[savedKey]) || 0
-          const currentLevelData = hero.levels[currentLevel]
-          let effectText = '未啟用 (0等)'
-
-          if (currentLevel > 0 && currentLevelData) {
-            const effectParts = []
-            ATTRIBUTES_MAP.forEach((attr) => {
-              const val = Number(currentLevelData[attr.key])
-              if (Number.isFinite(val) && val > 0) {
-                effectParts.push(`${attr.short} +${val}`)
-                activeStats[attr.key] += val
-              }
-            })
-            effectText =
-              effectParts.length > 0
-                ? effectParts.join(' ')
-                : `${currentLevel}等 已解鎖`
+          if (otherFunction) {
+            effectParts.push(otherFunction)
           }
 
           return {
-            name: hero.name,
-            maxLevel: hero.maxLevel || 10,
-            currentLevel: currentLevel,
-            savedKey: savedKey,
-            effectText: effectText,
-            isUnlocked: currentLevel > 0,
+            name,
+            maxValue,
+            currentValue: value,
+            savedKey,
+            effectText:
+              effectParts.length > 0
+                ? effectParts.join(' ')
+                : '無效果',
           }
         })
 
+        // Y 卡片上方小計
         const summaryText = Object.entries(activeStats)
-          .filter(([_, val]) => val > 0)
-          .map(([key, val]) => `${key} +${val}`)
+          .filter(([_, val]) => val !== 0)
+          .map(([label, val]) => {
+            const attr = ATTRIBUTES_MAP.find((a) => a.key === label)
+            return attr
+              ? formatEffect(attr.short, val)
+              : ''
+          })
+          .filter(Boolean)
           .join(' ')
 
         return {
@@ -1133,122 +1529,540 @@
         }
       }
 
-      function generateSubBTableRowsHtml(
-        itemsStatus,
-        mainCategory,
-        subCategory,
-      ) {
-        if (!itemsStatus || itemsStatus.length === 0)
-          return `<tr><td colspan="3" style="text-align:center;">暫無資料</td></tr>`
 
-        return itemsStatus
-          .map(
-            (item) => `
-                            <tr style="border-bottom:1px dashed #ddd;">
-                                <td class="pill-name">${item.name}</td>
-                                <td style="color:${item.isUnlocked ? '#15803d' : '#888'};">${item.effectText}</td>
-                                <td style="text-align: center; width: 100px;">
-                                    <input
-                                        type="number"
-                                        class="pill-count-input hero-level-input"
-                                        value="${item.currentLevel}"
-                                        min="0"
-                                        max="${item.maxLevel}"
-                                        data-key="${item.savedKey}"
-                                        data-max="${item.maxLevel}"
-                                        style="width: 45px;">
-                                    <span style="font-size: 0.8rem;">/${item.maxLevel}等</span>
-                                </td>
-                            </tr>
-                            `,
-          )
-          .join('')
-      }
 
-      function renderSubCategoryBHtml(mainCategory, subCategory) {
-        const result = calculateSubCategoryBStats(mainCategory, subCategory)
-        const card = document.createElement('div')
-        card.className = 'card'
 
-        card.innerHTML = `
-                                <div class="threshold-summary-box">
-                                    <strong>⚔️ ${subCategory}當前總累計效果：</strong><br>
-                                    <span class="hero-summary-text" style="color: #15803d; font-weight: bold;">${result.summaryText}</span>
-                                </div>
-                                <table class="pill-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${subCategory}項目</th>
-                                            <th>獲得效果</th>
-                                            <th style="text-align:center;">當前進度</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="hero-tbody">
-                                        ${generateSubBTableRowsHtml(result.itemsStatus, mainCategory, subCategory)}
-                                    </tbody>
-                                </table>
-                            `
+// ==============================================
+//-- 多角色 LocalStorage 資料管理
+// ==============================================
+const STORAGE_KEY = 'jin_pill_battle_record_multi'
+let multiPlayerDB = { currentRole: '', roles: {} }
+let playerRecord = {
+playerName: '',
+pills: {},
+playerStats: createEmptyStats(),
+}
+//-- 讀取紀錄
+function loadPlayerRecord() {
+              try {
+                const saved = localStorage.getItem(STORAGE_KEY)
+                if (saved) {
+                  const data = JSON.parse(saved)
+                  if (data && data.roles) multiPlayerDB = data
+                }
+              } catch (error) {
+                console.error('❌ 讀取紀錄失敗：', error)
+              }
 
-        bindHeroInputEvents(card, mainCategory, subCategory)
-        return card
-      }
+              // 如果先前有選取的角色，直接載入
+              if (
+                multiPlayerDB.currentRole &&
+                multiPlayerDB.roles[multiPlayerDB.currentRole]
+              ) {
+                loadRoleData(multiPlayerDB.currentRole, false)
+              } else {
+                clearCurrentRecordUI()
+              }
+}
 
-      function bindHeroInputEvents(card, mainCategory, subCategory) {
-        card.querySelectorAll('.hero-level-input').forEach((input) => {
-          input.addEventListener('change', function () {
-            let val = parseInt(this.value, 10) || 0
-            const maxLevel = parseInt(this.dataset.max, 10) || 10
-            const savedKey = this.dataset.key
+            //-- 儲存目前角色 (自動儲存)
+            function savePlayerRecord() {
+              try {
+                const pName = playerRecord.playerName
+                  ? playerRecord.playerName.trim()
+                  : ''
+                if (pName) {
+                  multiPlayerDB.roles[pName] = JSON.parse(
+                    JSON.stringify(playerRecord),
+                  )
+                  multiPlayerDB.currentRole = pName
+                }
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(multiPlayerDB))
+                updateRoleSelectOptions()
+              } catch (error) {
+                console.error('❌ 儲存失敗：', error)
+              }
+            }
 
-            val = Math.max(0, Math.min(val, maxLevel))
-            this.value = val
+            //-- 渲染角色下拉選單（含 新增 與 刪除）
+            function updateRoleSelectOptions() {
+              const select = document.getElementById('role-select')
+              if (!select) return
+              let html = `<option value="__NEW__">➕[新手加入]</option>`
 
-            ensurePlayerName()
-            playerRecord.pills[savedKey] = val
-            savePlayerRecord()
+              // 列出所有紀錄過的角色
+              Object.keys(multiPlayerDB.roles).forEach((roleName) => {
+                const isSelected =
+                  roleName === multiPlayerDB.currentRole ? 'selected' : ''
+                html += `<option value="${roleName}" ${isSelected}>👤 ${roleName}</option>`
+              })
 
-            const updatedResult = calculateSubCategoryBStats(
-              mainCategory,
-              subCategory,
-            )
-            card.querySelector('.hero-summary-text').textContent =
-              updatedResult.summaryText
-            card.querySelector('.hero-tbody').innerHTML =
-              generateSubBTableRowsHtml(
-                updatedResult.itemsStatus,
-                mainCategory,
-                subCategory,
+              // 若當前角色且存在於紀錄中，補上剔除選項
+              const curRole =
+                multiPlayerDB.currentRole ||
+                (playerRecord.playerName ? playerRecord.playerName.trim() : '')
+              if (curRole && multiPlayerDB.roles[curRole]) {
+                html += `<option value="__DELETE__" style="color: red;">🗑️ [踢除當前：${curRole}]</option>`
+              }
+              select.innerHTML = html
+            }
+
+            //-- 下拉選單動作分流處理
+            function handleRoleSelect(value) {
+              if (value === '__NEW__') {
+                clearCurrentRecordUI() //僅清空畫面，不刪除記憶
+                showToast('✨ 已重置，輸入大名即可建立檔案！')
+              } else if (value === '__DELETE__') {
+                deleteCurrentRole() //執行踢除當前角色
+              } else {
+                loadRoleData(value, true) // 切換至選取的角色
+                showToast(`🔄已切換至大俠：${value}`)
+              }
+            }
+            //-- 載入備份角色資料到畫面
+            function loadRoleData(roleName, showToastMsg = true) {
+              if (!multiPlayerDB.roles[roleName]) return
+              multiPlayerDB.currentRole = roleName
+              playerRecord = JSON.parse(JSON.stringify(multiPlayerDB.roles[roleName]))
+
+              const nameInput = document.getElementById('player-name')
+              if (nameInput) nameInput.value = playerRecord.playerName || ''
+
+              updateRoleSelectOptions()
+              refreshCurrentView() // 刷新畫面顯示
+              if (showToastMsg) showToast(`🔄 已切換至大俠：${roleName}`)
+            }
+
+            //-- 清空畫面 (不影響 LocalStorage 已存角色)
+            function clearCurrentRecordUI() {
+              multiPlayerDB.currentRole = ''
+              playerRecord = {
+                playerName: '',
+                pills: {},
+                playerStats: createEmptyStats(),
+              }
+
+              const nameInput = document.getElementById('player-name') //清空名稱輸入框
+              if (nameInput) nameInput.value = ''
+              updateRoleSelectOptions() // 2. 更新下拉選單
+              refreshCurrentView() //重新渲染頁面，所有數值歸零/重置
+            }
+
+            //-- 輔助函式：觸發當前 Tab 的畫面重新繪製
+            function refreshCurrentView() {
+              const activeMain = document.querySelector('.main-tab.active')
+              const activeSub = document.querySelector('.sub-btn.active')
+              if (activeMain && activeSub) {
+                renderBattleItems(
+                  activeMain.textContent.trim(),
+                  activeSub.textContent.trim(),
+                )
+              } else if (activeMain) {
+                switchMainTab(activeMain.textContent.trim())
+              }
+            }
+
+            // --儲存/更新玩家名稱 (多角色相容版)
+            function savePlayerName() {
+              const input = document.getElementById('player-name')
+              if (!input) return
+              const newName = input.value.trim()
+              const oldName = playerRecord.playerName
+                ? playerRecord.playerName.trim()
+                : ''
+
+              // 1. 若名字沒變或空白，不做處理
+              if (!newName || newName === oldName) {
+                input.value = oldName // 若打空白，自動還原舊名
+                return
+              }
+
+              // 2. 判斷是否為「修改現有角色名稱」
+              if (oldName && multiPlayerDB.roles[oldName]) {
+                // 跳出提示詢問意圖
+                const isRename = confirm(
+                  `❓ ⚠️偵測到大俠名稱變更：\n\n` +
+                    `按【 確定 】: 將原名「${oldName}」改名為「${newName}」\n` +
+                    `按【 取消 】: 保留「${oldName}」，並以「${newName}」建立全新手`,
+                )
+
+                if (isRename) {
+                  // 【確定】改名：移除舊角色的 key，資料轉移至新名稱
+                  delete multiPlayerDB.roles[oldName]
+                  showToast(`✏️ 已將「${oldName}」改名為「${newName}」`)
+                } else {
+                  // 【取消】建立新角，舊角完整保留
+                  const oldRoleData = JSON.parse(
+                    JSON.stringify(multiPlayerDB.roles[oldName] || playerRecord),
+                  )
+                  multiPlayerDB.roles[oldName] = oldRoleData // 確保舊角色一定留在 roles 裡。
+                  clearCurrentRecordUI() // 初始化目前畫面，建立「新手」空白資料
+                  playerRecord.playerName = newName // 新角色只設定名稱，其餘資料初始化
+                  multiPlayerDB.currentRole = newName
+                  const nameInput = document.getElementById('player-name')
+                  if (nameInput) nameInput.value = newName
+                  savePlayerRecord() // 儲存：此時同時包含「舊角色 + 新角色」
+                  showToast(`✨ 已建立新檔：${newName}；並保留「${oldName}」`)
+                  return
+                }
+              } else {
+                // 沒有舊角色：直接建立新角色
+                playerRecord.playerName = newName
+                multiPlayerDB.currentRole = newName
+                savePlayerRecord()
+                showToast(`✨ 新手已建檔：${newName}`)
+                return
+              }
+              // 更新記憶與LocalStorage紀錄
+              playerRecord.playerName = newName
+              multiPlayerDB.currentRole = newName
+              savePlayerRecord() //自動儲存並更新下拉選單
+            }
+
+            //-- 踢除角色
+            function deleteCurrentRole() {
+              const roleToDelete =
+                multiPlayerDB.currentRole ||
+                (playerRecord.playerName ? playerRecord.playerName.trim() : '')
+              if (!roleToDelete) return
+
+              if (
+                confirm(
+                  `⚠️ 確定踢除「${roleToDelete}」嗎？此動作無法復原！\n（建議先下載備份 (.json)）`,
+                )
+              ) {
+                delete multiPlayerDB.roles[roleToDelete] //從紀錄中刪除
+                clearCurrentRecordUI() //清空資料重置畫面
+                const nameInput = document.getElementById('player-name') //強制清空名稱輸入框
+                savePlayerRecord() // 儲存變更至 LocalStorage
+                showToast(
+                  `🗑️已踢除：${roleToDelete}，若有備份，匯入 JSON 檔可取回資料`,
+                )
+              } else {
+                updateRoleSelectOptions() // 若取消，還原下拉選單選取狀態
+              }
+}
+
+// ==============================================
+// 戰力與剩餘需求計算核心
+// ==============================================
+function calculatePlayerStats() {
+              const stats = {}
+              ATTRIBUTES_MAP.forEach((attr) => {
+                stats[attr.key] = 0
+              })
+              const neededList = []
+
+              // 1. 一般丹藥
+              battleDB.forEach((item) => {
+                const name = String(item.名稱 || '')
+                const main = String(item.主分類 || '')
+                const sub = String(item.小分類 || '').trim()
+                const limit = parseMaxLimit(item.上限) || 0
+
+                const itemType = getSubCategoryType([item])
+                if (itemType !== 'NUMBER') return
+
+                const pillKey = `${main}__${sub}__${name}`
+                const count = Number(playerRecord.pills[pillKey]) || 0
+
+                if (count > 0) {
+                  ATTRIBUTES_MAP.forEach((attr) => {
+                    const baseValue = Number(item[attr.key])
+                    if (Number.isFinite(baseValue) && baseValue !== 0) {
+                      stats[attr.key] += baseValue * count
+                    }
+                  })
+                }
+
+                if (limit > 0 && count < limit) {
+                  neededList.push({ name: name, needed: limit - count })
+                }
+              })
+
+              // 2. #.門檻型小分類
+              const allHashSubs = [
+        ...new Set(
+          battleDB
+            .filter((item) => getSubCategoryType([item]) === 'HASH')
+            .map((item) => String(item.小分類 || '').trim()),
+        ),
+      ]
+
+      allHashSubs.forEach((sub) => {
+                const matchedItem = battleDB.find(
+                  (i) => String(i.小分類 || '').trim() === sub,
+                )
+                if (matchedItem) {
+                  const main = String(matchedItem.主分類 || '').trim()
+                  const savedKey = `THRESHOLD__${main}__${sub}`
+                  const currentAmount = Number(playerRecord.pills[savedKey]) || 0
+
+                  const result = calculateThresholdStats(sub, currentAmount)
+                  Object.entries(result.activeStats).forEach(([key, val]) => {
+                    stats[key] += val
+                  })
+                }
+              })
+
+              // 3. B.等級型小分類
+              const subBItems = battleDB.filter(
+        (item) => getSubCategoryType([item]) === 'TYPE_B',
+      )
+              const uniqueGroups = []
+              const groupSet = new Set()
+
+              subBItems.forEach((item) => {
+                const mainCategory = String(item.主分類 || '').trim()
+                const subCategory = String(item.小分類 || '').trim()
+                const groupKey = `${mainCategory}__${subCategory}`
+                if (!groupSet.has(groupKey)) {
+                  groupSet.add(groupKey)
+                  uniqueGroups.push({ mainCategory, subCategory })
+                }
+              })
+
+              uniqueGroups.forEach(({ mainCategory, subCategory }) => {
+                const result = calculateSubCategoryBStats(mainCategory, subCategory)
+                if (result && result.activeStats) {
+                  Object.entries(result.activeStats).forEach(([key, val]) => {
+                    if (stats[key] !== undefined) stats[key] += Number(val) || 0
+                  })
+                }
+              })
+
+      // 4. Y. 輸入型小分類
+              const subYItems = battleDB.filter(
+                (item) => getSubCategoryType([item]) === 'TYPE_Y',
               )
-            bindHeroInputEvents(card, mainCategory, subCategory)
 
-            if (typeof updateStatsModal === 'function') updateStatsModal()
-          })
+              const uniqueYGroups = []
+              const yGroupSet = new Set()
+
+              subYItems.forEach((item) => {
+                const mainCategory = String(item.主分類 || '').trim()
+                const subCategory = String(item.小分類 || '').trim()
+                const groupKey = `${mainCategory}__${subCategory}`
+
+                if (!yGroupSet.has(groupKey)) {
+                  yGroupSet.add(groupKey)
+                  uniqueYGroups.push({ mainCategory, subCategory })
+                }
+              })
+
+              uniqueYGroups.forEach(({ mainCategory, subCategory }) => {
+                const result = calculateSubCategoryYStats(
+                  mainCategory,
+                  subCategory,
+                )
+
+                if (result && result.activeStats) {
+                  Object.entries(result.activeStats).forEach(([key, val]) => {
+                    if (stats[key] !== undefined) {
+                      stats[key] += Number(val) || 0
+                    }
+                  })
+                }
+              })
+
+              // 清理數值小數點
+              Object.keys(stats).forEach((key) => {
+                stats[key] = cleanNumber(stats[key], 6)
+              })
+              return { stats, neededList }
+}
+
+// 渲染 Modal 畫面內容
+function updateStatsModal() {
+              const { stats, neededList } = calculatePlayerStats()
+              const summaryContainer = document.getElementById('stat-summary-list')
+
+      summaryContainer.innerHTML = Object.entries(stats)
+        .map(([attr, val]) => {
+          const displayValue = PERCENT_ATTRIBUTES.includes(attr)
+            ? `${cleanNumber(val * 100, 6)}%`
+            : cleanNumber(val)
+
+          return `<div><strong>${attr}:</strong> ${displayValue}</div>`
         })
-      }
+        .join('')
 
-      function isSubCategoryBStr(subCategory) {
-        return battleDB.some(
-          (item) =>
-            String(item.小分類 || '').trim() === subCategory &&
-            checkIsSubCategoryB([item]),
-        )
-      }
+              const neededContainer = document.getElementById('stat-needed-list')
+              if (neededList.length === 0) {
+                neededContainer.innerHTML = `<li style="color:#16a34a;">🎉 恭喜！所有丹藥均已食用完畢！</li>`
+              } else {
+                neededContainer.innerHTML = neededList
+                  .map(
+                    (item) =>
+                      `<li><strong>${item.name}:</strong> 還需 ${item.needed} 顆</li>`,
+                  )
+                  .join('')
+              }
+}
 
-      function parseMaxLimit(limitStr) {
-        if (!limitStr) return 0
-        const match = String(limitStr).match(/\d+/)
-        return match ? parseInt(match[0], 10) : 0
-      }
+// 開關統計窗
+function toggleModal(show) {
+              if (show) updateStatsModal()
+              document.getElementById('stats-modal').style.display = show
+                ? 'flex'
+                : 'none'
+}
 
-      // ==============================================
-      //-- 多角色 LocalStorage 資料管理
-      // ==============================================
-      const STORAGE_KEY = 'jin_pill_battle_record_multi'
-      let multiPlayerDB = { currentRole: '', roles: {} }
-      let playerRecord = {
-        playerName: '',
-        pills: {},
-        playerStats: {
+
+// 產生分享格式文字
+function generateShareText() {
+              const { stats, neededList } = calculatePlayerStats()
+              const pName = playerRecord.playerName || '無名大俠'
+
+              let text = `【大俠：${pName} 的戰力統計】\n\n【總累計戰力】\n`
+              Object.entries(stats).forEach(([attr, val]) => {
+                text += `${attr}: ${val}\n`
+              })
+
+              text += `\n【剩餘需求 / 願望清單】\n`
+              if (neededList.length === 0) {
+                text += `丹藥已全數吃滿！\n`
+              } else {
+                neededList.forEach((item) => {
+                  text += `${item.name}: 還需 ${item.needed} 顆\n`
+                })
+              }
+              return text
+            }
+
+// ==============================================
+// 功能按鈕：下載備份 / 複製 / 分享
+// ==============================================
+// 匯入 JSON 檔案
+function importDataBackup(event) {
+              const file = event.target.files[0]
+              if (!file) return
+              const reader = new FileReader()
+              reader.onload = function (e) {
+                try {
+                  const importedData = JSON.parse(e.target.result)
+                  if (importedData && importedData.pills) {
+                    playerRecord = importedData
+                    savePlayerRecord()
+                    const nameInput = document.getElementById('player-name')
+                    if (nameInput) nameInput.value = playerRecord.playerName || ''
+                    loadPlayerRecord()
+                    showToast(
+                      `✅ 成功載入【${playerRecord.playerName || '無名'}】紀錄！`,
+                    )
+                  } else {
+                    alert('❌ 備份檔案格式不正確！')
+                  }
+                } catch (err) {
+                  alert('❌ 讀取檔案失敗！')
+                }
+              }
+              reader.readAsText(file)
+              event.target.value = ''
+            }
+            // 匯出完整 JSON 備份檔案
+            function exportDataBackup() {
+              const dataStr =
+                'data:text/json;charset=utf-8,' +
+                encodeURIComponent(JSON.stringify(playerRecord, null, 2))
+              const downloadAnchor = document.createElement('a')
+              downloadAnchor.setAttribute('href', dataStr)
+              downloadAnchor.setAttribute(
+                'download',
+                `${playerRecord.playerName || '大俠'}_戰力備份.json`,
+              )
+              document.body.appendChild(downloadAnchor)
+              downloadAnchor.click()
+              downloadAnchor.remove()
+            }
+
+            // 複製文字到剪貼簿
+            function copyShareText() {
+              navigator.clipboard
+                .writeText(generateShareText())
+                .then(() => showToast('📋 文字已複製！'))
+            }
+
+            // 分享 API (支援手機彈出 LINE / 簡訊等)
+            async function shareToLineOrOther() {
+              if (navigator.share) {
+                try {
+                  await navigator.share({
+                    title: '丹藥紀錄&戰力',
+                    text: generateShareText(),
+                  })
+                } catch (err) {}
+              } else {
+                copyShareText()
+              }
+            }
+
+// 下載記事本 (.txt) - 支援 Windows 換行
+function downloadTxtFile(playerName) {
+              // 取得分享文字，支援自動換行
+              const textContent = generateShareText().replace(/\r?\n/g, '\r\n')
+              const blob = new Blob(['\uFEFF' + textContent], {
+                type: 'text/plain;charset=utf-8',
+              })
+              const link = document.createElement('a')
+              link.href = URL.createObjectURL(blob)
+              link.download = `${playerName}_丹藥紀錄&戰力.txt`
+              document.body.appendChild(link)
+              link.click()
+              // 釋放記憶體與移除 DOM
+              URL.revokeObjectURL(link.href)
+              document.body.removeChild(link)
+}
+
+// 下載圖檔 (.png)
+function downloadPngImage(playerName) {
+              const captureTarget = document.getElementById('capture-area')
+              if (!captureTarget) return
+              html2canvas(captureTarget, {
+                scale: 2,
+                backgroundColor: '#ffffff',
+              }).then((canvas) => {
+                const link = document.createElement('a')
+                link.download = `${playerName}_戰力統計圖.png`
+                link.href = canvas.toDataURL('image/png')
+                document.body.appendChild(link)
+                link.click()
+                document.body.removeChild(link)
+              })
+}
+
+// 依玩家選擇格式進行下載 (txt / png / pdf / json)
+function exportSelectedFormat() {
+              const format = document.getElementById('export-format').value
+              const playerName = playerRecord.playerName || '大俠'
+              if (format === 'txt') downloadTxtFile(playerName)
+              else if (format === 'png') downloadPngImage(playerName)
+              else if (format === 'pdf') window.print()
+              else if (format === 'json') exportDataBackup()
+}
+
+// ==============================================
+            //-- 共用邏輯函數
+// ==============================================
+//-- 原始效果 (畫面)
+function getItemEffects(item) {
+        return [
+          formatEffect('攻', item.攻擊),
+          formatEffect('防', item.防禦),
+          formatEffect('爆', item.爆擊),
+          formatEffect('爆傷', item.爆傷),
+          formatEffect('抗爆', item.抗爆),
+          formatEffect('命中', item.命中),
+          formatEffect('閃', item.閃避),
+          formatEffect('反', item.反擊),
+          formatEffect('血', item.氣血),
+          String(item.其它功能 || '').trim(),
+        ].filter(Boolean);
+}
+
+//--初始化 戰力數值、計算畫面
+function createEmptyStats() {
+        return {
           攻擊: 0,
           防禦: 0,
           爆擊: 0,
@@ -1258,549 +2072,75 @@
           閃避: 0,
           反擊: 0,
           氣血: 0,
-        },
-      }
-      //-- 讀取紀錄
-      function loadPlayerRecord() {
-        try {
-          const saved = localStorage.getItem(STORAGE_KEY)
-          if (saved) {
-            const data = JSON.parse(saved)
-            if (data && data.roles) multiPlayerDB = data
-          }
-        } catch (error) {
-          console.error('❌ 讀取紀錄失敗：', error)
-        }
-
-        // 如果先前有選取的角色，直接載入
-        if (
-          multiPlayerDB.currentRole &&
-          multiPlayerDB.roles[multiPlayerDB.currentRole]
-        ) {
-          loadRoleData(multiPlayerDB.currentRole, false)
-        } else {
-          clearCurrentRecordUI()
-        }
-      }
-
-      //-- 儲存目前角色 (自動儲存)
-      function savePlayerRecord() {
-        try {
-          const pName = playerRecord.playerName
-            ? playerRecord.playerName.trim()
-            : ''
-          if (pName) {
-            multiPlayerDB.roles[pName] = JSON.parse(
-              JSON.stringify(playerRecord),
-            )
-            multiPlayerDB.currentRole = pName
-          }
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(multiPlayerDB))
-          updateRoleSelectOptions()
-        } catch (error) {
-          console.error('❌ 儲存失敗：', error)
-        }
-      }
-
-      //-- 渲染角色下拉選單（含 新增 與 刪除）
-      function updateRoleSelectOptions() {
-        const select = document.getElementById('role-select')
-        if (!select) return
-        let html = `<option value="__NEW__">➕[新手加入]</option>`
-
-        // 列出所有紀錄過的角色
-        Object.keys(multiPlayerDB.roles).forEach((roleName) => {
-          const isSelected =
-            roleName === multiPlayerDB.currentRole ? 'selected' : ''
-          html += `<option value="${roleName}" ${isSelected}>👤 ${roleName}</option>`
-        })
-
-        // 若當前角色且存在於紀錄中，補上剔除選項
-        const curRole =
-          multiPlayerDB.currentRole ||
-          (playerRecord.playerName ? playerRecord.playerName.trim() : '')
-        if (curRole && multiPlayerDB.roles[curRole]) {
-          html += `<option value="__DELETE__" style="color: red;">🗑️ [踢除當前：${curRole}]</option>`
-        }
-        select.innerHTML = html
-      }
-
-      //-- 下拉選單動作分流處理
-      function handleRoleSelect(value) {
-        if (value === '__NEW__') {
-          clearCurrentRecordUI() //僅清空畫面，不刪除記憶
-          showToast('✨ 已重置，輸入大名即可建立檔案！')
-        } else if (value === '__DELETE__') {
-          deleteCurrentRole() //執行踢除當前角色
-        } else {
-          loadRoleData(value, true) // 切換至選取的角色
-          showToast(`🔄已切換至大俠：${value}`)
-        }
-      }
-      //-- 載入備份角色資料到畫面
-      function loadRoleData(roleName, showToastMsg = true) {
-        if (!multiPlayerDB.roles[roleName]) return
-        multiPlayerDB.currentRole = roleName
-        playerRecord = JSON.parse(JSON.stringify(multiPlayerDB.roles[roleName]))
-
-        const nameInput = document.getElementById('player-name')
-        if (nameInput) nameInput.value = playerRecord.playerName || ''
-
-        updateRoleSelectOptions()
-        refreshCurrentView() // 刷新畫面顯示
-        if (showToastMsg) showToast(`🔄 已切換至大俠：${roleName}`)
-      }
-
-      //-- 清空畫面 (不影響 LocalStorage 已存角色)
-      function clearCurrentRecordUI() {
-        multiPlayerDB.currentRole = ''
-        playerRecord = {
-          playerName: '',
-          pills: {},
-          playerStats: {
-            攻擊: 0,
-            防禦: 0,
-            爆擊: 0,
-            爆傷: 0,
-            抗爆: 0,
-            命中: 0,
-            閃避: 0,
-            反擊: 0,
-            氣血: 0,
-          },
-        }
-
-        const nameInput = document.getElementById('player-name') //清空名稱輸入框
-        if (nameInput) nameInput.value = ''
-        updateRoleSelectOptions() // 2. 更新下拉選單
-        refreshCurrentView() //重新渲染頁面，所有數值歸零/重置
-      }
-
-      //-- 輔助函式：觸發當前 Tab 的畫面重新繪製
-      function refreshCurrentView() {
-        const activeMain = document.querySelector('.main-tab.active')
-        const activeSub = document.querySelector('.sub-btn.active')
-        if (activeMain && activeSub) {
-          renderBattleItems(
-            activeMain.textContent.trim(),
-            activeSub.textContent.trim(),
-          )
-        } else if (activeMain) {
-          switchMainTab(activeMain.textContent.trim())
-        }
-      }
-
-      // --儲存/更新玩家名稱 (多角色相容版)
-      function savePlayerName() {
-        const input = document.getElementById('player-name')
-        if (!input) return
-        const newName = input.value.trim()
-        const oldName = playerRecord.playerName
-          ? playerRecord.playerName.trim()
-          : ''
-
-        // 1. 若名字沒變或空白，不做處理
-        if (!newName || newName === oldName) {
-          input.value = oldName // 若打空白，自動還原舊名
-          return
-        }
-
-        // 2. 判斷是否為「修改現有角色名稱」
-        if (oldName && multiPlayerDB.roles[oldName]) {
-          // 跳出提示詢問意圖
-          const isRename = confirm(
-            `❓ ⚠️偵測到大俠名稱變更：\n\n` +
-              `按【 確定 】: 將原名「${oldName}」改名為「${newName}」\n` +
-              `按【 取消 】: 保留「${oldName}」，並以「${newName}」建立全新手`,
-          )
-
-          if (isRename) {
-            // 【確定】改名：移除舊角色的 key，資料轉移至新名稱
-            delete multiPlayerDB.roles[oldName]
-            showToast(`✏️ 已將「${oldName}」改名為「${newName}」`)
-          } else {
-            // 【取消】建立新角，舊角完整保留
-            const oldRoleData = JSON.parse(
-              JSON.stringify(multiPlayerDB.roles[oldName] || playerRecord),
-            )
-            multiPlayerDB.roles[oldName] = oldRoleData // 確保舊角色一定留在 roles 裡。
-            clearCurrentRecordUI() // 初始化目前畫面，建立「新手」空白資料
-            playerRecord.playerName = newName // 新角色只設定名稱，其餘資料初始化
-            multiPlayerDB.currentRole = newName
-            const nameInput = document.getElementById('player-name')
-            if (nameInput) nameInput.value = newName
-            savePlayerRecord() // 儲存：此時同時包含「舊角色 + 新角色」
-            showToast(`✨ 已建立新檔：${newName}；並保留「${oldName}」`)
-            return
-          }
-        } else {
-          // 沒有舊角色：直接建立新角色
-          playerRecord.playerName = newName
-          multiPlayerDB.currentRole = newName
-          savePlayerRecord()
-          showToast(`✨ 新手已建檔：${newName}`)
-          return
-        }
-        // 更新記憶與LocalStorage紀錄
-        playerRecord.playerName = newName
-        multiPlayerDB.currentRole = newName
-        savePlayerRecord() //自動儲存並更新下拉選單
-      }
-
-      //-- 踢除角色
-      function deleteCurrentRole() {
-        const roleToDelete =
-          multiPlayerDB.currentRole ||
-          (playerRecord.playerName ? playerRecord.playerName.trim() : '')
-        if (!roleToDelete) return
-
-        if (
-          confirm(
-            `⚠️ 確定踢除「${roleToDelete}」嗎？此動作無法復原！\n（建議先下載備份 (.json)）`,
-          )
-        ) {
-          delete multiPlayerDB.roles[roleToDelete] //從紀錄中刪除
-          clearCurrentRecordUI() //清空資料重置畫面
-          const nameInput = document.getElementById('player-name') //強制清空名稱輸入框
-          savePlayerRecord() // 儲存變更至 LocalStorage
-          showToast(
-            `🗑️已踢除：${roleToDelete}，若有備份，匯入 JSON 檔可取回資料`,
-          )
-        } else {
-          updateRoleSelectOptions() // 若取消，還原下拉選單選取狀態
-        }
-      }
-
-      // ==============================================
-      // 戰力與剩餘需求計算核心 (自動偵測所有門檻分類)
-      // ==============================================
-      function calculatePlayerStats() {
-        const stats = {}
-        ATTRIBUTES_MAP.forEach((attr) => {
-          stats[attr.key] = 0
-        })
-        const neededList = []
-
-        // 1. 一般丹藥
-        battleDB.forEach((item) => {
-          const name = String(item.名稱 || '')
-          const main = String(item.主分類 || '')
-          const sub = String(item.小分類 || '').trim()
-          const limit = parseMaxLimit(item.上限) || 0
-
-          if (isThresholdSubCategory(sub) || checkIsSubCategoryB([item])) return
-
-          const pillKey = `${main}__${sub}__${name}`
-          const count = Number(playerRecord.pills[pillKey]) || 0
-
-          if (count > 0) {
-            ATTRIBUTES_MAP.forEach((attr) => {
-              const baseValue = Number(item[attr.key])
-              if (Number.isFinite(baseValue) && baseValue !== 0) {
-                stats[attr.key] += baseValue * count
+        };
+}
+//共用: 確保有名稱可紀錄（若空白則自動給予預設名稱）
+function ensurePlayerName() {
+              let currentName = playerRecord.playerName
+                ? playerRecord.playerName.trim()
+                : ''
+              if (!currentName) {
+                const now = new Date()
+                currentName = `高手${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
+                playerRecord.playerName = currentName
+                const nameInput = document.getElementById('player-name')
+                if (nameInput) nameInput.value = currentName
               }
-            })
-          }
+              return currentName
+}
 
-          if (limit > 0 && count < limit) {
-            neededList.push({ name: name, needed: limit - count })
-          }
-        })
-
-        // 2. 門檻型小分類
-        const allThresholdSubs = [
-          ...new Set(
-            battleDB
-              .filter(
-                (item) =>
-                  isThresholdSubCategory(String(item.小分類 || '').trim()) &&
-                  !checkIsSubCategoryB([item]),
-              )
-              .map((item) => String(item.小分類 || '').trim()),
-          ),
-        ]
-
-        allThresholdSubs.forEach((sub) => {
-          const matchedItem = battleDB.find(
-            (i) => String(i.小分類 || '').trim() === sub,
-          )
-          if (matchedItem) {
-            const main = String(matchedItem.主分類 || '').trim()
-            const savedKey = `THRESHOLD__${main}__${sub}`
-            const currentAmount = Number(playerRecord.pills[savedKey]) || 0
-
-            const result = calculateThresholdStats(sub, currentAmount)
-            Object.entries(result.activeStats).forEach(([key, val]) => {
-              stats[key] += val
-            })
-          }
-        })
-
-        // 3. 俠客/真武群組型小分類
-        const subBItems = battleDB.filter((item) => checkIsSubCategoryB([item]))
-        const uniqueGroups = []
-        const groupSet = new Set()
-
-        subBItems.forEach((item) => {
-          const mainCategory = String(item.主分類 || '').trim()
-          const subCategory = String(item.小分類 || '').trim()
-          const groupKey = `${mainCategory}__${subCategory}`
-          if (!groupSet.has(groupKey)) {
-            groupSet.add(groupKey)
-            uniqueGroups.push({ mainCategory, subCategory })
-          }
-        })
-
-        uniqueGroups.forEach(({ mainCategory, subCategory }) => {
-          const result = calculateSubCategoryBStats(mainCategory, subCategory)
-          if (result && result.activeStats) {
-            Object.entries(result.activeStats).forEach(([key, val]) => {
-              if (stats[key] !== undefined) stats[key] += Number(val) || 0
-            })
-          }
-        })
-
-        // 清理數值小數點
-        Object.keys(stats).forEach((key) => {
-          stats[key] = cleanNumber(stats[key], 6)
-        })
-
-        return { stats, neededList }
-      }
-
-      // 渲染 Modal 畫面內容
-      function updateStatsModal() {
-        const { stats, neededList } = calculatePlayerStats()
-
-        const summaryContainer = document.getElementById('stat-summary-list')
-        summaryContainer.innerHTML = Object.entries(stats)
-          .map(([attr, val]) => `<div><strong>${attr}:</strong> ${val}</div>`)
-          .join('')
-
-        const neededContainer = document.getElementById('stat-needed-list')
-        if (neededList.length === 0) {
-          neededContainer.innerHTML = `<li style="color:#16a34a;">🎉 恭喜！所有丹藥均已食用完畢！</li>`
-        } else {
-          neededContainer.innerHTML = neededList
-            .map(
-              (item) =>
-                `<li><strong>${item.name}:</strong> 還需 ${item.needed} 顆</li>`,
-            )
-            .join('')
-        }
-      }
-
-      // 開關統計視窗
-      function toggleModal(show) {
-        if (show) updateStatsModal()
-        document.getElementById('stats-modal').style.display = show
-          ? 'flex'
-          : 'none'
-      }
-
-      // 產生分享格式文字
-      function generateShareText() {
-        const { stats, neededList } = calculatePlayerStats()
-        const pName = playerRecord.playerName || '無名大俠'
-
-        let text = `【大俠：${pName} 的戰力統計】\n\n【總累計戰力】\n`
-        Object.entries(stats).forEach(([attr, val]) => {
-          text += `${attr}: ${val}\n`
-        })
-
-        text += `\n【剩餘需求 / 願望清單】\n`
-        if (neededList.length === 0) {
-          text += `丹藥已全數吃滿！\n`
-        } else {
-          neededList.forEach((item) => {
-            text += `${item.name}: 還需 ${item.needed} 顆\n`
-          })
-        }
-        return text
-      }
-
-      // ==============================================
-      // 功能按鈕：下載備份 / 複製 / 分享
-      // ==============================================
-
-      // 匯入 JSON 檔案
-      function importDataBackup(event) {
-        const file = event.target.files[0]
-        if (!file) return
-        const reader = new FileReader()
-        reader.onload = function (e) {
-          try {
-            const importedData = JSON.parse(e.target.result)
-            if (importedData && importedData.pills) {
-              playerRecord = importedData
-              savePlayerRecord()
-              const nameInput = document.getElementById('player-name')
-              if (nameInput) nameInput.value = playerRecord.playerName || ''
-              loadPlayerRecord()
-              showToast(
-                `✅ 成功載入【${playerRecord.playerName || '無名'}】紀錄！`,
-              )
-            } else {
-              alert('❌ 備份檔案格式不正確！')
+// 共用：生成門檻表格 HTML
+function generateTableRowsHtml(itemsStatus) {
+              if (!itemsStatus || !Array.isArray(itemsStatus)) return ''
+              return itemsStatus
+                .map(
+                  (st) => `
+      <tr style="color:${st.isUnlocked ? '#15803d' : '#94a3b8'};">
+      <td>${st.name}</td>
+      <td>${st.effectText}</td>
+      <td class="pill-state">${st.isUnlocked ? '✅ 已解鎖' : '🔒 未達成'}</td>
+      </tr>`,
+                )
+                .join('')
             }
-          } catch (err) {
-            alert('❌ 讀取檔案失敗！')
-          }
-        }
-        reader.readAsText(file)
-        event.target.value = ''
-      }
-      // 匯出完整 JSON 備份檔案
-      function exportDataBackup() {
-        const dataStr =
-          'data:text/json;charset=utf-8,' +
-          encodeURIComponent(JSON.stringify(playerRecord, null, 2))
-        const downloadAnchor = document.createElement('a')
-        downloadAnchor.setAttribute('href', dataStr)
-        downloadAnchor.setAttribute(
-          'download',
-          `${playerRecord.playerName || '大俠'}_戰力備份.json`,
-        )
-        document.body.appendChild(downloadAnchor)
-        downloadAnchor.click()
-        downloadAnchor.remove()
-      }
 
-      // 複製文字到剪貼簿
-      function copyShareText() {
-        navigator.clipboard
-          .writeText(generateShareText())
-          .then(() => showToast('📋 文字已複製！'))
-      }
+            // Toast
+            let toastTimer = null
+            function showToast(message) {
+              const toast = document.querySelector('.toast-msg')
+              toast.textContent = message
+              toast.classList.remove('show')
+              clearTimeout(toastTimer)
+              void toast.offsetWidth
+              toast.classList.add('show')
+              toastTimer = setTimeout(() => {
+                toast.classList.remove('show')
+              }, 5000)
+}
 
-      // 分享 API (支援手機彈出 LINE / 簡訊等)
-      async function shareToLineOrOther() {
-        if (navigator.share) {
-          try {
-            await navigator.share({
-              title: '丹藥紀錄&戰力',
-              text: generateShareText(),
-            })
-          } catch (err) {}
-        } else {
-          copyShareText()
-        }
-      }
+// 初始化
+document.addEventListener('DOMContentLoaded', () => {
 
-      // 下載記事本 (.txt) - 支援 Windows 換行
-      function downloadTxtFile(playerName) {
-        // 取得分享文字，支援自動換行
-        const textContent = generateShareText().replace(/\r?\n/g, '\r\n')
-        const blob = new Blob(['\uFEFF' + textContent], {
-          type: 'text/plain;charset=utf-8',
-        })
-        const link = document.createElement('a')
-        link.href = URL.createObjectURL(blob)
-        link.download = `${playerName}_丹藥紀錄&戰力.txt`
-        document.body.appendChild(link)
-        link.click()
-        // 釋放記憶體與移除 DOM
-        URL.revokeObjectURL(link.href)
-        document.body.removeChild(link)
-      }
-
-      // 下載圖檔 (.png)
-      function downloadPngImage(playerName) {
-        const captureTarget = document.getElementById('capture-area')
-        if (!captureTarget) return
-        html2canvas(captureTarget, {
-          scale: 2,
-          backgroundColor: '#ffffff',
-        }).then((canvas) => {
-          const link = document.createElement('a')
-          link.download = `${playerName}_戰力統計圖.png`
-          link.href = canvas.toDataURL('image/png')
-          document.body.appendChild(link)
-          link.click()
-          document.body.removeChild(link)
-        })
-      }
-
-      // 依玩家選擇格式進行下載 (txt / png / pdf / json)
-      function exportSelectedFormat() {
-        const format = document.getElementById('export-format').value
-        const playerName = playerRecord.playerName || '大俠'
-        if (format === 'txt') downloadTxtFile(playerName)
-        else if (format === 'png') downloadPngImage(playerName)
-        else if (format === 'pdf') window.print()
-        else if (format === 'json') exportDataBackup()
-      }
-
-      // ==============================================
-      //-- 共用邏輯函數
-      // ==============================================
-      //共用: 確保有名稱可紀錄（若空白則自動給予預設名稱）
-      function ensurePlayerName() {
-        let currentName = playerRecord.playerName
-          ? playerRecord.playerName.trim()
-          : ''
-        if (!currentName) {
-          const now = new Date()
-          currentName = `高手${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}`
-          playerRecord.playerName = currentName
-          const nameInput = document.getElementById('player-name')
-          if (nameInput) nameInput.value = currentName
-        }
-        return currentName
-      }
-
-      // 共用：生成門檻表格 HTML
-      function generateTableRowsHtml(itemsStatus) {
-        if (!itemsStatus || !Array.isArray(itemsStatus)) return ''
-        return itemsStatus
-          .map(
-            (st) => `
-                                <tr style="color:${st.isUnlocked ? '#15803d' : '#94a3b8'};">
-                                    <td>${st.name}</td>
-                                    <td>${st.effectText}</td>
-                                    <td class="pill-state">${st.isUnlocked ? '✅ 已解鎖' : '🔒 未達成'}</td>
-                                </tr>
-                            `,
-          )
-          .join('')
-      }
-
-      // Toast
-      let toastTimer = null
-      function showToast(message) {
-        const toast = document.querySelector('.toast-msg')
-        toast.textContent = message
-        toast.classList.remove('show')
-        clearTimeout(toastTimer)
-        void toast.offsetWidth
-        toast.classList.add('show')
-        toastTimer = setTimeout(() => {
-          toast.classList.remove('show')
-        }, 5000)
-      }
-
-      // 初始化
-      document.addEventListener('DOMContentLoaded', () => {
-        loadPlayerRecord()
-        const nameInput = document.getElementById('player-name')
-        if (nameInput) {
-          nameInput.addEventListener('change', savePlayerName)
-          nameInput.addEventListener('blur', savePlayerName)
-        }
-        const searchInput = document.getElementById('pill-search')
-        if (searchInput) {
-          searchInput.addEventListener('input', () => {
-            pillSearchText = searchInput.value.trim().toLowerCase()
-            const activeMain = document.querySelector('.main-tab.active')
-            const activeSub = document.querySelector('.sub-btn.active')
-            renderBattleItems(
-              activeMain ? activeMain.textContent.trim() : '',
-              activeSub ? activeSub.textContent.trim() : '',
-            )
-          })
-        }
-        loadBattleStats() //載入資料庫
-      })
+              loadPlayerRecord()
+              const nameInput = document.getElementById('player-name')
+              if (nameInput) {
+                nameInput.addEventListener('change', savePlayerName)
+                nameInput.addEventListener('blur', savePlayerName)
+              }
+              const searchInput = document.getElementById('pill-search')
+              if (searchInput) {
+                searchInput.addEventListener('input', () => {
+                  pillSearchText = searchInput.value.trim().toLowerCase()
+                  const activeMain = document.querySelector('.main-tab.active')
+                  const activeSub = document.querySelector('.sub-btn.active')
+                  renderBattleItems(
+                    activeMain ? activeMain.textContent.trim() : '',
+                    activeSub ? activeSub.textContent.trim() : '',
+                  )
+                })
+              }
+loadBattleStats() //載入資料庫
+})
     </script>
   </body>
 </html>
