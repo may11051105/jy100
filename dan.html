@@ -997,9 +997,8 @@ function renderSubTabs(mainCategory, mainItems) {
 
         card.innerHTML = `
           <div class="threshold-summary-box">
-            <strong>⚔️ ${subCategory} 當前累計效果：</strong><br>
-            <span class="y-summary-text"
-              style="color:#15803d; font-weight:bold;">
+            <strong>⚔️${subCategory} 當前累計：</strong><br>
+            <span class="y-summary-text">
               ${result.summaryText}
             </span>
           </div>
@@ -1007,17 +1006,16 @@ function renderSubTabs(mainCategory, mainItems) {
           <table class="pill-table">
             <thead>
               <tr>
-                <th>項目</th>
+                <th>${subCategory}項目</th>
                 <th>獲得效果</th>
-                <th style="text-align:center;">現有值 / 最大值</th>
+                <th style="text-align:center;">現有 / 最大值</th>
               </tr>
             </thead>
 
             <tbody class="y-tbody">
               ${generateSubYTableRowsHtml(result.itemsStatus)}
             </tbody>
-          </table>
-        `
+          </table>`
 
         bindYInputEvents(card, mainCategory, subCategory)
 
@@ -1131,12 +1129,12 @@ function renderSubTabs(mainCategory, mainItems) {
 
         card.innerHTML = `
           <div class="threshold-summary-box">
-            <strong>✨當前累計效果：</strong><br>
+            <strong>✨${subCategory} 當前累計：</strong><br>
             <span id="threshold-summary">${result.summaryText}</span>
           </div>
 
           <div style="margin-bottom:10px; font-weight:bold;">
-            📊 當前進度：
+            📊 ${subCategory} 當前進度：
             <input
               type="number"
               class="pill-count-input"
@@ -1158,11 +1156,9 @@ function renderSubTabs(mainCategory, mainItems) {
             <tbody id="threshold-table-body">
               ${generateTableRowsHtml(result.itemsStatus)}
             </tbody>
-          </table>
-        `
+          </table>`
         // 綁定 # 分類的數字輸入
         const input = card.querySelector('#threshold-input')
-
         if (input) {
           input.addEventListener('input', function () {
             let val = Number(this.value) || 0
@@ -1194,10 +1190,10 @@ function renderSubTabs(mainCategory, mainItems) {
         return card
       }
 
-            //-- #. 從上限欄位解析出門檻的純數字 (如: "#4" 或 "Y4" -> 4)
-            function getThresholdValue(item) {
-              const raw = String(item.上限 || '').replace(/[^0-9]/g, '')
-              return Number(raw) || 0
+//-- #. 從上限欄位解析 獲取純數字 (如: "#4" 或 "Y4" -> 4)
+function getThresholdValue(item) {
+const raw = String(item.上限 || '').replace(/[^0-9]/g, '')
+return Number(raw) || 0
             }
 
             //-- #. 取得該小分類中的「最高門檻值」 (例如: 從 #1,#5,#24 中找出 24)
@@ -1253,7 +1249,20 @@ function renderSubTabs(mainCategory, mainItems) {
               }
             }
 
-
+// 渲染: #.卡片：生成門檻表格 HTML
+function generateTableRowsHtml(itemsStatus) {
+              if (!itemsStatus || !Array.isArray(itemsStatus)) return ''
+              return itemsStatus.map(
+                  (st) => `<tr style="color:${st.isUnlocked ? '#15803d' : '#94a3b8'};">
+      <td>${st.name}</td>
+      <td>${st.effectText}</td>
+      <td class="pill-state">${st.isUnlocked ? '✅解鎖' : '🔒未達'}</td>
+      </tr>`,
+                )
+                .join('')
+            }
+            
+            
       //--- 渲染: B.卡片 等級型／對應等級屬性效果
             function renderSubCategoryBHtml(mainCategory, subCategory) {
               const result = calculateSubCategoryBStats(mainCategory, subCategory)
@@ -1261,15 +1270,15 @@ function renderSubTabs(mainCategory, mainItems) {
               card.className = 'card'
 
               card.innerHTML = `<div class="threshold-summary-box">
-              <strong>⚔️ ${subCategory}當前總累計效果：</strong><br>
-                                          <span class="hero-summary-text" style="color: #15803d; font-weight: bold;">${result.summaryText}</span>
+              <strong>⚔️ ${subCategory}當前累計：</strong><br>
+                                          <span class="hero-summary-text">${result.summaryText}</span>
                                       </div>
                                       <table class="pill-table">
                                           <thead>
                                               <tr>
                                                   <th>${subCategory}項目</th>
                                                   <th>獲得效果</th>
-                                                  <th style="text-align:center;">當前進度</th>
+                                                  <th style="text-align:center;">進度 / 最高</th>
                                               </tr>
                                           </thead>
                                           <tbody class="hero-tbody">
@@ -1323,7 +1332,7 @@ function renderSubTabs(mainCategory, mainItems) {
                 const savedKey = `HERO__${mainCategory}__${subCategory}__${hero.name}`
                 const currentLevel = Number(playerRecord.pills[savedKey]) || 0
                 const currentLevelData = hero.levels[currentLevel]
-                let effectText = '未啟用 (0等)'
+                let effectText = '未啟用 (0)'
 
                if (currentLevel > 0 && currentLevelData) {
 
@@ -1334,16 +1343,11 @@ function renderSubTabs(mainCategory, mainItems) {
         ATTRIBUTES_MAP.forEach((attr) => {
           const val = Number(currentLevelData[attr.key])
 
-          if (Number.isFinite(val) && val !== 0) {
-            activeStats[attr.key] += val
-          }
+          if (Number.isFinite(val) && val !== 0) {activeStats[attr.key] += val}
         })
 
-        if (!effectText) {
-          effectText = `${currentLevel}等 已解鎖`
-        }
+        if (!effectText) {effectText = `${currentLevel} 解鎖`}
       }
-
                 return {
                   name: hero.name,
                   maxLevel: hero.maxLevel || 10,
@@ -1371,6 +1375,7 @@ function renderSubTabs(mainCategory, mainItems) {
             }
 
 
+            //--卡片B.
             function generateSubBTableRowsHtml(
               itemsStatus,
               mainCategory,
@@ -1381,8 +1386,7 @@ function renderSubTabs(mainCategory, mainItems) {
 
               return itemsStatus
                 .map(
-                  (item) => `
-                                  <tr style="border-bottom:1px dashed #ddd;">
+                  (item) => `<tr style="border-bottom:1px dashed #ddd;">
                                       <td class="pill-name">${item.name}</td>
                                       <td style="color:${item.isUnlocked ? '#15803d' : '#888'};">${item.effectText}</td>
                                       <td style="text-align: center; width: 100px;">
@@ -1394,8 +1398,8 @@ function renderSubTabs(mainCategory, mainItems) {
                                               max="${item.maxLevel}"
                                               data-key="${item.savedKey}"
                                               data-max="${item.maxLevel}"
-                                              style="width: 45px;">
-                                          <span style="font-size: 0.8rem;">/${item.maxLevel}等</span>
+                                              style="width: 50px;">
+                                          <span style="font-size: 0.8rem;">/${item.maxLevel}</span>
                                       </td>
                                   </tr>
                                   `,
@@ -1780,7 +1784,7 @@ function calculatePlayerStats() {
                 }
               })
 
-              // 2. #.門檻型小分類
+              // 2. #.門檻型
               const allHashSubs = [
         ...new Set(
           battleDB
@@ -1805,7 +1809,7 @@ function calculatePlayerStats() {
                 }
               })
 
-              // 3. B.等級型小分類
+              // 3. B.等級型
               const subBItems = battleDB.filter(
         (item) => getSubCategoryType([item]) === 'TYPE_B',
       )
@@ -1831,7 +1835,7 @@ function calculatePlayerStats() {
                 }
               })
 
-      // 4. Y. 輸入型小分類
+      // 4. Y.輸入型
               const subYItems = battleDB.filter(
                 (item) => getSubCategoryType([item]) === 'TYPE_Y',
               )
@@ -2074,6 +2078,7 @@ function createEmptyStats() {
           氣血: 0,
         };
 }
+
 //共用: 確保有名稱可紀錄（若空白則自動給予預設名稱）
 function ensurePlayerName() {
               let currentName = playerRecord.playerName
@@ -2089,24 +2094,10 @@ function ensurePlayerName() {
               return currentName
 }
 
-// 共用：生成門檻表格 HTML
-function generateTableRowsHtml(itemsStatus) {
-              if (!itemsStatus || !Array.isArray(itemsStatus)) return ''
-              return itemsStatus
-                .map(
-                  (st) => `
-      <tr style="color:${st.isUnlocked ? '#15803d' : '#94a3b8'};">
-      <td>${st.name}</td>
-      <td>${st.effectText}</td>
-      <td class="pill-state">${st.isUnlocked ? '✅ 已解鎖' : '🔒 未達成'}</td>
-      </tr>`,
-                )
-                .join('')
-            }
 
-            // Toast
-            let toastTimer = null
-            function showToast(message) {
+// Toast
+let toastTimer = null
+function showToast(message) {
               const toast = document.querySelector('.toast-msg')
               toast.textContent = message
               toast.classList.remove('show')
