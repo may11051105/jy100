@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
   <head>
-    <!-- 1. 基本設定與 Open Graph (分享卡片) -->
+    <!-- 1. 網頁資訊.基本設定與 Open Graph (分享卡片) -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>【百分百】金庸商城</title>
@@ -10,18 +10,9 @@
     <meta property="og:url" content="https://may11051105.github.io/jy100/" />
     <meta property="og:title" content="【百分百】金庸商城" />
     <meta property="og:description" content="江湖補給 一站滿足" />
-    <meta
-      property="og:image"
-      content="https://may11051105.github.io/jy100/100.png"
-    />
+    <meta property="og:image" content="https://may11051105.github.io/jy100/100.png" />
 
-    <!-- 2. 載入 CSS (防畫面空白閃爍) -->
-    <script>
-      document.write('<link rel="stylesheet" href="style.css?v=' + Date.now() + '">', );
-      //document.write('<link rel="stylesheet" href="https://may11051105.github.io/jy100/style.css?v=' + Date.now() + '">');
-    </script>
-
-    <!-- 3. 個別專屬主題風格 (覆蓋 style.css) -->
+    <!-- 2. 專屬主題風格 (style.css 變數) -->
     <style>
       /* =============================
       //  🎨 主題外觀##
@@ -50,13 +41,27 @@
         --shadow: rgba(0, 0, 0, 0.2);
       }
     </style>
-
-    <!-- 4. Firebase 函式庫 -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
-    <!-- 5. Firebase 初始化 與 個別專屬CONFIG  -->
+    
+    
+    <!-- 3. 載入 CSS (防畫面空白閃爍) -->
     <script>
+      document.write('<link rel="stylesheet" href="style.css?v=' + Date.now() + '">', );
+      //document.write('<link rel="stylesheet" href="https://may11051105.github.io/jy100/style.css?v=' + Date.now() + '">');
+    </script>
+
+
+ <style>
+
+</style>
+
+
+
+<!-- 4. Firebase 函式庫 -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+<!-- 5. Firebase 初始化 + 專屬CONFIG  -->
+<script>
       // Firebase 初始化
       const firebaseConfig = {
         apiKey: 'AIzaSyDF8YUyotMS75qsGoRQidcgZ7_J9MJbGE8',
@@ -85,360 +90,216 @@
         secretDiv: 'secret-products14',
       }
     </script>
-  </head>
+</head>
 
+ <!-- 6. 網頁內容 -->
   <body class="dark">
-    <div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
+    
     <header>
       <h1>【百分百】金庸商城</h1>
       <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a>
     </header>
-    <div id="top-anchor"></div>
-    <!-- 錨點:回選單-跳到此 --->
-
+    <div id="top-anchor"><!-- 錨點:回選單--></div>
+    
+<!-- ==============================================
+   容器
+   ============================================== -->     
     <div class="form-card">
-      <!-- A1. 玩家資訊欄 -->
+      <!-- 玩家資訊欄 -->
       <div class="info-section">
         <div class="info-row">
-          <input
-            type="text"
-            id="user-id"
-            class="info-input"
-            placeholder="玩家🖊角色名"
-            autocomplete="on"
-          />
-          <select id="pay-method" class="info-input" onchange="updateTotal()">
+          <input type="text" id="user-id" class="info-input" placeholder="玩家🖊角色名" autocomplete="on"/>
+          <!-- 交易方式 -->
+          <select id="pay-method" class="info-input">
             <option value="">-- 交易方式 --</option>
-            <option value="無卡存">ATM無卡存款 (滿100)</option>
             <option value="轉帳">轉帳 (95折)</option>
             <option value="LinePay">LinePay (95折)</option>
             <option value="街口支付">街口支付 (95折)</option>
-            <option value="8591">8591 (滿100開專)</option>
-            <option value="海外刷卡">海外線上刷卡 (滿300)</option>
-            <option value="Paypal">Paypal (滿300)</option>
+            <option value="8591">8591→ 滿100 開專</option>
+            <option value="無卡存">ATM無卡存→滿100</option>
+            <option value="海外刷卡">海外線上刷卡→滿300</option>
+            <option value="Paypal">Paypal→滿300</option>
             <option value="支付寶">支付寶¥ (1:4)</option>
             <option value="其它">其它</option>
           </select>
         </div>
-        <input
-          type="text"
-          id="order-memo"
-          class="info-input"
-          placeholder="📝 備註 (如：交貨時間、特殊要求...)"
-        />
-      </div>
-
-      <!-- A2. 搜尋框容器 -->
-      <div class="info-section" style="position: relative">
-        <input
-          type="text"
-          id="searchInput"
-          class="info-input"
-          placeholder="🔍 搜尋..."
-          oninput="handleSearch()"
-        />
-        <button
-          id="search-clear-btn"
-          class="search-clear-btn"
-          onclick="clearSearch()"
-          style="display: none"
-        >
+        <div class="info-row" style="position: relative">
+         <input type="text" id="order-memo" class="info-input" placeholder="📝 備註"/>
+         <input type="text" id="searchInput" class="info-input" placeholder="🔍 搜尋..." oninput="handleSearch()"/>
+        <button id="search-clear-btn" class="search-X" onclick="clearSearch()" style="display: none">
           ✕
         </button>
-      </div>
+      </div></div>
 
-      <!-- 分類標籤 分頁選單 -->
-      <div class="tabs">
-        <button class="tab-btn active" onclick="openTab(event, 'p1')">
-          1.日常補給
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p2')">
-          2.擴充技能
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p3')">
-          3.屬性丹藥
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p4')">
-          4.精氣神內
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p5')">
-          5.基本攻防丹
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p6')">
-          6.多功能丹藥
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p7')">
-          7.天命天悟藥
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p8')">
-          8.自修天悟裝
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p9')">
-          9.屬性攻防裝
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p10')">
-          10.神威裝
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p11')">
-          11.五獸聖甲
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p12')">
-          12.上古武器
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p13')">
-          13.內丹幻武
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p14')">
-          14.八卦真武俠客
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p15')">
-          15.套裝武林帖
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p16')">
-          16.其它寄賣
-        </button>
-        <button class="tab-btn" onclick="openTab(event, 'p99')">
-          99.特殊專區
-        </button>
-        <!-----若暫時沒用,可隱藏:( style="display:none;" )------------------>
-      </div>
+<!-- ==============================================
+   分類標籤
+   ============================================== -->  
+<div class="tabs-wrapper">
+<!-- 分類標籤. 左移箭頭 -->
+<button class="tabs-arrow left" onclick="scrollTabs(-1)">◀</button>
+<!-- 分類標籤. 分頁選單 -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab(event, 'p1')">1.日常補給</button>
+  <button class="tab-btn" onclick="openTab(event, 'p2')">2.擴充技能</button>
+  <button class="tab-btn" onclick="openTab(event, 'p3')">3.屬性丹藥</button>
+  <button class="tab-btn" onclick="openTab(event, 'p4')">4.精氣神內</button>
+  <button class="tab-btn" onclick="openTab(event, 'p5')">5.基本攻防丹</button>
+  <button class="tab-btn" onclick="openTab(event, 'p6')">6.多功能丹藥</button>
+  <button class="tab-btn" onclick="openTab(event, 'p7')">7.天命天悟藥</button>
+  <button class="tab-btn" onclick="openTab(event, 'p8')">8.自修天悟裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p9')">9.屬性攻防裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p10')">10.神威裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p11')">11.五獸聖甲</button>
+  <button class="tab-btn" onclick="openTab(event, 'p12')">12.上古武器</button>
+  <button class="tab-btn" onclick="openTab(event, 'p13')">13.內丹幻武</button>
+  <button class="tab-btn" onclick="openTab(event, 'p14')">14.八卦真武俠客</button>
+  <button class="tab-btn" onclick="openTab(event, 'p15')">15.造型武林帖</button>
+  <button class="tab-btn" onclick="openTab(event, 'p16')">16.其它寄賣</button>
+  <button class="tab-btn" onclick="openTab(event, 'p99')">99.特殊專區</button>
+  <!-----若暫時沒用,可隱藏:( style="display:none;" )------------------>
+</div>
 
-      <!-- 分類小組容器 商品標題-->
-      <div id="p1" class="tab-content active">
-        <h3 class="new"><span>📢【限時限量更新活動】new</span></h3>
-        <div id="list-p1-1"></div>
-        <h3>【貿易交流】</h3>
-        <div id="list-p1-2"></div>
-        <h3>【輔助工具】</h3>
-        <div id="list-p1-3"></div>
-        <h3>【勤學】日用消耗</h3>
-        <div id="list-p1-4"></div>
-        <h3>【其它道具】</h3>
-        <div id="list-p1-6"></div>
-      </div>
-      <div id="p2" class="tab-content">
-        <h3>【擴充背包】</h3>
-        <div id="list-p2-1"></div>
-        <h3>【技能/原料】</h3>
-        <div id="list-p2-2"></div>
-        <h3>【任務奇物】</h3>
-        <div id="list-p2-3"></div>
-        <h3>【PK戰鬥限時藥】</h3>
-        <div id="list-p2-4"></div>
-        <h3>【絕內武學讀本】</h3>
-        <div id="list-p2-5"></div>
-      </div>
-      <div id="p3" class="tab-content">
-        <h3>【屬性丹】(上限吃5顆)</h3>
-        <div id="list-p3-1"></div>
-        <h3>【屬性仙丹】(上限吃8顆)</h3>
-        <div id="list-p3-2"></div>
-        <h3>【屬性金丹】(上限吃10顆、需二轉)</h3>
-        <div id="list-p3-3"></div>
-        <h3>【特殊屬性提升】</h3>
-        <div id="list-p3-4"></div>
-        <h3>【屬性洗點重整】</h3>
-        <div id="list-p3-5"></div>
-        <h3>【技能永丹】</h3>
-        <div id="list-p3-6"></div>
-      </div>
-      <div id="p4" class="tab-content">
-        <h3>【內力值提升】永久+內</h3>
-        <div id="list-p4-1"></div>
-        <h3>【二十四結氣丹票根】永久</h3>
-        <div id="list-p4-2"></div>
-        <h3>【娛樂幣補精丹】永久+精</h3>
-        <div id="list-p4-3"></div>
-        <h3>【娛樂幣提神丹】永久+神</h3>
-        <div id="list-p4-4"></div>
-        <h3>【娛樂幣益氣丹】永久+氣</h3>
-        <div id="list-p4-5"></div>
-        <h3>【二轉血丹】永久+血 (需二轉)</h3>
-        <div id="list-p4-6"></div>
-        <h3>【二轉節氣大補丹】永久+精氣神(需二轉)</h3>
-        <div id="list-p4-7"></div>
-        <h3>【商城補精丹】永久+精</h3>
-        <div id="list-p4-8"></div>
-        <h3>【商城提神丹】永久+神</h3>
-        <div id="list-p4-9"></div>
-        <h3>【商城益氣丹】永久+氣</h3>
-        <div id="list-p4-10"></div>
-      </div>
-      <div id="p5" class="tab-content">
-        <h3>【霹靂丹藥】</h3>
-        <div id="list-p5-1"></div>
-        <h3>【金鐘丹藥】</h3>
-        <div id="list-p5-2"></div>
-        <h3>【爆擊丹藥】</h3>
-        <div id="list-p5-3"></div>
-        <h3>【閃避丹藥】</h3>
-        <div id="list-p5-4"></div>
-        <h3>【反擊丹藥】</h3>
-        <div id="list-p5-5"></div>
-        <h3>【太極丹藥】</h3>
-        <div id="list-p5-6"></div>
-        <h3>【真武丹藥】</h3>
-        <div id="list-p5-7"></div>
-        <h3>【會心丹】</h3>
-        <div id="list-p5-8"></div>
-        <h3>【抗爆丹】</h3>
-        <div id="list-p5-9"></div>
-        <h3>【命中丹】</h3>
-        <div id="list-p5-10"></div>
-        <h3>【絕學威能】</h3>
-        <div id="list-p5-11"></div>
-      </div>
-      <div id="p6" class="tab-content">
-        <h3>【般若伏象多羅】</h3>
-        <div id="list-p6-1"></div>
-        <h3>【至尊真龍】</h3>
-        <div id="list-p6-2"></div>
-        <h3>【至尊無極】</h3>
-        <div id="list-p6-3"></div>
-        <h3>【至尊無雙】</h3>
-        <div id="list-p6-4"></div>
-        <h3>【至尊波羅】</h3>
-        <div id="list-p6-5"></div>
-        <h3>【至尊莫名其妙】</h3>
-        <div id="list-p6-6"></div>
-        <h3>【乾坤】多功能永丹</h3>
-        <div id="list-p6-9"></div>
-        <h3>【武甲】多功能永丹</h3>
-        <div id="list-p6-10"></div>
-        <h3>【絕霸】多功能永丹</h3>
-        <div id="list-p6-11"></div>
-        <h3>【禦極】多功能永丹</h3>
-        <div id="list-p6-12"></div>
-      </div>
-      <div id="p7" class="tab-content">
-        <h3>【天命丹藥】</h3>
-        <div id="list-p7-1"></div>
-        <h3>【天悟丹藥】</h3>
-        <div id="list-p7-2"></div>
-      </div>
-      <div id="p8" class="tab-content">
-        <h3>【新手悟裝】</h3>
-        <div id="list-p8-1"></div>
-        <h3>【至尊天悟裝】悟裝升級</h3>
-        <div id="list-p8-2"></div>
-        <h3>【天命卷】天悟裝增加自修熟練度</h3>
-        <div id="list-p8-4"></div>
-        <h3>【天悟卷】開光天悟裝增加天悟熟練度</h3>
-        <div id="list-p8-5"></div>
-        <h3>【至尊戒指、披風】</h3>
-        <div id="list-p8-6"></div>
-        <h3>【減悟裝】</h3>
-        <div id="list-p8-7"></div>
-        <h3>【天命武器】</h3>
-        <div id="list-p8-8"></div>
-        <h3>【天命魂】</h3>
-        <div id="list-p8-9"></div>
-      </div>
-      <div id="p9" class="tab-content">
-        <h3>【壇裝4寶】</h3>
-        <div id="list-p9-1"></div>
-        <h3>【屬性裝】</h3>
-        <div id="list-p9-2"></div>
-        <h3>【(精十)武器】</h3>
-        <div id="list-p9-3"></div>
-        <h3>【(精十)7件套】</h3>
-        <div id="list-p9-4"></div>
-        <h3>【武罡心鏡】</h3>
-        <div id="list-p9-5"></div>
-      </div>
-      <div id="p10" class="tab-content">
-        <h3>【神威套裝】</h3>
-        <div id="list-p10-1"></div>
-        <h3>【神威升級】</h3>
-        <div id="list-p10-2"></div>
-        <h3>【神威合成石】</h3>
-        <div id="list-p10-3"></div>
-        <h3>【神威寶石物件】</h3>
-        <div id="list-p10-4"></div>
-        <h3>【寶石(人)】套裝白虎*7顆</h3>
-        <div id="list-p10-5"></div>
-        <h3>【寶石(地)】套裝朱雀*5顆</h3>
-        <div id="list-p10-6"></div>
-        <h3>【寶石(天)】玄武衣1顆+麒麟帽靴2顆</h3>
-        <div id="list-p10-7"></div>
-      </div>
-      <div id="p11" class="tab-content">
-        <h3>【麒麟慧心甲】</h3>
-        <div id="list-p11-1"></div>
-        <h3>【白虎霸武甲】</h3>
-        <div id="list-p11-2"></div>
-        <h3>【青龍暴麟甲】</h3>
-        <div id="list-p11-3"></div>
-        <h3>【朱雀天羽甲】</h3>
-        <div id="list-p11-4"></div>
-        <h3>【玄武禦龜甲】</h3>
-        <div id="list-p11-5"></div>
-        <h3>【升級物件】陰陽鋼石</h3>
-        <div id="list-p11-6"></div>
-      </div>
-      <div id="p12" class="tab-content">
-        <h3>【上古相關物件】</h3>
-        <div id="list-p12-1"></div>
-        <h3>【上古武器洗屬性】</h3>
-        <div id="list-p12-2"></div>
-        <h3>【上古昇星石】</h3>
-        <div id="list-p12-3"></div>
-        <h3>【上古防爆符】防昇星失敗時歸0</h3>
-        <div id="list-p12-4"></div>
-        <h3>【上古武器升階】</h3>
-        <div id="list-p12-5"></div>
-        <h3>【上古武器成品】</h3>
-        <div id="list-p12-6"></div>
-      </div>
-      <div id="p13" class="tab-content">
-        <h3>【內丹進化】</h3>
-        <div id="list-p13-1"></div>
-        <h3>【內丹幻化】京城找孫姑娘</h3>
-        <div id="list-p13-2"></div>
-        <h3>【內丹仙化】大理天龍寺 渾沌活佛(選1.龍宮洞)</h3>
-        <div id="list-p13-3"></div>
-        <h3>【內丹玄化】大理天龍寺 玄天活佛</h3>
-        <div id="list-p13-4"></div>
-        <h3>【內丹羽化】大理天龍寺 雀羽仙人</h3>
-        <div id="list-p13-5"></div>
-        <h3>【幻武系統】</h3>
-        <div id="list-p13-6"></div>
-        <h3>【守護神】</h3>
-        <div id="list-p13-7"></div>
-      </div>
-      <div id="p14" class="tab-content">
-        <h3>【八卦燈】</h3>
-        <div id="list-p14-1"></div>
-        <h3>【真武系統】功能/最大值</h3>
-        <div id="list-p14-2"></div>
-        <h3>【俠客系統】小卷相減=升級所需俠義小</h3>
-        <div id="list-p14-3"></div>
-      </div>
-      <div id="p15" class="tab-content">
-        <h3>【造型服】</h3>
-        <div id="list-p15-1"></div>
-        <h3>【稀有武林帖】</h3>
-        <div id="list-p15-2"></div>
-        <h3>【商城帖】</h3>
-        <div id="list-p15-3"></div>
-        <h3>【名門帖】</h3>
-        <div id="list-p15-4"></div>
-      </div>
-      <div id="p16" class="tab-content">
-        <h3>【限時商品】留意是否上架期間</h3>
-        <div id="list-p16-1"></div>
-        <h3>【玩家寄賣】</h3>
-        <div id="list-p16-2"></div>
-      </div>
+      
+      <!-- 分類標籤. 右移箭頭 -->
+      <button class="tabs-arrow right" onclick="scrollTabs(1)">▶</button>
+</div>
+
+<!-- 分類小組容器 商品標題-->
+<div id="p1" class="tab-content active">
+  <h3 class="new"><span>📢【限時限量更新活動】new</span></h3>
+  <div id="list-p1-1"></div>
+  <h3>【貿易交流】</h3><div id="list-p1-2"></div>
+  <h3>【輔助工具】</h3><div id="list-p1-3"></div>
+  <h3>【勤學】日用消耗</h3><div id="list-p1-4"></div>
+  <h3>【其它道具】</h3><div id="list-p1-6"></div>
+</div>
+<div id="p2" class="tab-content">
+  <h3>【擴充背包】</h3><div id="list-p2-1"></div>
+  <h3>【技能/原料】</h3><div id="list-p2-2"></div>
+  <h3>【任務奇物】</h3><div id="list-p2-3"></div>
+  <h3>【PK戰鬥限時藥】</h3><div id="list-p2-4"></div>
+  <h3>【絕內武學讀本】</h3> <div id="list-p2-5"></div>
+</div>
+<div id="p3" class="tab-content">
+  <h3>【屬性丹】(上限吃5顆)</h3> <div id="list-p3-1"></div>
+  <h3>【屬性仙丹】(上限吃8顆)</h3>  <div id="list-p3-2"></div>
+  <h3>【屬性金丹】(上限吃10顆、需二轉)</h3> <div id="list-p3-3"></div>
+  <h3>【特殊屬性提升】</h3>  <div id="list-p3-4"></div>
+  <h3>【屬性洗點重整】</h3> <div id="list-p3-5"></div>
+  <h3>【技能永丹】</h3> <div id="list-p3-6"></div>
+</div>
+<div id="p4" class="tab-content">
+  <h3>【內力值提升】永久+內</h3> <div id="list-p4-1"></div>
+  <h3>【二十四結氣丹票根】永久</h3> <div id="list-p4-2"></div>
+  <h3>【娛樂幣補精丹】永久+精</h3> <div id="list-p4-3"></div>
+  <h3>【娛樂幣提神丹】永久+神</h3>  <div id="list-p4-4"></div>
+  <h3>【娛樂幣益氣丹】永久+氣</h3>  <div id="list-p4-5"></div>
+  <h3>【二轉血丹】永久+血 (需二轉)</h3>  <div id="list-p4-6"></div>
+  <h3>【二轉節氣大補丹】永久+精氣神(需二轉)</h3>  <div id="list-p4-7"></div>
+  <h3>【商城補精丹】永久+精</h3>  <div id="list-p4-8"></div>
+  <h3>【商城提神丹】永久+神</h3>  <div id="list-p4-9"></div>
+  <h3>【商城益氣丹】永久+氣</h3>  <div id="list-p4-10"></div>
+</div>
+<div id="p5" class="tab-content">
+  <h3>【霹靂丹藥】</h3> <div id="list-p5-1"></div>
+  <h3>【金鐘丹藥】</h3>  <div id="list-p5-2"></div>
+  <h3>【爆擊丹藥】</h3>  <div id="list-p5-3"></div>
+  <h3>【閃避丹藥】</h3>  <div id="list-p5-4"></div>
+  <h3>【反擊丹藥】</h3>  <div id="list-p5-5"></div>
+  <h3>【太極丹藥】</h3>  <div id="list-p5-6"></div>
+  <h3>【真武丹藥】</h3>  <div id="list-p5-7"></div>
+  <h3>【會心丹】</h3>  <div id="list-p5-8"></div>
+  <h3>【抗爆丹】</h3>  <div id="list-p5-9"></div>
+  <h3>【命中丹】</h3>  <div id="list-p5-10"></div>
+  <h3>【絕學威能】</h3>  <div id="list-p5-11"></div>
+</div>
+<div id="p6" class="tab-content">
+  <h3>【般若伏象多羅】</h3>  <div id="list-p6-1"></div>
+  <h3>【至尊真龍】</h3> <div id="list-p6-2"></div>
+  <h3>【至尊無極】</h3>  <div id="list-p6-3"></div>
+  <h3>【至尊無雙】</h3>  <div id="list-p6-4"></div>
+  <h3>【至尊波羅】</h3>  <div id="list-p6-5"></div>
+  <h3>【至尊莫名其妙】</h3>  <div id="list-p6-6"></div>
+  <h3>【乾坤】多功能永丹</h3>  <div id="list-p6-9"></div>
+  <h3>【武甲】多功能永丹</h3>  <div id="list-p6-10"></div>
+  <h3>【絕霸】多功能永丹</h3>  <div id="list-p6-11"></div>
+  <h3>【禦極】多功能永丹</h3>  <div id="list-p6-12"></div>
+</div>
+<div id="p7" class="tab-content">
+  <h3>【天命丹藥】</h3> <div id="list-p7-1"></div>
+  <h3>【天悟丹藥】</h3>  <div id="list-p7-2"></div>
+</div>
+<div id="p8" class="tab-content">
+  <h3>【新手悟裝】</h3>  <div id="list-p8-1"></div>
+  <h3>【至尊天悟裝】悟裝升級</h3>  <div id="list-p8-2"></div>
+  <h3>【天命卷】天悟裝增加自修熟練度</h3>  <div id="list-p8-4"></div>
+  <h3>【天悟卷】開光天悟裝增加天悟熟練度</h3> <div id="list-p8-5"></div>
+  <h3>【至尊戒指、披風】</h3>  <div id="list-p8-6"></div>
+  <h3>【減悟裝】</h3>  <div id="list-p8-7"></div>
+  <h3>【天命武器】</h3>  <div id="list-p8-8"></div>
+  <h3>【天命魂】</h3>  <div id="list-p8-9"></div>
+</div>
+<div id="p9" class="tab-content">
+  <h3>【壇裝4寶】</h3>  <div id="list-p9-1"></div>
+  <h3>【屬性裝】</h3>  <div id="list-p9-2"></div>
+  <h3>【(精十)武器】</h3>  <div id="list-p9-3"></div>
+  <h3>【(精十)7件套】</h3>  <div id="list-p9-4"></div>
+  <h3>【武罡心鏡】</h3>  <div id="list-p9-5"></div>
+</div>
+<div id="p10" class="tab-content">
+  <h3>【神威套裝】</h3>  <div id="list-p10-1"></div>
+  <h3>【神威升級】</h3> <div id="list-p10-2"></div>  
+  <h3>【神威合成石】</h3>  <div id="list-p10-3"></div>  
+  <h3>【神威寶石物件】</h3>  <div id="list-p10-4"></div> 
+  <h3>【寶石(人)】套裝白虎*7顆</h3>  <div id="list-p10-5"></div>
+  <h3>【寶石(地)】套裝朱雀*5顆</h3>  <div id="list-p10-6"></div>
+  <h3>【寶石(天)】玄武衣1顆+麒麟帽靴2顆</h3>  <div id="list-p10-7"></div>
+</div>
+<div id="p11" class="tab-content">
+  <h3>【麒麟慧心甲】</h3> <div id="list-p11-1"></div>
+  <h3>【白虎霸武甲】</h3>  <div id="list-p11-2"></div>
+  <h3>【青龍暴麟甲】</h3>  <div id="list-p11-3"></div>
+  <h3>【朱雀天羽甲】</h3>  <div id="list-p11-4"></div>
+  <h3>【玄武禦龜甲】</h3>  <div id="list-p11-5"></div>
+  <h3>【升級物件】陰陽鋼石</h3>  <div id="list-p11-6"></div>
+</div>
+<div id="p12" class="tab-content">
+  <h3>【上古相關物件】</h3>  <div id="list-p12-1"></div>
+  <h3>【上古武器洗屬性】</h3> <div id="list-p12-2"></div>
+  <h3>【上古昇星石】</h3>  <div id="list-p12-3"></div>
+  <h3>【上古防爆符】防昇星失敗時歸0</h3>  <div id="list-p12-4"></div>
+  <h3>【上古武器升階】</h3>  <div id="list-p12-5"></div>
+  <h3>【上古武器成品】</h3>  <div id="list-p12-6"></div>
+</div>
+<div id="p13" class="tab-content">
+  <h3>【內丹進化】</h3> <div id="list-p13-1"></div>
+  <h3>【內丹幻化】京城找孫姑娘</h3>  <div id="list-p13-2"></div>
+  <h3>【內丹仙化】大理天龍寺 渾沌活佛(選1.龍宮洞)</h3>  <div id="list-p13-3"></div>
+  <h3>【內丹玄化】大理天龍寺 玄天活佛</h3>  <div id="list-p13-4"></div>
+  <h3>【內丹羽化】大理天龍寺 雀羽仙人</h3>  <div id="list-p13-5"></div>
+  <h3>【幻武系統】</h3>  <div id="list-p13-6"></div>
+  <h3>【守護神】</h3>  <div id="list-p13-7"></div>
+</div>
+<div id="p14" class="tab-content">
+  <h3>【八卦燈】</h3> <div id="list-p14-1"></div>
+  <h3>【真武系統】功能/最大值</h3> <div id="list-p14-2"></div>
+  <h3>【俠客系統】小卷相減=升級所需俠義小</h3> <div id="list-p14-3"></div>
+</div>
+<div id="p15" class="tab-content">
+  <h3>【造型服】</h3> <div id="list-p15-1"></div>
+  <h3>【稀有武林帖】</h3> <div id="list-p15-2"></div>
+  <h3>【商城帖】</h3> <div id="list-p15-3"></div>
+  <h3>【名門帖】</h3> <div id="list-p15-4"></div>
+</div>
+<div id="p16" class="tab-content">
+  <h3>【限時商品】留意是否上架期間</h3> <div id="list-p16-1"></div>
+  <h3>【玩家寄賣】</h3> <div id="list-p16-2"></div>
+</div>
+
       <div id="p99" class="tab-content">
         <h3>【🔒 請輸入密碼】</h3>
         <div id="password-box" style="padding: 20px">
-          <input
-            type="password"
-            id="pwd"
-            style="font-size: 18px"
-            placeholder="輸入密碼"
-          />
+          <input type="password" id="pwd" style="font-size: 18px" placeholder="輸入密碼" />
           <button onclick="checkPassword()">進入</button>
         </div>
         <div id="secret-section" style="display: none">
@@ -456,132 +317,113 @@
       <!--商品容器底 結束--->
     </div>
 
-    <!-- 訂單確認與付款引導彈窗 Modal -->
-    <div
-      id="payment-modal"
-      class="modal-overlay"
-      style="display: none"
-      onclick="closeModal(this)"
-    >
-      <div class="modal-content" onclick="event.stopPropagation()">
-        <span class="X-close" onclick="closeModal(this)">&times;</span>
-        <h3 style="margin-top: 0">📋 訂單確認與付款指引</h3>
-        <textarea id="modal-order-text" readonly></textarea>
-        <div id="payment-instruction"></div>
-        <div style="display: flex; gap: 8px">
-          <button
-            class="btn-cart"
-            style="background: #6c757d"
-            onclick="handleAction(1)"
-          >
-            📋 複製清單
-          </button>
-          <button
-            class="btn-cart"
-            style="background: #06c755"
-            onclick="submitOrder()"
-          >
-            💬 傳送到 LINE
-          </button>
-        </div>
-      </div>
-    </div>
-
     <!---- 底部計算金額區total-box (兼購物車入口) ---->
     <div class="total-box">
       <div class="top-row">
         <div class="left-area">
-           <div id="visitor-count"><!--👤計數--></div>
+          <span id="visitor-count"><!--👤計數--></span>
         </div>
-        <div class="total">
-          總金額：<span class="grand-total"
-            >$<span id="total-val">0</span></span
-          >
-        </div>
+        <div>總金額：<span class="grand-total">$<span id="total-val">0</span></span></div>
       </div>
       <div style="display: flex; gap: 8px; margin-top: 5px">
-        <button
-          class="btn"
-          style="flex: 1; background: #0275d8; margin-top: 0"
-          onclick="toggleCart()"
-        >
-          🛒 購物車明細
-        </button>
-        <button
-          class="btn main-btn"
-          style="flex: 1.5; margin-top: 0"
-          onclick="openPaymentModal()"
-        >
-          📋 結算送出 💕
-        </button>
+        <button class="btn" style="flex: 1; background: #0275d8; margin-top: 0" onclick="toggleCart()">🛒 購物車</button>
+        <button class="btn" style="flex: 1; background: #b45f06; margin-top: 0" onclick="openPaymentModal()">💳 結帳</button>
       </div>
     </div>
-
-    <!-- 購物車抽屜面板 -->
-    <div id="cart-wrapper" class="collapsed">
+    
+<!-- ==============================================
+   購物車
+   ============================================== -->
+    <!-- 購物車面板 -->
+    <div id="cart-wrapper" class="overlay-base">
       <div id="cart-panel" onclick="event.stopPropagation()">
         <span class="X-close" onclick="closeModal(this)">&times;</span>
-        <h3>🛒 購物車</h3>
-        <ul id="cart-list"></ul>
-        <div class="cart-total">總金額: $ <span id="cart-total">0</span></div>
-        <!-- 輸出與聯絡按鈕 -->
-        <div
-          id="action-buttons"
-          class="action-row"
-          style="margin-top: 10px; display: flex; gap: 5px"
-        >
-          <button
-            class="btn-cart"
-            style="background: #6c757d"
-            onclick="handleAction(1)"
-          >
-            📋 複製
-          </button>
-          <button
-            class="btn-cart"
-            style="background: #06c755"
-            onclick="handleAction(2)"
-          >
-            💬 LINE
-          </button>
-          <button
-            class="btn-cart"
-            style="background: #17a2b8"
-            onclick="handleAction(3)"
-          >
-            📧 Email
-          </button>
+        <h3 style="margin-top: 0;">🛒 購物車</h3>
+<div class="cart-header">
+  <span>明細：<span id="cart-count">0</span>項</span>
+  <span>總金額：<span class="grand-total">$ <span id="cart-total">0</span></span></span>
+</div>
+<!--購物車明細-->
+<div id="cart-content"></div>
+
+        <!-- 功能按鈕 -->
+        <div class="action-row">
+          <button class="btn-2" style="background: #4a5568" onclick="handleAction(1)">📋 複製</button>
+          <button class="btn-2" style="background: #06c755" onclick="handleAction(2)">💬 LINE</button>
+          <button class="btn-2" style="background: #17a2b8" onclick="handleAction(3)">📧 Email</button>
         </div>
         <!-- 清空/結算按鈕 -->
+        <div class="action-row">
+          <button class="btn-2" style="background: #6c757d" onclick="clearCart()">清空購物車</button>
+          <button class="btn-2" style="background: #b45f06" onclick="openPaymentModal()">前往結帳</button>
+        </div>
+      </div>
+    </div>
+    
+<!-- ==============================================
+   結算與付款引導 彈窗Modal
+   ============================================== -->    
+    <div id="payment-modal" class="modal-overlay overlay-base" style="display: none" onclick="closeModal(this)">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <span class="X-close" onclick="closeModal(this)">&times;</span>
+        <h3 style="margin-top: 0">📋 訂單預覽</h3>
+        <textarea id="modal-order-text" readonly><!--訂單預覽區--></textarea>
+       
+        <div id="payment-instruction"><!--付款指引 根據付款方式引導--></div>
         <div style="display: flex; gap: 10px; margin-top: 10px">
-          <button class="btn-cart btn-clear" onclick="clearCart()">
-            清空購物車
-          </button>
-          <button class="btn-cart btn-submit" onclick="openPaymentModal()">
-            前往結帳
-          </button>
+          <button class="btn-2" style="background: #4a5568" onclick="handleAction(1)">📋 複製清單</button>
+          <button class="btn-2" style="background: #17a2b8" onclick="handleAction(3)">📧 飛鴿寄出</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px">
+          <button class="btn-2" style="background: #06c755" onclick="handleAction(2)">➕ LINE好友</button>
+          <button class="btn-2" style="background: #06c755" onclick="submitOrder()">💬 LINE傳送</button>
         </div>
       </div>
     </div>
 
-    <!-- 懸浮按鈕 -->
-    <div
-      id="btnTop"
-      class="back-to-top"
-      onclick="window.scrollTo(0, 0)"
-      title="回頂部"
-    >
-      TOP
-    </div>
-    <div id="refresh-button" onclick="refreshInventory()" title="重整資料">
-      🔃
-    </div>
-    <div id="live-toast" class="live-toast">⚡ 商品資料已更新！</div>
 
-    <!-- 6. 載入 JS (CONFIG後 </body>前) -->
-    <script>
+<!-- ==============================================
+     全站共用 
+     ============================================== -->
+<!-- 提示訊息.Aoast -->
+<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
+<div id="live-toast" class="live-toast">⚡ 商品資料已更新！</div>
+
+<!-- 提示窗.Alert -->     
+<div id="custom-alert" class="overlay-base">
+  <div class="custom-alert-box">
+    <div class="custom-alert-title">🏮 江湖提示</div>
+    <div id="custom-alert-message" class="custom-alert-message"></div>
+    <!-- Alert 按鈕 -->
+    <button id="custom-alert-ok" class="btn" style="background:var(--bg1);" type="button">確 定</button>
+  </div>
+</div>
+
+<!-- 公告.休站 -->
+<div id="maintenance-overlay" class="overlay-base">
+  <div class="maintenance-box">
+    <div class="maintenance-title">🔔 休站中...暫停接單</div>
+    <div class="maintenance-text">
+      小站休息中<br>
+      商品仍可瀏覽，繼續閒逛。
+    </div>
+    <button class="btn" style="background:var(--h3-bg);" onclick="closeMaintenance()">我知道了</button>
+  </div>
+</div>
+
+
+<!-- ==============================================
+     懸浮按鈕
+     ============================================== -->
+<div id="btnTop" class="back-to-top" onclick="window.scrollTo(0, 0)" title="回頂部">TOP</div>
+<div id="refresh-button" onclick="refreshInventory()" title="重整資料">🔃</div>
+
+
+
+<!-- 6. 載入 JS (CONFIG後 </body>前) -->
+<script>
       document.write('<script src="main.js?v=' + Date.now() + '"><\/script>');
       //document.write('<script src="https://may11051105.github.io/jy100/main.js?v=' + Date.now() + '"><\/script>');
-    </script>
+</script>
   </body>
 </html>
