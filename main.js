@@ -651,15 +651,11 @@ async function submitOrder() {
 //--共用-- 處理按鈕行為: 複製、LINE、寄信選項
 // ==============================================
 async function handleAction(type) {
-  // 完全沒選商品，不處理按鈕行為
   const orderText = buildOrderText();
-  //if (!orderText) return showLiveToast("⚠️ 未選商品！無法處理！");
-  if (!orderText) return alert("⚠️ 未選商品！無法處理！");
+  
   // 金額小於1，不處裡按鈕行為
   const total = Number(document.getElementById("total-val")?.textContent || 0);
-  if (total < 1) {
-    return alert("⚠️ 金額為 $0，無法處理！\n\n請先選擇商品。");
-  }
+  if (total < 1) {return alert("⚠️ 金額為 $0，無法處理訂單！\n\n請先選擇商品。"); }
 
   // 組合最終發送與複製的完整文字
   const text = `${orderText}\n\n👉 ${window.location.href}`;
