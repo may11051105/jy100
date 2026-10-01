@@ -495,35 +495,6 @@ updateCart();  // 購物車中心
 }
 
 
-// ==============================================
-//共用-- 處理按鈕行為: 複製、LINE、寄信選項
-// ==============================================
-async function handleAction(type) {
-  const orderText = buildOrderText();
-  //if (!orderText) return showLiveToast("⚠️ 未選商品！無法處理！");
-  if (!orderText) return alert("⚠️ 未選商品！無法處理！");
-
-  // 組合最終發送與複製的完整文字
-  const text = `${orderText}\n\n👉 ${window.location.href}`;
-  // 先複製到剪貼簿（解決 Yahoo 等 App 亂碼時的備用方案）
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (err) {console.warn("剪貼簿複製失敗：", err);}
-
-  // 根據按鈕類型執行動作
-  if (type === 1)     // 1.僅複製
-  {showLiveToast("✅ 已複製清單");} 
-  
-  else if (type === 2) // 2.複製+開啟LINE
-  {showLiveToast("✅ 已複製清單，準備開啟 LINE"); 
-    window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");} 
-    
-  else if (type === 3) // 3.複製+開啟Email (Yahoo Mail 亂碼，使用者可直接貼上)
-  {showLiveToast("✅ 已複製清單！若郵件內文亂碼請直接貼上");
-    const mailUrl = `mailto:may11051105@gmail.com?subject=${encodeURIComponent("金庸商城訂單")}&body=${encodeURIComponent(text)}`; 
-    window.location.href = mailUrl;} // 直接調用，不需動態創建 <a> 標籤
-}
-
 
 // ==============================================
 // 產生訂單文字檔
@@ -577,8 +548,14 @@ function openPaymentModal() {
 
   const pay = document.getElementById("pay-method")?.value;
   
-   //-- 付款方式：未達滿額時阻擋
+  //-- 金額必須大於 0
   const total = Number(document.getElementById("total-val")?.textContent || 0 );
+
+  if (total < 1) {
+    alert("⚠️ 訂單金額為 $0，無法進行付款！\n\n請先選擇商品。");
+    return;
+  }
+   //-- 付款方式：未達滿額時阻擋
   if (
     (pay === "海外刷卡" || pay === "Paypal") &&
     total < 300
@@ -669,6 +646,46 @@ async function submitOrder() {
   closeModal();
   window.open(`https://line.me/R/msg/text/${encodeURIComponent(text)}`,"_blank",);
 }
+
+// ==============================================
+//--共用-- 處理按鈕行為: 複製、LINE、寄信選項
+// ==============================================
+async function handleAction(type) {
+  // 完全沒選商品，不處理按鈕行為
+  const orderText = buildOrderText();
+  //if (!orderText) return showLiveToast("⚠️ 未選商品！無法處理！");
+  if (!orderText) return alert("⚠️ 未選商品！無法處理！");
+  // 金額小於1，不處裡按鈕行為
+  const total = Number(document.getElementById("total-val")?.textContent || 0);
+  if (total < 1) {
+    return alert("⚠️ 金額為 $0，無法處理！\n\n請先選擇商品。");
+  }
+
+  // 組合最終發送與複製的完整文字
+  const text = `${orderText}\n\n👉 ${window.location.href}`;
+
+  // 先複製到剪貼簿（解決 Yahoo 等 內文亂碼時的備用方案）
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch (err) {console.warn("剪貼簿複製失敗：", err); }
+
+  // 根據按鈕類型執行動作
+  if (type === 1) { // 1.僅複製
+    showLiveToast("✅ 已複製清單");
+  }
+
+  else if (type === 2) { // 2.複製+開啟LINE
+    showLiveToast("✅ 已複製清單，準備開啟 LINE");
+    window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
+  }
+
+  else if (type === 3) { // 3.複製+開啟Email
+    showLiveToast("✅ 已複製清單！若郵件內文亂碼請直接貼上");
+    const mailUrl =
+      `mailto:may11051105@gmail.com?subject=${encodeURIComponent("金庸商城訂單")}&body=${encodeURIComponent(text)}`;
+    window.location.href = mailUrl;
+  }
+}//`
 
 
 
