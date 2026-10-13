@@ -108,17 +108,14 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         border-bottom: 1px solid var(--border2);
         font-weight: bold;
+        white-space: nowrap;
       }
-      .header-title {
-        font-size: 1.3rem;
-      }
-      .header-btns {
-        display: flex;
-        gap: 5px;
-      }
+      .header-title {font-size: 1.3rem;}
+      .header-btns {display: flex; gap: 5px;}
       .header-btn {
         padding: 6px 10px;
         font-size: 0.9rem;
+        font-weight: bold;
         color: white;
         border-radius: 10px;
         border: none;
@@ -126,9 +123,7 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
         text-decoration: none;
         background: var(--bg3);
       }
-      .header-btn:hover {
-        filter: brightness(1.5);
-      }
+      .header-btn:hover {filter: brightness(1.5);}
 
 /* =========================
 *輸入角色名
@@ -414,17 +409,6 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
         display: block;
         animation: toastSlideInOut 3.5s forwards ease-in-out;
       }
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 440px;
-}
-#stat-needed-list {
-  max-height: 180px;
-  overflow-y: auto;
-}
       @keyframes toastSlideInOut {
         0% {
           transform: translateX(120%);
@@ -445,153 +429,86 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
       }
 
 /* ==============================================
-   戰力統計：已吃丹藥小入口
+   戰力統計視窗（客製顯示 + 精簡按鈕）
    ============================================== */
-.eaten-pill-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: 8px;
-  font-size: 0.78rem;
-  font-weight: 500;
-  color: #64748b;
-  cursor: pointer;
-  user-select: none;
-}
-.eaten-pill-toggle input {margin: 0;cursor: pointer;}
-
-
-/* ==============================================
-   已吃丹藥 獨立查看面板
-   ============================================== */
-.eaten-pills-panel {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  background: rgba(0, 0, 0, 0.25);
-}
-
-/* 已吃 面板本體 */
-.eaten-pills-box {
-  width: min(360px, calc(100vw - 40px));
-  max-height: min(70vh, 520px);
+[hidden] {display: none !important;}
+.stats-modal-content {
   display: flex;
   flex-direction: column;
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow:0 10px 35px rgba(0, 0, 0, 0.22);
-  overflow: hidden;
+  width: 94%;
+  max-width: 480px;
+  max-height: 92vh;
+  padding: 10px 12px;
 }
-
-/* 已吃 面板標題 */
-.eaten-pills-title {
+.stats-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 12px 14px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: #356b4b;
-  background: #f4f8f5;
-  border-bottom: 1px solid #dfe8e2;
+  gap: 10px;
+  padding-bottom: 6px;
   flex-shrink: 0;
 }
-
-/* 已吃 關閉按鈕 */
-.eaten-pills-close {
-  border: none;
-  background: transparent;
-  font-size: 1.1rem;
-  color: #64748b;
-  cursor: pointer;
-  padding: 2px 5px;
+.stats-head-title {flex: 1; font-weight: 800; color: var(--bg3);}
+.stats-opt {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.85rem; font-weight: 600; color: var(--bg3);
+  cursor: pointer; user-select: none; white-space: nowrap;
 }
-
-.eaten-pills-close:hover {color: #222;}
-/* ==============================================
-   已吃丹藥顯示區
-   ============================================== */
-.stats-eaten-header {
-  margin: 10px 0 8px;
-  font-weight: 700;
+.stats-opt input {margin: 0; cursor: pointer;}
+.stats-close {
+  border: none; background: transparent; font-size: 1.2rem;
+  color: #64748b; cursor: pointer; padding: 2px 6px;
 }
-
-.stats-eaten-header label {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+.stats-close:hover {color: #222;}
+.stats-scroll-wrap {position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column;}
+.stats-scroll {flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;}
+.stats-top {
+  position: absolute; right: 8px; bottom: 8px; width: 36px; height: 36px;
+  border: none; border-radius: 50%; background: var(--bg3); color: #fff;
+  font-size: 1.1rem; opacity: 0.85; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
-
-.stats-eaten-header input {
-  cursor: pointer;
+#capture-area {background: #fff; padding: 6px; border-radius: 8px;}
+.stats-title {
+  margin-bottom: 10px; padding-bottom: 6px; font-size: 1.05rem;
+  border-bottom: 2px solid var(--border1); color: var(--bg3);
 }
-
-
-/* 已吃丹藥列表 */
-.eaten-pills-list {
-  margin-bottom: 14px;
+.stats-block {
+  background: var(--bg); padding: 10px; border-radius: 8px; margin-bottom: 10px;
 }
+.stats-block h4 {margin-bottom: 6px; font-size: 1rem; color: var(--bg3);}
+#stat-summary-list {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 6px 10px;
+  font-size: 1rem; color: #333;
+}
+#stat-summary-list strong {color: var(--bg3);}
+.stats-actions {
+  display: flex; gap: 6px; align-items: center;
+  padding-top: 8px; flex-shrink: 0;
+}
+.mini-select {
+  flex: 1; min-width: 0; padding: 5px 4px; font-size: 0.8rem;
+  border: 1px solid var(--border1); border-radius: 8px; background: #fff;
+}
+.mini-btn {
+  padding: 5px 9px; font-size: 0.8rem; color: #fff; border: none;
+  border-radius: 8px; background: var(--bg2); cursor: pointer; white-space: nowrap;
+}
+.mini-btn.primary {background: var(--bg3);}
+.mini-btn:hover {filter: brightness(1.3);}
+
+/* 已吃 / 未吃 清單列 */
 .eaten-pill-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  padding: 5px 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; padding: 5px 4px; font-size: 0.95rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
-
-.eaten-pill-row span:last-child {
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.eaten-pills-empty {
-  padding: 6px 8px;
-  opacity: 0.65;
-}
-
-
-/* ----------------------------------------------
-   面板內的丹藥清單
-   ---------------------------------------------- */
-.eaten-pills-content {
-  padding: 8px 14px 14px;
-  overflow-y: auto;
-  user-select: text;
-}
-
-/* 每一顆丹藥 */
-.eaten-pill-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 7px 4px;
-  border-bottom: 1px solid #edf1ee;
-  font-size: 0.9rem;
-}
-.eaten-pill-row strong {
-  white-space: nowrap;
-  color: #356b4b;
-}
-
-/* 沒有已吃丹藥 */
-.eaten-pills-empty {
-  padding: 14px 4px;
-  text-align: center;
-  color: #94a3b8;
-  font-size: 0.88rem;
-}
-
+.eaten-pill-row strong {white-space: nowrap; color: #356b4b;}
+.need-row strong {color: #c2410c;}
+.eaten-pills-empty {padding: 8px 4px; text-align: center; color: #94a3b8; font-size: 0.9rem;}
 
 /* ==============================================
    PDF 專用：已吃丹藥* 列印時只保留戰力統計 
    ============================================== */
-#print-eaten-pills {display: none;}/* 已吃 (PDF專用) 隱藏 */
 @page {size: A4;margin: 12mm;}
 @media print {
   body {margin: 0;padding: 0;background: #ffffff !important; }
@@ -659,18 +576,15 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
   }
   
   /* 下載 / 分享 / 關閉按鈕全部不要印 */
-  #export-format,button,select {display: none !important; }
+  #export-format,button,select,.stats-head,.stats-actions {display: none !important; }
+  .stats-scroll {overflow: visible !important; max-height: none !important;}
   /* 按鈕外層不留空白 */
   .player-box {display: none !important; }
   /* 避免標題或區塊被硬切成兩頁 */
   h3,
   h4 {break-after: avoid;page-break-after: avoid; }
-  #stat-summary-list {break-inside: avoid;page-break-inside: avoid;}
   /* -每個項目盡量不要從中間被切開- */
-  #stat-needed-list li {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
+  .stats-block {break-inside: avoid;page-break-inside: avoid;}
   /* 不要讓瀏覽器自動縮放內容 */
   * {box-sizing: border-box;}
 }
@@ -707,44 +621,29 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
 
 
 <body>
-    <div class="app">
+    <div class="app" id="top">
       <div class="top-fixed">
         <header>
           <div class="header-title">大俠成長紀錄</div>
           <div class="header-btns">
-            <button
-              class="header-btn"
-              onclick="toggleModal(true)"
-              title="統計表">
-              ⚔高手戰力
-            </button>
-            <a href="https://may11051105.github.io/jy100/"
-              target="_blank" class="header-btn" title="百分百金庸商城">江湖補給</a>
+            <button class="header-btn" style="width:150px;"  onclick="toggleModal(true)" title="統計表">⚔ 高手戰力</button>
+            <a href="https://may11051105.github.io/jy100/" target="_blank" class="header-btn" title="百分百金庸商城">江湖補給</a>
           </div>
         </header>
 
         <div class="player-box">
-          <label for="player-name">👤大俠尊名</label>
-          <input type="text" id="player-name"
-            placeholder="敢問大俠尊姓大名"
-            maxlength="10" autocomplete="off"/>
-          <button class="header-btn" onclick="document.getElementById('import-file').click()">
-            📤匯入JSON
-          </button>
-          <input type="file" id="import-file"
-            accept=".json"
-            style="display: none"
-            onchange="importDataBackup(event)"/>
+          <label>大俠</label>
+          <input type="text" id="player-name" placeholder="請問大俠尊姓大名" maxlength="10" autocomplete="off"/>
+          <select id="role-select" onchange="handleRoleSelect(this.value)" hidden></select>
+          <button id="role-back" class="header-btn" title="返回角色清單" hidden onclick="backToRoleList()">↩</button>
+          <button class="header-btn" title="匯入JSON備份" onclick="document.getElementById('import-file').click()">📤 匯入</button>
+          <input type="file" id="import-file" accept=".json" style="display: none" onchange="importDataBackup(event)"/>
         </div>
 
         <div class="player-box">
-          <label for="role-select">👥選擇大俠</label>
-          <select
-            id="role-select"
-            onchange="handleRoleSelect(this.value)"
-          ></select>
+          <label>搜尋</label>
           <input type="search" id="pill-search"
-            placeholder="🔎 搜尋關鍵字..."
+            placeholder="🔎 關鍵字..."
             autocomplete="off"/>
           <span id="pill-search-count" class="search-count" aria-live="polite"></span>
         </div>
@@ -771,60 +670,46 @@ scroll-behavior: smooth;/* 平滑滾動效果 */
 
       <!-- 戰鬥屬性統計 Modal -->
       <div id="stats-modal" class="modal">
-  <div class="modal-content stats-modal-content">
-          <div id="capture-area"
-            style="background: #ffffff; padding: 6px; border-radius: 8px">
-            <h3 style="margin-bottom: 12px;border-bottom: 2px solid var(--border1);padding-bottom: 6px;color: var(--bg3);">
-              📊 戰力統計與願望清單
-            </h3>
+        <div class="modal-content stats-modal-content">
+          <div class="stats-head">
+            <span class="stats-head-title">⚔ 戰力統計</span>
+            <label class="stats-opt"><input type="checkbox" id="opt-eaten" /> 已吃丹藥</label>
+            <label class="stats-opt"><input type="checkbox" id="opt-needed" /> 未吃丹藥</label>
+            <button class="stats-close" onclick="toggleModal(false)" aria-label="關閉">✕</button>
+          </div>
 
-            <div style="background: var(--bg);padding: 10px;border-radius: 8px;margin-bottom: 12px;">
-              <h4 style="margin-bottom: 6px; color: var(--bg3)">
-                【總累計戰力】<span id="eaten-pill-entry"></span>
-              </h4>
-              <div id="stat-summary-list" style="display: grid;grid-template-columns: 1fr 1fr;gap: 4px;font-size: 0.85rem;color: #444;">
+          <div class="stats-scroll-wrap">
+          <div class="stats-scroll" id="stats-scroll">
+            <div id="capture-area">
+              <h3 class="stats-title" id="capture-title">📊 戰力統計</h3>
+              <div class="stats-block">
+                <h4>【總累計戰力】</h4>
+                <div id="stat-summary-list"></div>
+              </div>
+              <div class="stats-block" id="block-eaten" hidden>
+                <h4>【已吃丹藥】</h4>
+                <div id="stat-eaten-list"></div>
+              </div>
+              <div class="stats-block" id="block-needed" hidden>
+                <h4>【未吃丹藥 / 願望清單】</h4>
+                <div id="stat-needed-list"></div>
               </div>
             </div>
-
-            <div style="background: var(--bg);padding: 10px;border-radius: 8px;margin-bottom: 12px;">
-              <h4 style="margin-bottom: 6px; color: var(--bg3)">
-                【剩餘需求 / 願望清單】
-              </h4>
-              <ul id="stat-needed-list" style="padding-left: 20px;font-size: 0.85rem;color: #c2410c;"></ul>
-            </div>
-<!-- PDF 專用：已吃丹藥 -->
-<div id="print-eaten-pills">
-  <h4>【已吃丹藥】</h4>
-  <div id="print-eaten-pills-list"></div>
-</div>
+          </div>
+          <button id="stats-top" class="stats-top" hidden onclick="statsScrollToTop()" aria-label="回頂端">↑</button>
           </div>
 
-          <div style="display: flex; flex-direction: column; gap: 5px">
-            <div class="player-box">
-              <select id="export-format">
-                <option value="txt">📄 記事本 (.txt)</option>
-                <option value="json">💾 備份檔 (.json)</option>
-                <option value="png">🖼️ 圖檔 (.png)</option>
-                <option value="pdf">📕 PDF (.pdf)</option>
-              </select>
-              <button class="header-btn" style="flex: 1" onclick="exportSelectedFormat()">
-                📥 下載戰力表
-              </button>
-            </div>
-
-            <div class="player-box">
-              <button class="header-btn" style="flex: 1" onclick="copyShareText()">
-                📋 複製文字
-              </button>
-              <button class="header-btn" style="flex: 1" onclick="shareToLineOrOther()">
-                🔗 分享
-              </button>
-            </div>
+          <div class="stats-actions">
+            <select id="export-format" class="mini-select">
+              <option value="txt">📄 .txt</option>
+              <option value="json">💾 .json</option>
+              <option value="png">🖼️ .png</option>
+              <option value="pdf">📕 .pdf</option>
+            </select>
+            <button class="mini-btn primary" onclick="exportSelectedFormat()">📥 下載</button>
+            <button class="mini-btn" onclick="copyShareText()">📋 複製</button>
+            <button class="mini-btn" onclick="shareToLineOrOther()">🔗 分享</button>
           </div>
-          <button class="header-btn" style="width: 100%;padding: 8px;margin-top: 8px;background: #64748b;"
-            onclick="toggleModal(false)">
-            關閉
-          </button>
         </div>
       </div>
       <div class="toast-msg"></div>
@@ -2043,6 +1928,8 @@ function calculateSubCategoryTotal(mainCategory, subCategory) {
 // ==============================================
 const STORAGE_KEY = 'jin_pill_battle_record_multi'
 let multiPlayerDB = { currentRole: '', roles: {} }
+let prevRole = '' // 按「新手加入」前的角色，供返回用
+let roleEditing = false // 選單模式下臨時切回輸入框改名
 let playerRecord = {playerName: '',pills: {},playerStats: createEmptyStats(), }
 //-- 讀取紀錄
 function loadPlayerRecord() {
@@ -2090,14 +1977,18 @@ function updateRoleSelectOptions() {
               const curRole = multiPlayerDB.currentRole ||
                 (playerRecord.playerName ? playerRecord.playerName.trim() : '')
               if (curRole && multiPlayerDB.roles[curRole]) {
+                html += `<option value="__RENAME__">✏️ [改名當前：${curRole}]</option>`
                 html += `<option value="__DELETE__" style="color: red;">🗑️ [踢除當前：${curRole}]</option>` }
               select.innerHTML = html
+              syncRoleUI()
             }
 
 //-- 下拉選單動作分流處理
 function handleRoleSelect(value) {
               if (value === '__NEW__') {clearCurrentRecordUI() //僅清空畫面，不刪除記憶
                 showToast('✨ 已重置，輸入大名即可建立檔案！')
+              } else if (value === '__RENAME__') {
+                startRoleRename()
               } else if (value === '__DELETE__') {
                 deleteCurrentRole() //執行踢除當前角色
               } else { loadRoleData(value, true) // 切換至選取的角色
@@ -2107,6 +1998,7 @@ function handleRoleSelect(value) {
 function loadRoleData(roleName, showToastMsg = true) {
               if (!multiPlayerDB.roles[roleName]) return
               multiPlayerDB.currentRole = roleName
+              try {localStorage.setItem(STORAGE_KEY, JSON.stringify(multiPlayerDB))} catch (e) {} // 記住最後使用的角色
               playerRecord = JSON.parse(JSON.stringify(multiPlayerDB.roles[roleName]))
               const nameInput = document.getElementById('player-name')
               if (nameInput) nameInput.value = playerRecord.playerName || ''
@@ -2116,6 +2008,7 @@ function loadRoleData(roleName, showToastMsg = true) {
             }
 //-- 清空畫面 (不影響 LocalStorage 已存角色)
 function clearCurrentRecordUI() {
+              if (multiPlayerDB.currentRole) prevRole = multiPlayerDB.currentRole
               multiPlayerDB.currentRole = ''
               playerRecord = {playerName: '',
               pills: {},
@@ -2190,6 +2083,38 @@ function savePlayerName() {
               playerRecord.playerName = newName
               multiPlayerDB.currentRole = newName
               savePlayerRecord() //自動儲存並更新下拉選單
+}
+
+//-- 依狀態切換「輸入框 / 角色選單」：沒有目前角色→輸入框；有→選單
+function syncRoleUI() {
+  const input = document.getElementById('player-name')
+  const select = document.getElementById('role-select')
+  const back = document.getElementById('role-back')
+  if (!input || !select) return
+  const hasCur = !!(multiPlayerDB.currentRole && multiPlayerDB.roles[multiPlayerDB.currentRole])
+  const inputMode = roleEditing || !hasCur
+  input.hidden = !inputMode
+  select.hidden = inputMode
+  if (back) back.hidden = !(inputMode && !roleEditing && Object.keys(multiPlayerDB.roles).length > 0)
+}
+//-- 改名：臨時切回輸入框（沿用原本的改名/另建新檔詢問）
+function startRoleRename() {
+  roleEditing = true
+  updateRoleSelectOptions()
+  const input = document.getElementById('player-name')
+  if (input) {input.focus(); input.select()}
+}
+//-- 輸入框回到角色清單
+function backToRoleList() {
+  const names = Object.keys(multiPlayerDB.roles)
+  if (!names.length) return
+  loadRoleData(multiPlayerDB.roles[prevRole] ? prevRole : names[0], true)
+}
+//-- 名稱輸入完成：儲存後切換回選單
+function commitPlayerName() {
+  savePlayerName()
+  roleEditing = false
+  updateRoleSelectOptions()
 }
 
 //-- 踢除角色
@@ -2332,114 +2257,80 @@ function calculatePlayerStats() {
 
 
 // ==============================================
+// 顯示選項（已吃 / 未吃）— 記在瀏覽器
+// ==============================================
+function getStatsOptions() {
+  return {
+    eaten: localStorage.getItem('statsShowEaten') === 'true',
+    needed: localStorage.getItem('statsShowNeeded') !== 'false',
+  }
+}
+function setStatsOption(key, value) {
+  try {localStorage.setItem(key, String(value))} catch (e) {}
+}
+
+// ==============================================
 // 開關統計窗
 // ==============================================
 function toggleModal(show) {
   const statsModal = document.getElementById('stats-modal')
   if (!statsModal) return
-  if (show) {// 開啟戰力統計前 確保「已吃丹藥」獨立面板一定關閉
-    closeEatenPillsPanel()
-    updateStatsModal()
-    statsModal.style.display = 'flex'
-  } else {//關閉戰力統計時 已吃丹藥面板也一起關閉
-    closeEatenPillsPanel()
-    statsModal.style.display = 'none'
-  }
+  if (show) {updateStatsModal(); statsModal.style.display = 'flex'; statsScrollToTop(true)}
+  else {statsModal.style.display = 'none'}
 }
-
-// ==============================================
-// 關閉「已吃丹藥」面板
-// ==============================================
-function closeEatenPillsPanel() {
-  const panel =
-    document.getElementById('eaten-pills-panel')
-  if (panel) { panel.style.display = 'none'}
-  const checkbox = document.getElementById('show-eaten-pills')
-  if (checkbox) {checkbox.checked = false}
+function statsScrollToTop(instant) {
+  const box = document.getElementById('stats-scroll')
+  if (!box) return
+  box.scrollTo({top: 0, behavior: instant ? 'auto' : 'smooth'})
+  if (instant) document.getElementById('stats-top').hidden = true
 }
-
+document.getElementById('stats-scroll').addEventListener('scroll', function () {
+  document.getElementById('stats-top').hidden = this.scrollTop < 120
+})
+document.addEventListener('keydown', (e) => {if (e.key === 'Escape') toggleModal(false)})
+document.getElementById('stats-modal').addEventListener('click', (e) => {
+  if (e.target.id === 'stats-modal') toggleModal(false)
+})
 
 // ==============================================
 // 渲染 Modal 畫面內容
 // ==============================================
-function updateStatsModal() {
-  const { stats, neededList } =
-    calculatePlayerStats()
-  console.log('⚔️ 戰力統計結果:',JSON.stringify(stats, null, 2), )
-  console.log('📋 剩餘需求:', neededList)
-  
-  // ① 總累計戰力
-  const summaryContainer = document.getElementById('stat-summary-list')
-  summaryContainer.innerHTML =
-    Object.entries(stats)
-      .map(([attr, val]) => {
-        const displayValue =
-          PERCENT_ATTRIBUTES.includes(attr)
-            ? `${cleanNumber(val * 100, 6)}%`
-            : cleanNumber(val)
-
-        return `<div>
-            <strong>${attr}:</strong>
-            ${displayValue}
-          </div>` })
-      .join('')
-
-  // ② 已吃丹藥小入口
-  const eatenContainer =
-    document.getElementById('eaten-pill-entry')
-  if (eatenContainer) {
-    eatenContainer.innerHTML = `
-      <label class="eaten-pill-toggle">
-        <input type="checkbox" id="show-eaten-pills">
-        <span>已吃丹藥</span>
-      </label>`
-    const eatenCheckbox = document.getElementById('show-eaten-pills')
-    if (eatenCheckbox) {
-      // 每次重新渲染都強制預設關閉
-      eatenCheckbox.checked = false
-      eatenCheckbox.addEventListener('change',
-        function () {
-          if (this.checked) {openEatenPillsPanel()
-          } else {closeEatenPillsPanel() }
-        },
-      )
-    }
-  }
-  // 確保打開戰力統計時，已吃丹藥獨立面板一定是關閉的
-  closeEatenPillsPanel()
-  // ③ 未吃丹藥// 永遠顯示
-  const neededContainer =
-    document.getElementById('stat-needed-list')
-  if (neededList.length === 0) {
-    neededContainer.innerHTML = `
-      <li style="color:#16a34a;">
-        🎉 恭喜！所有丹藥均已食用完畢！
-      </li>`
-  } else {
-    neededContainer.innerHTML = neededList
-        .map((item) => `<li>
-              <strong>${item.name}:</strong>
-              還需 ${item.needed} 顆
-            </li>`, )
-        .join('')
-  }
-
-  // ④ PDF 專用：已吃丹藥 // 螢幕不顯示，只有列印 / PDF 使用
-  const eatenPills = getEatenPills()
-  const printEatenList =
-    document.getElementById('print-eaten-pills-list', )
-  if (printEatenList) {
-    printEatenList.innerHTML =
-      eatenPills.length > 0
-        ? eatenPills
-            .map((item) => `<div class="eaten-pill-row">
-                  <span>${item.name}</span>
-                  <strong>${item.count}/${item.limit}</strong>
-                </div>`,  )
-            .join('')
-        : `<div>尚未食用丹藥</div>`}
+function applyStatsOptions() {
+  const opt = getStatsOptions()
+  document.getElementById('opt-eaten').checked = opt.eaten
+  document.getElementById('opt-needed').checked = opt.needed
+  document.getElementById('block-eaten').hidden = !opt.eaten
+  document.getElementById('block-needed').hidden = !opt.needed
 }
 
+function updateStatsModal() {
+  const { stats, neededList } = calculatePlayerStats()
+  const eatenPills = getEatenPills()
+  const pName = playerRecord.playerName || '無名大俠'
+  document.getElementById('capture-title').textContent = `📊 ${pName} 的戰力統計`
+
+  // ① 總累計戰力
+  document.getElementById('stat-summary-list').innerHTML = Object.entries(stats)
+    .map(([attr, val]) => {
+      const v = PERCENT_ATTRIBUTES.includes(attr) ? `${cleanNumber(val * 100, 6)}%` : cleanNumber(val)
+      return `<div><strong>${attr}:</strong> ${v}</div>`
+    }).join('')
+
+  // ② 已吃丹藥
+  document.getElementById('stat-eaten-list').innerHTML = eatenPills.length
+    ? eatenPills.map((it) => `<div class="eaten-pill-row"><span>${it.name}</span><strong>${it.count}/${it.limit}</strong></div>`).join('')
+    : `<div class="eaten-pills-empty">尚未食用丹藥</div>`
+
+  // ③ 未吃丹藥
+  document.getElementById('stat-needed-list').innerHTML = neededList.length
+    ? neededList.map((it) => `<div class="eaten-pill-row need-row"><span>${it.name}</span><strong>還需 ${it.needed} 顆</strong></div>`).join('')
+    : `<div class="eaten-pills-empty" style="color:#16a34a">🎉 恭喜！所有丹藥均已食用完畢！</div>`
+
+  // ④ 勾選
+  applyStatsOptions()
+  document.getElementById('opt-eaten').onchange = function () {setStatsOption('statsShowEaten', this.checked); applyStatsOptions()}
+  document.getElementById('opt-needed').onchange = function () {setStatsOption('statsShowNeeded', this.checked); applyStatsOptions()}
+}
 
 // ==============================================
 // 產生已吃丹藥清單
@@ -2447,101 +2338,41 @@ function updateStatsModal() {
 function getEatenPills() {
   const eatenPills = []
   battleDB.forEach((item) => {
-    // 只處理一般 NUMBER 丹藥
-    if (!getSubCategoryType([item]).includes('NUMBER')) {return }
+    if (!getSubCategoryType([item]).includes('NUMBER')) return
     const name = String(item.名稱 || '')
     const main = String(item.主分類 || '')
     const sub = String(item.小分類 || '').trim()
     const limit = parseMaxLimit(item.上限) || 0
     if (limit <= 0) return
-    
-    const pillKey =`${main}__${sub}__${name}`
-    const savedCount =
-      Number(playerRecord.pills[pillKey]) || 0
-    const count = Math.max(0,Math.min(savedCount, limit), )
-
-    // 沒吃的不顯示
+    const savedCount = Number(playerRecord.pills[`${main}__${sub}__${name}`]) || 0
+    const count = Math.max(0, Math.min(savedCount, limit))
     if (count <= 0) return
-    eatenPills.push({name,count,limit, })
+    eatenPills.push({name, count, limit})
   })
   return eatenPills
 }
 
 // ==============================================
-// 開啟「已吃丹藥」面板
-// ==============================================
-function openEatenPillsPanel() {
-  let panel =document.getElementById('eaten-pills-panel')
-  // 如果面板不存在，就建立
-  if (!panel) {
-    panel = document.createElement('div')
-    panel.id = 'eaten-pills-panel'
-    panel.className = 'eaten-pills-panel'
-    document.body.appendChild(panel)
-  }
-  const eatenPills = getEatenPills()
-  panel.innerHTML = `
-    <div class="eaten-pills-box">
-      <div class="eaten-pills-title">
-        <span>📋 已吃丹藥</span>
-        <button type="button"
-          class="eaten-pills-close"
-          onclick="closeEatenPillsPanel()">
-          ✕
-        </button>
-      </div>
-
-      <div class="eaten-pills-content">
-        ${eatenPills.length > 0
-            ? eatenPills
-                .map((item) => `
-                    <div class="eaten-pill-row">
-                      <span>${item.name}</span>
-                      <strong>${item.count}/${item.limit}</strong>
-                    </div>`, )
-                .join('')
-            : `<div class="eaten-pills-empty">
-                尚未食用丹藥
-              </div>`}
-      </div>
-    </div> `
-  panel.style.display = 'flex'
-}
-
-
-
-
-// ==============================================
-// 產生分享 / 下載格式文字
+// 產生分享 / 下載格式文字（依勾選項目）
 // ==============================================
 function generateShareText() {
   const { stats, neededList } = calculatePlayerStats()
-  const eatenPills =getEatenPills()
-  const pName =playerRecord.playerName || '無名大俠'
-  let text =`【大俠：${pName} 的戰力統計】\n\n`
-
-  // ① 總累計戰力
-  text += `【總累計戰力】\n`
-  Object.entries(stats).forEach(
-    ([attr, val]) => {
-      const displayValue =
-        PERCENT_ATTRIBUTES.includes(attr)
-          ? `${cleanNumber(val * 100, 6)}%`: cleanNumber(val)
-      text += `${attr}: ${displayValue}\n`},
-  )
-
-  // ② 已吃丹藥
-  text += `\n【已吃丹藥】\n`
-  if (eatenPills.length === 0) {text += `尚未食用丹藥\n`
-  } else {eatenPills.forEach((item) => {text += `${item.name}: ${item.count}/${item.limit}\n`})
+  const opt = getStatsOptions()
+  const pName = playerRecord.playerName || '無名大俠'
+  let text = `【大俠：${pName} 的戰力統計】\n\n【總累計戰力】\n`
+  Object.entries(stats).forEach(([attr, val]) => {
+    const v = PERCENT_ATTRIBUTES.includes(attr) ? `${cleanNumber(val * 100, 6)}%` : cleanNumber(val)
+    text += `${attr}: ${v}\n`
+  })
+  if (opt.eaten) {
+    const eatenPills = getEatenPills()
+    text += `\n【已吃丹藥】\n`
+    text += eatenPills.length ? eatenPills.map((i) => `${i.name}: ${i.count}/${i.limit}\n`).join('') : `尚未食用丹藥\n`
   }
-
-  // ③ 未吃丹藥 / 願望清單
-  text += `\n【剩餘需求 / 願望清單】\n`
-  if (neededList.length === 0) {text += `丹藥已全數吃滿！\n`
-  } else {neededList.forEach((item) => {text += `${item.name}: 還需 ${item.needed} 顆\n`})
+  if (opt.needed) {
+    text += `\n【未吃丹藥 / 願望清單】\n`
+    text += neededList.length ? neededList.map((i) => `${i.name}: 還需 ${i.needed} 顆\n`).join('') : `丹藥已全數吃滿！\n`
   }
-
   return text
 }
 
@@ -2585,14 +2416,15 @@ function exportDataBackup() {
 function copyShareText() {
               navigator.clipboard
                 .writeText(generateShareText())
-                .then(() => showToast('📋 文字已複製！'))}
-            // 分享 API (支援手機彈出 LINE / 簡訊等)
-            async function shareToLineOrOther() {
+                .then(() => showToast('📋 文字已複製！'))
+                .catch(() => showToast('⚠️ 複製失敗，請改用下載'))}
+// 分享 API (支援手機彈出 LINE / 簡訊等)
+async function shareToLineOrOther() {
               if (navigator.share) {try {
                   await navigator.share({
                     title: '丹藥紀錄&戰力',
                     text: generateShareText(),})
-                } catch (err) {}
+                } catch (err) {}//取消分享時不一定要做處理，因此留空
               } else {copyShareText()  }
             }
 
@@ -2706,8 +2538,8 @@ recordBattleVisitor() //訪客紀錄
 
   const nameInput = document.getElementById('player-name')
   if (nameInput) {
-    nameInput.addEventListener('change', savePlayerName)
-    nameInput.addEventListener('blur', savePlayerName)
+    nameInput.addEventListener('change', commitPlayerName)
+    nameInput.addEventListener('blur', commitPlayerName)
   }
 
   // 搜索.searchInput 事件監聽：
