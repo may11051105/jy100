@@ -166,7 +166,7 @@ function normalizeStock(rawStock) {
 }
 
 // ==============================================
-// 渲染 HTML 元件:顯示商品、價格、數量輸入框
+// HTML 元件:顯示商品、價格、數量輸入框
 // ==============================================
 function renderItem(item) {
   const savedQty = selectedItems[item.n] || "";
@@ -194,26 +194,24 @@ function renderItem(item) {
   isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed
     ? "disabled"
     : "";
-  //特殊事件處理
+  //價格區-特殊事件
   const isGift = item.p === 0;
   const priceDisplay = isGroup
-    ? '<span style="font-size:13px; color:#777;">【規格】</span>'
-    : disabled
-      ? "X"
-      : isOutOfStock
-        ? "---"
-        : isTextPrice
-          ? item.rawPrice
-          : isGift
-            ? "🎁贈"
-            : `$${item.p}`;
+    ? '<span style="font-size:13px; color:#777;">[規格]</span>'
+    : disabled? "--"
+      : isOutOfStock? "缺"
+        : isTextPrice? item.rawPrice
+          : isGift? "🎁贈"
+            : `${item.p}`;
 
+  //功能區-特殊事件處理
   const descWithStatus = disabled
-    ? `${item.f}<span class="sold-out">【停】</span>`
+    ? `${item.f}<span class="sold-out"></span>`
     : isOutOfStock
-      ? `${item.f}<span class="sold-out">【缺】</span>`
+      ? `${item.f}<span class="sold-out"></span>`
       : item.f;
 
+  //渲染
   return `<div class="${rowClass}">
           <div class="item-info">
            ${isGroup ? '<span class="group-arrow">▶</span>' : '<span class="item-dot"></span>'}
