@@ -2076,7 +2076,7 @@ function updateStatsModal() {
     : `<div class="eaten-pills-empty">尚未食用丹藥</div>`
 
   document.getElementById('stat-needed-list').innerHTML = neededList.length
-    ? neededList.map((it) => `<div class="eaten-pill-row need-row"><span>${it.name}</span><strong>還需 ${it.needed} 顆</strong></div>`).join('')
+    ? neededList.map((it) => `<div class="eaten-pill-row need-row"><span>${it.name}</span><strong>需 ${it.needed} </strong></div>`).join('')
     : `<div class="eaten-pills-empty" style="color:var(--bamboo-green)">🎉 恭喜！所有丹藥均已食用完畢！</div>`
 
   applyStatsOptions()
@@ -2117,7 +2117,7 @@ function generateShareText() {
   }
   if (opt.needed) {
     text += `\n【未吃丹藥 / 願望清單】\n`
-    text += neededList.length ? neededList.map((i) => `${i.name}: 還需 ${i.needed} 顆\n`).join('') : `丹藥已全數吃滿！\n`
+    text += neededList.length ? neededList.map((i) => `${i.name}: 需 ${i.needed} \n`).join('') : `丹藥已全數吃滿！\n`
   }
   return text
 }
