@@ -81,7 +81,7 @@
         max-width: 540px;
         min-height: 100vh;
         margin: 0 auto;
-        padding-bottom: 70px;
+        padding-bottom: 70px; /*底部預留空間*/
         background: var(--paper-bg);
         box-shadow: 0 0 20px rgba(0,0,0,0.08);
         border-left: 1px solid var(--border-color);
@@ -1562,35 +1562,86 @@ function parseCharacterGroupName(fullName) {
   return name
 }
 
+// ==============================================
+//-- B卡片.計算與渲染資料生成 (完美向下相容舊B1寫法 + 支援B1-1多群組寫法)
+// ==============================================
 function calculateSubCategoryBStats(mainCategory, subCategory) {
   const rawItems = battleDB.filter((item) =>
     String(item.主分類 || '').trim() === mainCategory &&
     String(item.小分類 || '').trim() === subCategory &&
     String(item.上限 || '').trim().toUpperCase().startsWith('B')
   )
+
+  if (rawItems.length === 0) {
+    return { activeStats: createEmptyStats(), itemsStatus: [] }
+  }
+
   const charactersMap = {}
+
   rawItems.forEach((item) => {
-    const baseName = parseCharacterGroupName(item.名稱)
-    const match = String(item.上限 || '').trim().match(/^B(\d+)/i)
-    const level = match ? parseInt(match[1], 10) : 0  
-    if (!baseName || level <= 0) return
-    if (!charactersMap[baseName]) {
-      charactersMap[baseName] = { name: baseName, maxLevel: 0, levels: {} }
+    const limitStr = String(item.上限 || '').trim().toUpperCase()
+    
+    // 1：解析 B1-2 新格式 (Group = 1, Level = 2)
+    const matchWithGroup = limitStr.match(/^B([A-Z0-9_]+)-(\d+)/i)
+    // 2：解析 B1、B2 舊格式 (Level = 2)
+    const matchSimple = limitStr.match(/^B(\d+)/i)
+
+    let groupKey = 'DEFAULT'
+    let level = 0
+    let isNewFormat = false
+
+    if (matchWithGroup) {
+      groupKey = matchWithGroup[1]
+      level = parseInt(matchWithGroup[2], 10)
+      isNewFormat = true
+    } else if (matchSimple) {
+      level = parseInt(matchSimple[1], 10)
     }
-    charactersMap[baseName].levels[level] = item
-    if (level > charactersMap[baseName].maxLevel) charactersMap[baseName].maxLevel = level
+
+    if (level < 0) return
+
+    if (!charactersMap[groupKey]) {
+      charactersMap[groupKey] = { 
+        groupKey: groupKey, 
+        maxLevel: 0, 
+        isNewFormat: isNewFormat,
+        levels: {} 
+      }
+    }
+
+    charactersMap[groupKey].levels[level] = item
+
+    if (level > charactersMap[groupKey].maxLevel) {
+      charactersMap[groupKey].maxLevel = level
+    }
   })
 
   const activeStats = createEmptyStats()
+
   const itemsStatus = Object.values(charactersMap).map((hero) => {
-    const savedKey = `HERO__${mainCategory}__${subCategory}__${hero.name}`
+    // 依據當前等級抓取對應資料
+    const defaultData = hero.levels[1] || hero.levels[0] || Object.values(hero.levels)[0]
+    
+    // 【舊存檔相容重點】：如果是不帶 - 的舊格式，維持舊的 SavedKey；新格式才用 GROUP_X
+    let savedKey = ''
+    if (hero.isNewFormat) {
+      savedKey = `HERO__${mainCategory}__${subCategory}__GROUP_${hero.groupKey}`
+    } else {
+      // 舊格式相容：抓取預設項目的 groupName 或小分類名稱
+      const legacyName = defaultData ? parseCharacterGroupName(defaultData.名稱) : subCategory
+      savedKey = `HERO__${mainCategory}__${subCategory}__${legacyName}`
+    }
+
     const currentLevel = Number(playerRecord.pills[savedKey]) || 0
     const currentLevelData = hero.levels[currentLevel]
-    const defaultData = hero.levels[1] || Object.values(hero.levels)[0]
-    const fullName = currentLevelData ? currentLevelData.名稱 : (defaultData ? defaultData.名稱 : hero.name)
+    
+    // 顯示名稱 (例如：點到 3 級顯示 "戰神金牌" 或 "白虎甲3階")
+    const currentData = hero.levels[currentLevel] || defaultData
+    const fullName = currentData ? currentData.名稱 : subCategory
 
+    // 🟢【修改後的程式碼】：將 currentLevel > 0 改為只要 currentLevelData 存在即可
     let effectText = '未啟用 (0)'
-    if (currentLevel > 0 && currentLevelData) {
+    if (currentLevelData) {
       effectText = getItemEffects(currentLevelData).join(' ')
       ATTRIBUTES_MAP.forEach((attr) => {
         const val = Number(currentLevelData[attr.key])
@@ -1601,7 +1652,7 @@ function calculateSubCategoryBStats(mainCategory, subCategory) {
 
     return {
       name: fullName,
-      groupName: hero.name,
+      groupKey: hero.groupKey,
       maxLevel: hero.maxLevel || 10,
       currentLevel: currentLevel,
       savedKey: savedKey,
