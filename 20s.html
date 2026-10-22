@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
   <head>
     <!-- 1. 網頁資訊.基本設定與 Open Graph (分享卡片) -->
@@ -950,7 +950,7 @@ const firebaseConfig = {
 ============================= */
 const CONFIG = {
         serverId: '20',
-        serverName: '20盟主',
+        serverName: '20五嶽',
         sheet: 'products20',
         firebaseNode: 'products20',
         cacheKey: 'jin_mall_products20',
@@ -1405,18 +1405,13 @@ async function loadSettings() {
     const res = await fetch(
       "https://jzmenu-a79cd-default-rtdb.asia-southeast1.firebasedatabase.app/settings.json",
     );
+
     const data = await res.json();
-    
     // 讀取p99專區密碼
     if (data && data.secretPassword !== undefined) {
       secretPassword = String(data.secretPassword); }
-      
-// 🔔 新網頁暫時休站，尚未開放下單
-isStoreClosed = true;
-     
-    /***** 正式開放時，恢復這段判斷 *****/
-    // isStoreClosed = data && data.Closed === 0;
-    
+    // 只有 Closed「數字 0」才進入休站模式
+    isStoreClosed = data && data.Closed === 0;
     // 如果已經進入休站，鎖定商品上的輸入框
     if (isStoreClosed) {
       document.querySelectorAll(".qty").forEach((input) => {
@@ -1424,8 +1419,6 @@ isStoreClosed = true;
       showMaintenance(); }
   } catch (e) {console.warn("⚠️ 無法取得設定檔:", e); }
 }
-
-
 
 // ==============================================
 //-- 分頁標籤
@@ -2146,7 +2139,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 3. 讀取提示文字 
   const loadingToast = document.getElementById("loading-toast");
   if (loadingToast) {
-    loadingToast.innerHTML = `獲取最新資料中<span class="bounce">${CONFIG.loadingText}</span>`;}
+    loadingToast.innerHTML = `資料處理中...<span class="bounce">${CONFIG.loadingText}</span>`;}
     
  // 3. 付款方式 LocalStorage 自動記憶
 const payMethod = document.getElementById("pay-method");
