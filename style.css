@@ -755,16 +755,16 @@ a {
   ============================= */
 .back-to-top {
   position: fixed;
-  bottom: 10px;
-  right: min(calc(50% + 240px), calc(100% - 50px));
-  width: 50px;
-  height: 50px;
+  bottom: 5px;
+  right: min(calc(50% + 240px), calc(100% - 40px));
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background-color: var(--bg1);
   color: #fff;
   font-weight: bold;
   text-align: center;
-  line-height: 50px;
+  line-height: 40px;
   cursor: pointer;
   justify-content: center;
   align-items: center;
@@ -782,10 +782,10 @@ a {
 ============================= */
 #refresh-button {
   position: fixed;
-  bottom: 10px;
-  left: min(calc(50% + 240px), calc(100% - 50px));
-  width: 50px;
-  height: 50px;
+  bottom: 1px;
+  left: min(calc(50% + 240px), calc(100% - 40px));
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 20%, #764ba2 100%);
   display: flex;
