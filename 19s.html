@@ -417,6 +417,44 @@ const CONFIG = {
      ============================================== -->
 <div id="btnTop" class="back-to-top" onclick="window.scrollTo(0, 0)" title="回頂部">TOP</div>
 <div id="refresh-button" onclick="refreshInventory()" title="重整資料">🔃</div>
+<!-- LINE 懸浮按鈕 -->
+<a href="https://line.me/ti/p/7KQQFWwtR5" target="_blank"
+  class="floating-line-btn"
+  rel="noopener noreferrer"
+  title="聯絡百分百（LINE）"
+  aria-label="聯絡百分百（LINE）">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M12 2C6.48 2 2 5.65 2 10.16c0 2.43 1.27 4.6 3.27 6.02l-.83 3.1a.45.45 0 0 0 .65.5l3.53-1.86c1.05.28 2.18.43 3.38.43 5.52 0 10-3.65 10-8.19S17.52 2 12 2zm-4.3 11.1a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 1 0v3.3h1.3a.5.5 0 0 1 0 1H7.7zm3.5 0a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 1 0v3.8a.5.5 0 0 1-.5.5zm4.9-.5a.5.5 0 0 1-.9.3l-1.8-2.5v2.2a.5.5 0 0 1-1 0V8.8a.5.5 0 0 1 .9-.3l1.8 2.5V8.8a.5.5 0 0 1 1 0v3.8zm3.2.5h-2.3a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 .5-.5h2.3a.5.5 0 0 1 0 1h-1.8v.9h1.5a.5.5 0 0 1 0 1h-1.5v.9h1.8a.5.5 0 0 1 0 1z"/>
+  </svg>
+</a>
+<style>
+/* LINE 懸浮按鈕 */
+.floating-line-btn {
+  left: min(calc(50% + 240px), calc(100% - 40px));
+  position: fixed;
+  top: 30px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #06C755;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  text-decoration: none;
+  transition: transform 0.2s ease,
+              box-shadow 0.2s ease;
+}
+/*白底綠字LINE*/
+.floating-line-btn svg {width: 35px; height: 35px;}
+.floating-line-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+.floating-line-btn:active {transform: scale(0.95);}
+</style>
 
 
 
