@@ -645,41 +645,53 @@ async function submitOrder() {
   window.open(`https://line.me/R/msg/text/${encodeURIComponent(text)}`,"_blank",);
 }
 
+
 // ==============================================
 //--共用-- 處理按鈕行為: 複製、LINE、寄信選項
 // ==============================================
 async function handleAction(type) {
   const orderText = buildOrderText();
-  
+
   // 金額小於1，不處裡按鈕行為
   const total = Number(document.getElementById("total-val")?.textContent || 0);
-  if (total < 1) {return alert("⚠️ 金額為 $0，無法處理訂單！\n\n請先選擇商品。"); }
+  if (total < 1) {
+    return alert("⚠️ 金額為 $0，無法處理！\n\n請先選擇商品。");
+  }
 
-  // 組合最終發送與複製的完整文字
+// 付款方式：未達滿額時阻擋
+  const pay = document.getElementById("pay-method")?.value;
+  if (
+    (pay === "海外刷卡" || pay === "Paypal") && total < 300
+  ) {
+    alert(`${pay} 金額需滿 $300 才能付款！\n\n` +
+      `目前訂單金額：$${total}\n\n` +
+      `請增加商品或更換其他交易方式。`);
+    return;}
+
+  // 通過檢查後，複製訂單`
   const text = `${orderText}\n\n👉 ${window.location.href}`;
 
-  // 先複製到剪貼簿（解決 Yahoo 等 內文亂碼時的備用方案）
+  // 先複製到剪貼簿（解決 Yahoo 等 內文亂碼時的備用方案）`
   try {
     await navigator.clipboard.writeText(text);
   } catch (err) {console.warn("剪貼簿複製失敗：", err); }
 
   // 根據按鈕類型執行動作
-  if (type === 1) { // 1.僅複製
-    showLiveToast("✅ 已複製清單");
-  }
-
-  else if (type === 2) { // 2.複製+開啟LINE
+  // 1.僅複製
+  if (type === 1) { showLiveToast("✅ 已複製清單");}
+  // 2.複製+開啟LINE
+  else if (type === 2) { 
     showLiveToast("✅ 已複製清單，準備開啟 LINE");
-    window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");
-  }
-
-  else if (type === 3) { // 3.複製+開啟Email
+    window.open("https://line.me/ti/p/7KQQFWwtR5", "_blank");}
+  // 3.複製+開啟Email
+  else if (type === 3) { 
     showLiveToast("✅ 已複製清單！若郵件內文亂碼請直接貼上");
     const mailUrl =
       `mailto:may11051105@gmail.com?subject=${encodeURIComponent("金庸商城訂單")}&body=${encodeURIComponent(text)}`;
     window.location.href = mailUrl;
   }
 }//`
+
 
 
 
