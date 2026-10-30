@@ -397,9 +397,11 @@ function updateTotal() {
     const qty = selectedItems[name];
     if (qty > 0) {
       const price = priceLookup[name];
-      if (price !== undefined) {total += qty * price; }
+      if (price !== undefined) {
+      total += Math.round(qty * price * 100) / 100;}
     }
   }
+  total = Math.round(total * 100) / 100;
   // 購物車金額
   const cartTotal = document.getElementById("cart-total");
   if (cartTotal) {cartTotal.innerText = total.toLocaleString();}
@@ -434,7 +436,7 @@ function updateCart() {
       const price = priceLookup[name];
 
       if (price !== undefined) {
-        const sub = qty * price;
+        const sub = Math.round(qty * price * 100) / 100;
         itemCount++;
         cartHTML += `<li>
           <span>${itemCount}●${name} ${qty} x${price}</span>
@@ -493,7 +495,6 @@ updateCart();  // 購物車中心
 }
 
 
-
 // ==============================================
 // 產生訂單文字檔
 // ==============================================
@@ -510,7 +511,7 @@ function buildOrderText() {
     const qty = selectedItems[name];
     const price = priceLookup[name];
     if (qty > 0 && price !== undefined) {
-      const sub = qty * price;
+      const sub = Math.round(qty * price * 100) / 100;
       itemText += `${index}●${name} ${qty} x${price}=${sub}\n`;
       index++;
       totalQty += qty;
@@ -526,7 +527,7 @@ function buildOrderText() {
     const roundedHundred = Math.ceil(discounted / 100) * 100;
     totalDisplay = `${total}(ATM存款)= ${roundedHundred} 元`;
   } else if (pay === "支付寶") {
-    totalDisplay = `${total} /4= ¥${Math.round(total / 4)}`;
+    totalDisplay = `${total} /4= ¥${Math.ceil(total / 4)}`;
   } else if (pay === "轉帳" || pay === "LinePay" || pay === "街口支付") {
     totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元\n(已享95折)`;
   }
