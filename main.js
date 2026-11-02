@@ -76,32 +76,41 @@ function getSafeCache(key) {
 }
 
 // ==============================================
-// 處理商品資料
+//--試算表欄位.處理商品資料: 所有商品、群組、子選項欄位)
 // ==============================================
 function processData(data) {
   productDB = {};
   priceLookup = {};
 
   data.forEach((item) => {
+  // 確保 key 存在再處理
+  if (!item.key) return;
     const key = String(item.key).toLowerCase();
     if (!productDB[key]) {
       productDB[key] = [];
     }
 
     const rawPrice = String(item.price).trim();
+    const isH3 = String(item.enabled).trim().toUpperCase() === "H3";
+    
     const productInfo = {
       key: key,
-      g: item.group || "",
+      g: item.group || "",  // 建立群組的關鍵
       n: item.name,
-      p: Number(item.price),
-      rawPrice: rawPrice,
-      f: item.desc || "",
-      l: item.limit || "",
-      stock: normalizeStock(item.stock),
-      enabled: item.enabled || "Y",
+      p: Number(item.price), //price欄位價格轉換
+      rawPrice: rawPrice, 
+      f: item.desc || "",   // 功能描述
+      l: item.limit || "",  // 使用限制
+      stock: normalizeStock(item.stock), // 庫存
+      //標題保留 H3 ，否則預設 Y .強制轉換大寫防判斷失效
+      enabled: isH3 ? "H3" : String(item.enabled || "Y").trim().toUpperCase(), 
     };
     productDB[key].push(productInfo);
-    priceLookup[item.name] = productInfo.p;
+    
+    // 只有非 H3標題的商品才加入價格表
+    if (!isH3) {
+      priceLookup[item.name] = productInfo.p;
+    }
   });
 }
 
@@ -157,24 +166,81 @@ function scrollTabs(direction) {
   });
 }
 
-//--判斷庫存:
-function normalizeStock(rawStock) {
-  if (rawStock === "" || rawStock === null || rawStock === undefined)
-    return null;
-  const parsedStock = Number(rawStock);
-  return Number.isFinite(parsedStock) ? parsedStock : null;
+// ==============================================
+// 📱 頂部 P1~P99 大分頁 收納控制器
+// ==============================================
+// 切換選單抽屜的開關狀態
+function toggleCategoryDrawer() {
+  const drawer = document.getElementById("category-drawer");
+  if (!drawer) return;
+  drawer.classList.toggle("open");
+}
+
+//-- 點擊選單內的項目：切換分頁、滑動置中、並自動收回選單
+function triggerTabSwitch(tabId) {
+  // 找出原本 HTML 裡對應的 Tab 按鈕
+  const targetBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+  if (targetBtn) {
+    targetBtn.click(); }  // 模擬點擊原分頁按鈕，觸發openTab滾動置中與切換
+  toggleCategoryDrawer(); // 點選後自動關閉選單抽屜
 }
 
 // ==============================================
-// HTML 元件:顯示商品、價格、數量輸入框
+// 📱 自動抓取網頁現有分頁 ID 丟入漢堡選單
+// ==============================================
+// 自動生成選單內容
+function initDynamicBurgerMenu() {
+  const menuContainer = document.getElementById("burger-menu-list");
+  if (!menuContainer) return;
+
+  // 1. 抓取您原本網頁頂部 .tabs 裡面的所有 .tab-btn 按鈕
+  const tabButtons = document.querySelectorAll(".tabs .tab-btn");
+  let menuHtml = "";
+
+  tabButtons.forEach((btn) => {
+    // 2. 自動分析原本按鈕 onclick 裡面的分頁 ID (例如從 "openTab(event, 'p1')" 抓出 "p1")
+    const onclickStr = btn.getAttribute("onclick") || "";
+    const match = onclickStr.match(/['"]([^'"]+)['"]/);
+    
+    if (match && match[1]) {
+      const tabId = match[1];          // 抓到的 ID (如: p1)
+      const tabName = btn.textContent; // 抓到的文字 (如: 1.日常補給)
+
+      // 3. 組裝成選單內的條目
+      menuHtml += `<div class="drawer-item" onclick="triggerTabSwitch('${tabId}')">${tabName}</div>`;
+    }
+  });
+
+  // 4. 一鍵注入選單抽屜中，完全免手動維護！
+  menuContainer.innerHTML = menuHtml;
+}
+
+// 保持原本的開關與切換邏輯
+function toggleCategoryDrawer() {
+  const drawer = document.getElementById("category-drawer");
+  if (!drawer) return;
+  drawer.classList.toggle("open");
+}
+
+function triggerTabSwitch(tabId) {
+  const targetBtn = document.querySelector(`.tab-btn[onclick*="${tabId}"]`);
+  if (targetBtn) {
+    targetBtn.click(); // 模擬點擊原本頂部按鈕，觸發滾動與切換
+  }
+  toggleCategoryDrawer(); // 點完後自動關閉抽屜
+}
+
+
+// ==============================================
+// HTML 元件:商品、價格、事件、數量輸入[極簡兩行制手機卡片 (500px內專用)]
 // ==============================================
 function renderItem(item) {
   const savedQty = selectedItems[item.n] || "";
   const isOutOfStock = item.stock === 0;
   const hasLimit = Number.isFinite(item.stock) && item.stock > 0;
   const disabled = item.enabled === "N";
-  //處理父商品
   const isGroup = item.p === -1 && item.key.split("-").length === 2;
+  
   const rowClass = isGroup
     ? "item-row group-row"
     : disabled
@@ -184,53 +250,85 @@ function renderItem(item) {
         : "item-row";
 
   const maxAttr = hasLimit ? `max="${item.stock}"` : "";
-  const stockNotice = hasLimit
-    ? `<span class="stock-tip">[剩${item.stock}]</span>`
-    : "";
   const isTextPrice = Number.isNaN(item.p);
-  
-  //鎖定輸入框 (判斷時機)
- const inputAttr =
-  isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed
-    ? "disabled"
-    : "";
-  //價格區-特殊事件
   const isGift = item.p === 0;
+
+  // 鎖定輸入時機
+  const inputAttr = isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed ? "disabled" : "";
+
+  // 價格欄位顯示
   const priceDisplay = isGroup
-    ? '<span style="font-size:13px; color:#777;">[規格]</span>'
-    : disabled? "--"
-      : isOutOfStock? "缺"
-        : isTextPrice? item.rawPrice
-          : isGift? "🎁贈"
-            : `${item.p}`;
+    ? '<span class="group-spec-tag">[點擊展開規格]</span>' // 1. 強化提示文字
+    : disabled ? "--"
+      : isOutOfStock ? "缺貨"
+        : isTextPrice ? item.rawPrice
+          : isGift ? "🎁贈"
+            : `$${item.p}`;
 
-  //功能區-特殊事件處理
-  const descWithStatus = disabled
-    ? `${item.f}<span class="sold-out"></span>`
-    : isOutOfStock
-      ? `${item.f}<span class="sold-out"></span>`
-      : item.f;
+//-- 條件判斷庫存與限制：  
+  //const stockNotice = hasLimit //只要設定庫存量就會顯示
+  //庫存：限制數量內才顯示庫存，庫存量超過限制不顯示，但會限制輸入上限
+  const stockNotice = (!isOutOfStock && hasLimit && item.stock <= 10)
+    ? `<span class="badge-stock">剩${item.stock}</span>`: "";
 
-  //渲染
+  // 使用限制：有限制屬性(如限頭部、上限吃5顆)才顯示
+  const limitNotice = item.l ? `<span class="badge-limit">${item.l}</span>` : "";
+  //功能說明
+  const descNotice = item.f ? `<span class="item-desc">${item.f}</span>` : "";
+
+//-- 父分類群組渲染區塊 --
+  if (isGroup) {
+    // 如果有填 desc 描述.建立文字
+  const descHtml = item.f ? `<span class="item-desc">💡${item.f}</span>` : "";
+
+   // 如果有填 limit 使用限制.建立文字
+  const limitHtml = item.l ? `<span class="badge-limit" style="padding: 1px;">${item.l}</span>` : "";
+
   return `<div class="${rowClass}">
-          <div class="item-info">
-           ${isGroup ? '<span class="group-arrow">▶</span>' : '<span class="item-dot"></span>'}
-            <span class="item-name">${item.n}</span>
-             <span class="item-limit">${item.l}</span>
-              <span class="item-desc">${descWithStatus}</span>
-                ${!isOutOfStock && hasLimit ? stockNotice : ""}
-                </div>
-                <span class="item-price">${priceDisplay}</span>
-                <input type="number" class="qty"
-                       data-name="${item.n}"
-                       value="${savedQty}"
-                       min="0"
-                       ${maxAttr} ${inputAttr}>
-              </div>`;
+            <div class="item-info-group">
+              <span class="group-arrow">▶</span>
+              <span class="item-name group-main-name">${item.n} ${limitHtml}</span>
+              ${descHtml}
+            </div>
+            <span class="item-price">${priceDisplay}</span>
+          </div>`;
+}
+
+  // 一般商品：極簡兩行制卡片.小圓點開頭商品
+  return `
+    <div class="${rowClass} product-card">
+      <!-- 第一行：品名與剩餘數量（左） | 價格與數量控制器（右） -->
+      <div class="card-row-1">
+        <div class="card-left">
+          <span class="item-dot"></span> <!-- 2. 加回小圓點 -->
+          <span class="item-name">${item.n}</span>
+          ${stockNotice}
+        </div>
+        <div class="card-right">
+          <span class="item-price">${priceDisplay}</span>
+          <div class="qty-control-group">
+            <button class="qty-btn minus" onclick="changeQtyClick('${item.n}', -1)" ${inputAttr}>-</button>
+            <input type="number" class="qty" 
+                   data-name="${item.n}" 
+                   value="${savedQty}" 
+                   min="0" ${maxAttr} ${inputAttr} placeholder="0">
+            <button class="qty-btn plus" onclick="changeQtyClick('${item.n}', 1)" ${inputAttr}>+</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 第二行：功能說明與限制標籤（只有存在時才渲染，絕無累贅畫面） -->
+      ${ (item.f || item.l) ? `
+      <div class="card-row-2">
+        ${descNotice}
+        ${limitNotice}
+      </div>` : '' }
+    </div>
+  `;
 }
 
 // ==============================================
-// -- 渲染商品:將renderItem()建立連結
+// -- 渲染商品: 將renderItem()商品.群組.功能.限制 完整畫出
 // ==============================================
 function render() {
   Object.keys(productDB).forEach((key) => {
@@ -241,19 +339,37 @@ function render() {
     let html = "";
 
     productDB[key].forEach((item) => {
-      // 群組(price=-1)，尋找group子商品
-      if (item.p === -1) {
-        html += renderItem(item);
+      // 1. 優先判斷：如果是 H3 標題
+      if (item.enabled === "H3") {
+        html += `<h3 class="sub-title">${item.n}</h3>`;
+        if (item.f) { // 如果有填 desc 則動態顯示小標題的副說明
+          html += `<p class="sub-title-desc">${item.f}</p>`;
+        }
+      }
+      // 2. 群組商品 price = -1: 渲染父商品並找出對應的子商品
+      else if (item.p === -1) {
+        html += renderItem(item); //渲染父商品（包含限制與說明）
+        
+        //尋找同一個 key 裡，group 代碼相同、不是 H3、且不是父商品自己的子商品
         const groupItems = productDB[key].filter(
-          (child) => child.g === item.g && child !== item,
+          (child) => child.g === item.g && child !== item && child.enabled !== "H3"
         );
+      
         html += `<div class="group-content">`;
-        groupItems.forEach((child) => {html += renderItem(child);});
+        // 呼叫renderItem 渲染子商品，確保 child 的所有屬性都能被讀取並畫出來
+        groupItems.forEach((child) => { 
+          html += renderItem(child); 
+        });
         html += `</div>`;
-      } else if (!item.g) {html += renderItem(item);}
+      } 
+         
+      // 3. 一般獨立商品.沒有綁定群組，且 price 不是 -1
+      else if (!item.g) {
+        html += renderItem(item);
+      }
     });
 
-    html += `<div style="text-align:right; padding:5px 5px; border-top:1px dashed #eee;">
+    html += `<div style="text-align:center; padding:5px 5px; ">
                 <a href="#top-anchor">↑ 回到選單 ↑</a></div>`;
     container.innerHTML = html;
   });
@@ -284,6 +400,14 @@ document.addEventListener("click", function (e) {
   group.classList.add("open");
   arrow.textContent = "▼";
 });
+
+//--判斷庫存:
+function normalizeStock(rawStock) {
+  if (rawStock === "" || rawStock === null || rawStock === undefined)
+    return null;
+  const parsedStock = Number(rawStock);
+  return Number.isFinite(parsedStock) ? parsedStock : null;
+}
 
 //-- 庫存事件驗證
 function syncQty(name, value, inputEl = null) {
@@ -317,7 +441,30 @@ function syncAllInputs() {
       input.value = qty && qty > 0 ? qty : "";}
   });
 }
+// ==============================================
+// 處理 [ - ] [ + ] 按鈕點擊事件並同步購物車
+// ==============================================
+window.changeQtyClick = function(name, amount) {
+  if (window.event) window.event.stopPropagation();
+  
+  // 找出該畫面上所有的對應輸入框 (包含主分頁與搜尋結果)
+  const inputs = document.querySelectorAll(`input[data-name="${CSS.escape ? CSS.escape(name) : name}"]`);
+  if (!inputs.length) return;
+  
+  let currentVal = parseInt(inputs[0].value, 10);
+  if (isNaN(currentVal) || currentVal < 0) currentVal = 0;
+  
+  let newVal = currentVal + amount;
+  if (newVal < 0) newVal = 0;
 
+  // 更新所有對應的 input 數值，並觸發原有的 syncQty 監聽機制
+  inputs.forEach(input => {
+    input.value = newVal > 0 ? newVal : "";
+  });
+  
+  // 呼叫您原本的核心同步與即時加入購物車邏輯
+  syncQty(name, newVal, inputs[0]);
+};
 
 // ==============================================
 // 搜尋功能：輸入時自動切換、清空時無縫切回原本分頁
@@ -333,7 +480,8 @@ function handleSearch() {
   const clearBtn = document.getElementById("search-clear-btn");
 
   if (clearBtn) {
-    clearBtn.style.display = keyword.length > 0 ? "block" : "none"; }
+    clearBtn.style.display = keyword.length > 0 ? "block" : "none"; 
+  }
 
   if (!keyword) {
     if (searchContent) searchContent.classList.remove("active");
@@ -345,7 +493,7 @@ function handleSearch() {
       const activeTab = document.getElementById(currentTabId);
       if (activeTab) activeTab.classList.add("active");
 
-      const activeBtn = document.querySelector(`.tab-btn[onclick*="${currentTabId}"]`,);
+      const activeBtn = document.querySelector(`.tab-btn[onclick*="${currentTabId}"]`);
       if (activeBtn) activeBtn.classList.add("active");
     }
 
@@ -354,6 +502,7 @@ function handleSearch() {
     return;
   }
 
+  // === 以下是執行搜尋的區塊 ===
   document.querySelectorAll(".tab-content")
     .forEach((tab) => tab.classList.remove("active"));
   document.querySelectorAll(".tab-btn")
@@ -366,20 +515,31 @@ function handleSearch() {
       if (key === "p99-1") continue;
       if (Array.isArray(productDB[key])) {
         productDB[key].forEach((item) => {
+          // 排除: H3 分類標題，及 p === -1 的父選項.不加入搜尋，但底下的子選項(正常價格)會繼續被搜尋
+          if (item.enabled === "H3" || item.p === -1) {
+            return; 
+          }
+
           const nameMatch = item.n && item.n.toLowerCase().includes(keyword);
           const featureMatch = item.f && item.f.toLowerCase().includes(keyword);
-          if (nameMatch || featureMatch) {results.push(item); }
+          if (nameMatch || featureMatch) {
+            results.push(item); 
+          }
         });
       }
     }
   }
 
   if (searchList) {
-    if (results.length === 0) {searchList.innerHTML =
-        "<div style='padding:20px; color:gray; text-align:center;'>找不到相關商品...</div>";
-    } else {searchList.innerHTML = results.map(renderItem).join("");}
+    if (results.length === 0) {
+      searchList.innerHTML = "<div style='padding:20px; color:gray; text-align:center;'>找不到相關商品...</div>";
+    } else {
+      searchList.innerHTML = results.map(renderItem).join("");
+    }
   }
 }
+
+
 //--搜尋✕按鈕時：清空搜尋欄並觸發還原
 function clearSearch() {
   const searchInput = document.getElementById("searchInput");
@@ -496,14 +656,18 @@ updateCart();  // 購物車中心
 
 
 // ==============================================
-// 產生訂單文字檔
+// 產生訂單文字檔 ：備註空白時不產生.防浮點數誤差
 // ==============================================
 function buildOrderText() {
   const user = document.getElementById("user-id")?.value || "👶";
   const pay = document.getElementById("pay-method")?.value || "💰";
-  const memo = document.getElementById("order-memo")?.value || "💯";
+  
+  // 備註檢查：空白時不產生
+  const rawMemo = document.getElementById("order-memo")?.value || "";
+  const memoText = rawMemo.trim() !== "" ? `備註：${rawMemo.trim()}\n` : "";
+
   let itemText = "";
-  let total = 0;
+  let total = 0; // 保持最精準的原始總額 (例如 3.25)
   let index = 1;
   let totalQty = 0;
 
@@ -520,20 +684,34 @@ function buildOrderText() {
   }
   if (!itemText) return null;
 
-  let totalDisplay = total.toLocaleString();
+  //預防 0.599999 浮點數爆炸：強行鎖定在小數點後兩位，再轉回數字
+  total = Math.round(total * 100) / 100;
 
+  let totalDisplay = "";
+
+  // 根據付款方式計算
   if (pay === "無卡存") {
-    const discounted = Math.round(total * 0.95);
+    const discounted = total * 0.95;
     const roundedHundred = Math.ceil(discounted / 100) * 100;
     totalDisplay = `${total}(ATM存款)= ${roundedHundred} 元`;
+    
   } else if (pay === "支付寶") {
-    totalDisplay = `${total} /4= ¥${Math.ceil(total / 4)}`;
+    // 支付寶支援小數點：用 .toFixed(2) 保留兩位小數（防浮點數）
+    const rmb = (Math.round((total / 4) * 100) / 100).toFixed(2);
+    totalDisplay = `${total} /4= ¥${rmb}`;
+    
   } else if (pay === "轉帳" || pay === "LinePay" || pay === "街口支付") {
-    totalDisplay = `${total}x0.95= ${Math.round(total * 0.95)} 元\n(已享95折)`;
+    // 計算結果（Math.ceil）成整數
+    const finalTaipeiToken = Math.ceil(Math.round(total * 0.95 * 100) / 100); 
+    totalDisplay = `${total}x0.95= ${finalTaipeiToken} 元\n(已享95折)`;
+    
+  } else {
+    // 預設的付款方式：最終結果去小數點成整數
+    totalDisplay = `${Math.ceil(total)} 元`;
   }
 
-  return `補給單📢傳給百分百以確認交易\n🌐${CONFIG.serverName}▬角色：${user}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n備註：${memo}\n交易：${pay}\n總計：${index - 1}項 / ${totalQty}個\n總額：$${totalDisplay}`;
-} //`
+  return `補給單📢傳給百分百以確認交易\n🌐${CONFIG.serverName}▬角色：${user}\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n${itemText}▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n${memoText}交易：${pay}\n總計：${index - 1}項 / ${totalQty}個\n總額：$${totalDisplay}`;
+}//`
 
 
 // ==============================================
@@ -646,7 +824,6 @@ async function submitOrder() {
   window.open(`https://line.me/R/msg/text/${encodeURIComponent(text)}`,"_blank",);
 }
 
-
 // ==============================================
 //--共用-- 處理按鈕行為: 複製、LINE、寄信選項
 // ==============================================
@@ -692,8 +869,6 @@ async function handleAction(type) {
     window.location.href = mailUrl;
   }
 }//`
-
-
 
 
 
@@ -860,7 +1035,7 @@ window.addEventListener('DOMContentLoaded', () => {
   // 3. 讀取提示文字 
   const loadingToast = document.getElementById("loading-toast");
   if (loadingToast) {
-    loadingToast.innerHTML = `獲取最新資料中<span class="bounce">${CONFIG.loadingText}</span>`;}
+    loadingToast.innerHTML = `資料處理中...<span class="bounce">${CONFIG.loadingText}</span>`;}
     
  // 3. 付款方式 LocalStorage 自動記憶
 const payMethod = document.getElementById("pay-method");
@@ -875,6 +1050,7 @@ if (payMethod) {
   });
 } 
   updateCart();//購物車畫面初始化
+  initDynamicBurgerMenu(); //漢堡選單初始化
 });
 
 
