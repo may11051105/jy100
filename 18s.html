@@ -174,9 +174,10 @@ const CONFIG = {
 
 
 <!-- ==============================================
-   分類頁小組容器：商品空區塊
+   分類頁小組容器：商品標題區塊
    ============================================== -->  
 <div id="p1" class="tab-content active">
+<h3 class="new"><span>📢【限時限量更新活動】new</span></h3>
   <div id="list-p1-1"></div>
   <div id="list-p1-2"></div>
   <div id="list-p1-3"></div>
@@ -203,6 +204,7 @@ const CONFIG = {
   <div id="list-p3-4"></div>
   <div id="list-p3-5"></div>
   <div id="list-p3-6"></div>
+  <div id="list-p3-7"></div>
 </div>
 
 <div id="p4" class="tab-content">
@@ -248,6 +250,10 @@ const CONFIG = {
 <div id="p7" class="tab-content">
   <div id="list-p7-1"></div>
   <div id="list-p7-2"></div>
+  <div id="list-p7-3"></div>
+  <div id="list-p7-4"></div>
+  <div id="list-p7-5"></div>
+  <div id="list-p7-6"></div>
 </div>
 
 <div id="p8" class="tab-content">
@@ -311,6 +317,9 @@ const CONFIG = {
   <div id="list-p14-1"></div>
   <div id="list-p14-2"></div>
   <div id="list-p14-3"></div>
+  <div id="list-p14-4"></div>
+  <div id="list-p14-5"></div>
+  <div id="list-p14-6"></div>
 </div>
 
 <div id="p15" class="tab-content">
@@ -318,36 +327,43 @@ const CONFIG = {
   <div id="list-p15-2"></div>
   <div id="list-p15-3"></div>
   <div id="list-p15-4"></div>
+  <div id="list-p15-5"></div>
+  <div id="list-p15-6"></div>
 </div>
 
 <div id="p16" class="tab-content">
   <div id="list-p16-1"></div>
   <div id="list-p16-2"></div>
+  <div id="list-p16-3"></div>
+  <div id="list-p16-4"></div>
+  <div id="list-p16-5"></div>
+  <div id="list-p16-6"></div>
 </div>
 
       <div id="p99" class="tab-content">
-        <h3>【🔒 請輸入密碼】</h3>
+        <h3>🔒 請輸入密碼</h3>
         <div id="password-box" style="padding: 20px">
           <input type="password" id="pwd" style="font-size: 18px" placeholder="輸入密碼" />
           <button onclick="checkPassword()">進入</button>
         </div>
         <div id="secret-section" style="display: none">
-          <h3>【限量專區】</h3>
           <div id="list-p99-1"></div>
           <div id="secret-products19"></div>
         </div>
       </div>
 
-      <!-- 搜尋結果分頁 -->
+
+<!-- 搜尋結果分頁 -->
       <div id="search-content" class="tab-content">
         <h3>🔍 搜尋結果</h3>
         <div id="list-search"></div>
       </div>
-      <!--商品容器底 結束--->
-    </div>
+      
+</div><!--商品容器.結尾籤--->
 
-    <!---- 底部計算金額區total-box (兼購物車入口) ---->
-    <div class="total-box">
+
+<!---- 底部計算金額區total-box (兼購物車入口) ---->
+<div class="total-box">
       <div class="top-row">
         <div class="left-area">
           <span id="visitor-count"><!--👤計數--></span>
@@ -358,7 +374,8 @@ const CONFIG = {
         <button class="btn" style="flex: 1; background: #0275d8; margin-top: 0" onclick="toggleCart()">🛒 購物車</button>
         <button class="btn" style="flex: 1; background: #b45f06; margin-top: 0" onclick="openPaymentModal()">💳 結帳</button>
       </div>
-    </div>
+</div>
+    
     
 <!-- ==============================================
    購物車
