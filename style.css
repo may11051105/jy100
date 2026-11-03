@@ -1,5 +1,3 @@
-/*============================================================================================================*/
-/*================================================= style.開始 ================================================*/
 /*備用: 一鍵切換*/
 body.dark {
   background:
@@ -12,7 +10,7 @@ body.dark {
 /* ==============================================
    全域設定
    ============================================== */
-/* 卷軸: Chrome / Edge / Safari */
+/*-- 卷軸: Chrome / Edge / Safari */
 ::-webkit-scrollbar {width: 8px; height: 8px;}
 ::-webkit-scrollbar-thumb { border-radius: 20px; background: var(--bg1);}
 ::-webkit-scrollbar-corner {background: var(--h3-bg);}
@@ -33,14 +31,27 @@ body {
 }
 
 html {scroll-behavior: smooth;}
-/* 全域捲軸鎖定：當抽屜打開時，鎖定全網頁背景捲軸 */
+/* 卷軸鎖定：當抽屜打開時，鎖定全網背景卷軸 */
 html:has(.drawer-overlay.open),
 body:has(.drawer-overlay.open) {overflow: hidden !important;}
 
+
+/*-- 全站按鈕與連結 */
+button, a {
+  transition: filter 0.15s ease,
+              transform 0.08s ease;
+}
+/* 移過去：增亮 */
+button:hover, a:hover {filter: brightness(1.2);}
+/* 按下：變暗、下沉 */
+button:active, a:active {
+  filter: brightness(0.8);
+  transform: translateY(3px);
+}
 /* ==============================================
-   全站共用.按鈕
+   btn 共用.按鈕
    ============================================== */
-/*按鈕共同樣式*/
+/*按鈕樣式*/
 .btn,
 .btn-2 {
   border: none;
@@ -51,12 +62,9 @@ body:has(.drawer-overlay.open) {overflow: hidden !important;}
   display: inline-block; /*確保 transform 正常作用*/
   transition: transform 0.3s ease, filter 0.3s ease; /*平滑過渡*/
 }
-/*按鈕共同 Hover*/
+/*按鈕 Hover .放大*/
 .btn:hover,
-.btn-2:hover {
-  filter: brightness(1.2); /*亮度*/
-  transform: scale(1.05); /*放大*/
-}
+.btn-2:hover {transform: scale(1.05); }
 /*大按鈕.獨立適用*/
 .btn {
   padding: 10px;
@@ -187,7 +195,7 @@ header::after {
 .info-row {display: flex; }
 .info-row > * {flex: 1; min-width: 0;}
 
-/* 搜尋.✕.清除：定位搜尋右側 */
+/* 搜尋.✕ 清除：定位搜尋右側 */
 .search-X {
   position: absolute;
   right: 2px; top: 50%;
@@ -293,9 +301,6 @@ header::after {
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: relative; /*相對定位:確保附屬物件可以對齊*/
-}
-.burger-menu-btn:hover {
-  filter: brightness(1.1);
 }
 
 /* 抽屜外層遮罩 */
@@ -1230,7 +1235,3 @@ a {
   font-weight: bold;
   white-space: nowrap;
 }
-
-
-/*================================================= style.結束 ================================================*/
-/*============================================================================================================*/
