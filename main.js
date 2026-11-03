@@ -1,3 +1,4 @@
+
 // 全域宣告
 let selectedItems = {};
 let productDB = {};
@@ -303,18 +304,26 @@ function renderItem(item) {
   if (isGroup) {
     // 如果有填 desc 描述.建立文字
   const descHtml = item.f ? `<span class="item-desc">💡${item.f}</span>` : "";
-
    // 如果有填 limit 使用限制.建立文字
   const limitHtml = item.l ? `<span class="badge-limit" style="padding: 1px;">${item.l}</span>` : "";
 
   return `<div class="${rowClass}">
-            <div class="item-info-group">
+          <div class="item-info-group">
+
+            <div class="group-title">
               <span class="group-arrow">▶</span>
-              <span class="item-name group-main-name">${item.n} ${limitHtml}</span>
+              <span class="item-name group-main-name">${item.n}</span>
+            </div>
+
+            <div class="group-extra">
+              ${limitHtml}
               ${descHtml}
             </div>
-            <span class="item-price">${priceDisplay}</span>
-          </div>`;
+
+          </div>
+
+          <span class="item-price">${priceDisplay}</span>
+        </div>`;
 }
 
   // 一般商品：簡約兩行制卡片.小圓點開頭商品
@@ -325,8 +334,7 @@ function renderItem(item) {
         <div class="card-left">
           <span class="item-dot"></span> <!-- 加小圓點 -->
           <span class="item-name">${item.n}</span>
-          ${limitNotice}
-          ${stockNotice}
+           ${stockNotice}
         </div>
         <div class="card-right">
           <span class="item-price">${priceDisplay}</span>
@@ -344,6 +352,7 @@ function renderItem(item) {
       <!-- 第二行：功能說明與限制標籤（只有存在時才渲染，絕無累贅畫面） -->
       ${ (item.f || item.l) ? `
       <div class="card-row-2">
+       ${limitNotice}
         ${descNotice}
       </div>` : '' }
     </div>
