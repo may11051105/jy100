@@ -75,44 +75,6 @@ function getSafeCache(key) {
   }
 }
 
-// ==============================================
-//--試算表欄位.處理商品資料: 所有商品、群組、子選項欄位)
-// ==============================================
-function processData(data) {
-  productDB = {};
-  priceLookup = {};
-
-  data.forEach((item) => {
-  // 確保 key 存在再處理
-  if (!item.key) return;
-    const key = String(item.key).toLowerCase();
-    if (!productDB[key]) {
-      productDB[key] = [];
-    }
-
-    const rawPrice = String(item.price).trim();
-    const isH3 = String(item.enabled).trim().toUpperCase() === "H3";
-    
-    const productInfo = {
-      key: key,
-      g: item.group || "",  // 建立群組的關鍵
-      n: item.name,
-      p: Number(item.price), //price欄位價格轉換
-      rawPrice: rawPrice, 
-      f: item.desc || "",   // 功能描述
-      l: item.limit || "",  // 使用限制
-      stock: normalizeStock(item.stock), // 庫存
-      //標題保留 H3 ，否則預設 Y .強制轉換大寫防判斷失效
-      enabled: isH3 ? "H3" : String(item.enabled || "Y").trim().toUpperCase(), 
-    };
-    productDB[key].push(productInfo);
-    
-    // 只有非 H3標題的商品才加入價格表
-    if (!isH3) {
-      priceLookup[item.name] = productInfo.p;
-    }
-  });
-}
 
 // ==============================================
 //-- 讀取:密碼驗證p99.休站Closed
@@ -138,7 +100,7 @@ async function loadSettings() {
 }
 
 // ==============================================
-//-- 分頁標籤
+//-- 分類頁籤
 // ==============================================
 //-- 分頁切換
 function openTab(evt, tabId) {
@@ -167,7 +129,7 @@ function scrollTabs(direction) {
 }
 
 // ==============================================
-// 📱 頂部 P1~P99 大分頁 收納控制器
+// 📱 頂部 P1~ 大分頁 收納控制器
 // ==============================================
 // 切換選單抽屜的開關狀態
 function toggleCategoryDrawer() {
@@ -232,6 +194,67 @@ function triggerTabSwitch(tabId) {
 
 
 // ==============================================
+//-- 處理資料.試算表欄位: all商品、群組、子選項)
+// ==============================================
+function processData(data) {
+  productDB = {};
+  priceLookup = {};
+
+  data.forEach((item) => {
+    if (!item.key) return;
+    const key = String(item.key).toLowerCase();
+    if (!productDB[key]) {
+      productDB[key] = [];
+    }
+
+const isH3 = String(item.enabled || "").trim().toUpperCase() === "H3";
+//-- 將 price 欄位轉字串去除前後空白
+    const rawPriceStr = item.price !== undefined && item.price !== null ? String(item.price).trim() : "";
+    // h3標題 與 價格.作互斥分流定義
+    let parsedPrice;
+    let finalRawPrice;    
+    // 1. 如果是 H3.回傳null 並輸入 "--"
+    if (isH3) {
+      parsedPrice = null; 
+      finalRawPrice = "--";
+    } else if (rawPriceStr === "") {
+    
+      // 2. 如果「沒填/留白」：強迫變成 NaN，鎖定輸入
+      parsedPrice = NaN; 
+      finalRawPrice = "--"; 
+    } else if (rawPriceStr === "0") {
+      // 3. 如果「填寫數字 0」：解鎖free贈品
+      parsedPrice = 0; 
+      finalRawPrice = "0";
+    } else {
+      // 4. 其他正常數字 或一般文字
+      parsedPrice = Number(rawPriceStr); 
+      finalRawPrice = rawPriceStr;
+    }
+    
+    const productInfo = {
+      key: key,
+      g: item.group || "",  
+      n: item.name,
+      p: parsedPrice,          // 確實帶入分流後的數值
+      rawPrice: finalRawPrice, // 確實帶入分流後的字串
+      f: item.desc || "",   
+      l: item.limit || "",  
+      stock: normalizeStock(item.stock), 
+      // 保留 H3 ，預設 Y .強制轉換大寫防判斷失效
+      enabled: isH3 ? "H3" : String(item.enabled || "Y").trim().toUpperCase(), 
+    };
+    productDB[key].push(productInfo);
+    
+    // 只有非 H3、非群組、且是有效數字（包含0，排除NaN與null）的商品才進價格表
+    if (!isH3 && productInfo.p !== -1 && productInfo.p !== null && !Number.isNaN(productInfo.p)) {
+      priceLookup[item.name] = productInfo.p;
+    }
+  });
+}
+
+
+// ==============================================
 // HTML 元件:商品、價格、事件、數量輸入[極簡兩行制手機卡片 (500px內專用)]
 // ==============================================
 function renderItem(item) {
@@ -251,16 +274,16 @@ function renderItem(item) {
 
   const maxAttr = hasLimit ? `max="${item.stock}"` : "";
   const isTextPrice = Number.isNaN(item.p);
-  const isGift = item.p === 0;
+  const isGift = item.p !== null && item.p === 0; 
 
   // 鎖定輸入時機
   const inputAttr = isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed ? "disabled" : "";
 
   // 價格欄位顯示
   const priceDisplay = isGroup
-    ? '<span class="group-spec-tag">[點擊展開規格]</span>' // 1. 強化提示文字
-    : disabled ? "--"
-      : isOutOfStock ? "缺貨"
+    ? '<span class="group-spec-tag">[點擊展開規格]</span>' // 強化提示文字
+     : (disabled || item.p === null) ? "--"
+      : isOutOfStock ? "暫缺"
         : isTextPrice ? item.rawPrice
           : isGift ? "🎁贈"
             : `$${item.p}`;
@@ -294,14 +317,15 @@ function renderItem(item) {
           </div>`;
 }
 
-  // 一般商品：極簡兩行制卡片.小圓點開頭商品
+  // 一般商品：簡約兩行制卡片.小圓點開頭商品
   return `
     <div class="${rowClass} product-card">
       <!-- 第一行：品名與剩餘數量（左） | 價格與數量控制器（右） -->
       <div class="card-row-1">
         <div class="card-left">
-          <span class="item-dot"></span> <!-- 2. 加回小圓點 -->
+          <span class="item-dot"></span> <!-- 加小圓點 -->
           <span class="item-name">${item.n}</span>
+          ${limitNotice}
           ${stockNotice}
         </div>
         <div class="card-right">
@@ -321,7 +345,6 @@ function renderItem(item) {
       ${ (item.f || item.l) ? `
       <div class="card-row-2">
         ${descNotice}
-        ${limitNotice}
       </div>` : '' }
     </div>
   `;
