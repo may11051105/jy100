@@ -409,17 +409,21 @@ header::after {
 }
 
 
-/* ============================= */
-/* 🏷 分頁中的小分類標題.Html靜態 */
-/* ============================= */
+/* ==============================================
+  🏷 分頁中 H3 小分類標題與副說明裝飾.JS動態帶入
+   ============================================== */
 h3 {
   background: var(--h3-bg);
   color: #fff;
-  padding: 5px 10px;
-  margin: 12px 0 5px;
+  padding: 4px 0 4px 10px; /* 左邊留白給色塊 */
+  border-left: 4px solid #ff9800;  /* 左側視覺小色塊 */
+  border-bottom: 1px dashed #e0e0e0; /* 淡淡的下虛線 */
+  margin: 20px 0 0 0;    /* 與上方商品拉開距離，與下方副說明/商品靠近 */
   font-size: 14px;
   letter-spacing: 1px;
+  font-weight: bold;
 }
+/* 特別公告 */
 h3.new {
   color: yellow;
   overflow: hidden;
@@ -434,32 +438,20 @@ h3.new span {
   from {transform: translateX(50%);}
   to {transform: translateX(0);}
 }
-/* ==============================================
-   H3 小分類標題與副說明裝飾.JS動態
-   ============================================== */
-.sub-title {
-  font-size: 1rem;
-  color: #fff; 
-  margin: 25px 0 8px 0;        /* 與上方商品拉開距離，與下方副說明/商品靠近 */
-  padding: 4px 0 4px 10px;     /* 左邊留白給色塊 */
-  border-left: 4px solid #ff9800; /* 左側視覺小色塊 */
-  border-bottom: 1px dashed #e0e0e0; /* 淡淡的下虛線 */
-  font-weight: bold;
-}
 
-/* 標題下方的副說明：極簡、低調、不搶戲 */
+/* 標題下方的副說明：極簡、低調 */
 .sub-title-desc {
   font-size: 0.8rem; 
-  color: #777777; 
-  margin: 0 0 10px 10px;   /* 對齊主標題的文字開頭，並與下方商品保持間距 */
+  color: var(--h3-bg);; 
+  margin: 0 0 5px 10px;   /* 對齊主標題的文字開頭，並與下方商品保持間距 */
   padding: 0;
   display: flex;
   align-items: center;
   gap: 4px;
 }
-
-/* 自動在標題副說明開頭加上小圖標 */
+/* 在標題副說明開頭加上小圖標 */
 .sub-title-desc::before {content: "📌"; opacity: 0.8;}
+
 
 
 /* ============================= */
