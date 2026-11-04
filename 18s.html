@@ -133,22 +133,23 @@ const CONFIG = {
 <button class="tabs-arrow left" onclick="scrollTabs(-1)">◀</button>
 <!-- 分類籤. tabs 容器.分頁選單 -->
 <div class="tabs">
-  <button class="tab-btn active" onclick="openTab(event, 'p1')">1.日常補給</button>
-  <button class="tab-btn" onclick="openTab(event, 'p2')">2.擴充技能</button>
-  <button class="tab-btn" onclick="openTab(event, 'p3')">3.屬性丹藥</button>
+  <button class="tab-btn active" onclick="openTab(event, 'p1')" title="初入江湖">1.日常補給</button>
+  <button class="tab-btn" onclick="openTab(event, 'p2')" title="江湖生活">2.擴充技能</button>
+  <button class="tab-btn" onclick="openTab(event, 'p3')">3.屬性丹</button>
   <button class="tab-btn" onclick="openTab(event, 'p4')">4.精氣神內</button>
   <button class="tab-btn" onclick="openTab(event, 'p5')">5.基本攻防丹</button>
-  <button class="tab-btn" onclick="openTab(event, 'p6')">6.多功能丹藥</button>
-  <button class="tab-btn" onclick="openTab(event, 'p7')">7.天命天悟藥</button>
-  <button class="tab-btn" onclick="openTab(event, 'p8')">8.自修天悟裝</button>
-  <button class="tab-btn" onclick="openTab(event, 'p9')">9.屬性攻防裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p6')">6.多功能丹</button>
+  <button class="tab-btn" onclick="openTab(event, 'p7')">7.天命.天悟藥</button>
+  <button class="tab-btn" onclick="openTab(event, 'p8')">8.自修.天悟裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p9')">9.屬性.攻防裝</button>
   <button class="tab-btn" onclick="openTab(event, 'p10')">10.神威裝</button>
   <button class="tab-btn" onclick="openTab(event, 'p11')">11.五獸聖甲</button>
   <button class="tab-btn" onclick="openTab(event, 'p12')">12.上古武器</button>
-  <button class="tab-btn" onclick="openTab(event, 'p13')">13.內丹幻武</button>
-  <button class="tab-btn" onclick="openTab(event, 'p14')">14.八卦真武俠客</button>
-  <button class="tab-btn" onclick="openTab(event, 'p15')">15.造型武林帖</button>
-  <button class="tab-btn" onclick="openTab(event, 'p16')">16.其它寄賣</button>
+  <button class="tab-btn" onclick="openTab(event, 'p13')" title="主動功能">13.內丹.守護神</button>
+  <button class="tab-btn" onclick="openTab(event, 'p14')" title="被動功能">14.幻武系統</button>
+  <button class="tab-btn" onclick="openTab(event, 'p15')" title="常駐系統">15.八卦.真武.俠客</button>
+  <button class="tab-btn" onclick="openTab(event, 'p16')" title="收集成就">16.造型.武林帖</button>
+  <button class="tab-btn" onclick="openTab(event, 'p17')">17.其它</button>
   <button class="tab-btn" onclick="openTab(event, 'p99')">99.特殊專區</button>
   <!-----若暫時沒用,可隱藏:( style="display:none;" )------------------>
 </div>
@@ -159,12 +160,12 @@ const CONFIG = {
 </div>
 
 <!-- ==============================================
-     ☰全螢幕分類抽屜（動態自動抓取）
+     ☰全螢幕分類抽屜（動態抓取）
      ============================================== -->
 <div id="category-drawer" class="drawer-overlay overlay-base" onclick="toggleCategoryDrawer()">
   <div class="drawer-panel" onclick="event.stopPropagation()">
     <div class="drawer-header">
-      <h3>分類快速選單</h3>
+      <h3>分類快速選</h3>
       <button class="drawer-close" onclick="toggleCategoryDrawer()">✕</button>
     </div>
     <!-- 選單抽屜容器，JS 自動抓取所有分頁標籤 .點擊後會觸發原本的 openTab 切換 -->
@@ -355,7 +356,7 @@ const CONFIG = {
 
 <!-- 搜尋結果分頁 -->
       <div id="search-content" class="tab-content">
-        <h3>🔍 搜尋結果</h3>
+        <h3 class="new"><span>🔍 搜尋結果</span></h3>
         <div id="list-search"></div>
       </div>
       
