@@ -1,0 +1,373 @@
+﻿<div class="form-card">
+      <!-- 玩家資訊欄 -->
+      <div class="info-section">
+        <div class="info-row">
+          <input type="text" id="user-id" class="info-input" placeholder="🖊 角色名" autocomplete="on"/>
+          <!-- 交易方式 -->
+          <select id="pay-method" class="info-input">
+            <option value="">-- 交易方式 --</option>
+            <option value="轉帳">轉帳 (95折)</option>
+            <option value="LinePay">LinePay (95折)</option>
+            <option value="街口支付">街口支付 (95折)</option>
+            <option value="8591">8591→ 滿100 開專</option>
+            <option value="無卡存">ATM無卡存→滿100</option>
+            <option value="海外刷卡">海外線上刷卡→滿300</option>
+            <option value="Paypal">Paypal→滿300</option>
+            <option value="支付寶">支付寶¥ (1:4)</option>
+            <option value="其它">其它</option>
+          </select>
+        </div>
+ <div class="info-row" style="position: relative">
+ <input type="text" id="order-memo" class="info-input" placeholder="📝 備註"/>
+ <input type="text" id="searchInput" class="info-input" placeholder="🔍 搜尋..." oninput="handleSearch()"/>
+ <button id="search-clear-btn" class="search-X" onclick="clearSearch()" style="display: none">✕</button>
+ </div>
+</div>
+
+<!-- ==============================================
+   分類頁籤: 頂部 Tabs 區
+   ============================================== -->  
+<div class="tabs-wrapper">
+<!-- 分類籤. 左移箭頭 -->
+<button class="tabs-arrow left" onclick="scrollTabs(-1)">◀</button>
+<!-- 分類籤. tabs 容器.分頁選單 -->
+<div class="tabs">
+  <button class="tab-btn active" onclick="openTab(event, 'p1')" title="初入江湖">1.日常補給</button>
+  <button class="tab-btn" onclick="openTab(event, 'p2')" title="江湖生活">2.擴充技能</button>
+  <button class="tab-btn" onclick="openTab(event, 'p3')">3.屬性丹</button>
+  <button class="tab-btn" onclick="openTab(event, 'p4')">4.精氣神內</button>
+  <button class="tab-btn" onclick="openTab(event, 'p5')">5.基本攻防丹</button>
+  <button class="tab-btn" onclick="openTab(event, 'p6')">6.多功能丹</button>
+  <button class="tab-btn" onclick="openTab(event, 'p7')">7.天命.天悟藥</button>
+  <button class="tab-btn" onclick="openTab(event, 'p8')">8.自修.天悟裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p9')">9.屬性.攻防裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p10')">10.神威裝</button>
+  <button class="tab-btn" onclick="openTab(event, 'p11')">11.五獸聖甲</button>
+  <button class="tab-btn" onclick="openTab(event, 'p12')">12.上古武器</button>
+  <button class="tab-btn" onclick="openTab(event, 'p13')" title="主動功能">13.內丹.守護神</button>
+  <button class="tab-btn" onclick="openTab(event, 'p14')" title="被動功能">14.幻武系統</button>
+  <button class="tab-btn" onclick="openTab(event, 'p15')" title="常駐系統">15.八卦.真武.俠客</button>
+  <button class="tab-btn" onclick="openTab(event, 'p16')" title="收集成就">16.造型.武林帖</button>
+  <button class="tab-btn" onclick="openTab(event, 'p17')">17.其它</button>
+  <button class="tab-btn" onclick="openTab(event, 'p99')">99.特殊專區</button>
+  <!-----若暫時沒用,可隱藏:( style="display:none;" )------------------>
+</div>
+      <!-- 分類籤. 右移箭頭 -->
+      <button class="tabs-arrow right" onclick="scrollTabs(1)">▶</button>
+      <!--☰ 漢堡選單按鈕，點擊開啟分類抽屜 -->
+<button class="burger-menu-btn" onclick="toggleCategoryDrawer()" title="快速選單">☰</button>
+</div>
+
+<!-- ==============================================
+     ☰全螢幕分類抽屜（動態抓取）
+     ============================================== -->
+<div id="category-drawer" class="drawer-overlay overlay-base" onclick="toggleCategoryDrawer()">
+  <div class="drawer-panel" onclick="event.stopPropagation()">
+    <div class="drawer-header">
+      <h3>分類快速選</h3>
+      <button class="drawer-close" onclick="toggleCategoryDrawer()">✕</button>
+    </div>
+    <!-- 選單抽屜容器，JS 自動抓取所有分頁標籤 .點擊後會觸發原本的 openTab 切換 -->
+    <div class="drawer-content" id="burger-menu-list"></div>
+  </div>
+</div>
+
+
+<!-- ==============================================
+   分類頁小組容器：商品標題區塊
+   ============================================== -->  
+<div id="p1" class="tab-content active">
+<h3 class="new"><span>📢【限時限量更新活動】new</span></h3>
+  <div id="list-p1-1"></div>
+  <div id="list-p1-2"></div>
+  <div id="list-p1-3"></div>
+  <div id="list-p1-4"></div>
+  <div id="list-p1-5"></div>
+  <div id="list-p1-6"></div>
+  <div id="list-p1-7"></div>
+</div>
+
+<div id="p2" class="tab-content">
+  <div id="list-p2-1"></div>
+  <div id="list-p2-2"></div>
+  <div id="list-p2-3"></div>
+  <div id="list-p2-4"></div>
+  <div id="list-p2-5"></div>
+  <div id="list-p2-6"></div>
+  <div id="list-p2-7"></div>
+</div>
+
+<div id="p3" class="tab-content">
+  <div id="list-p3-1"></div>
+  <div id="list-p3-2"></div>
+  <div id="list-p3-3"></div>
+  <div id="list-p3-4"></div>
+  <div id="list-p3-5"></div>
+  <div id="list-p3-6"></div>
+  <div id="list-p3-7"></div>
+</div>
+
+<div id="p4" class="tab-content">
+  <div id="list-p4-1"></div>
+  <div id="list-p4-2"></div>
+  <div id="list-p4-3"></div>
+  <div id="list-p4-4"></div>
+  <div id="list-p4-5"></div>
+  <div id="list-p4-6"></div>
+  <div id="list-p4-7"></div>
+  <div id="list-p4-8"></div>
+  <div id="list-p4-9"></div>
+  <div id="list-p4-10"></div>
+</div>
+
+<div id="p5" class="tab-content">
+  <div id="list-p5-1"></div>
+  <div id="list-p5-2"></div>
+  <div id="list-p5-3"></div>
+  <div id="list-p5-4"></div>
+  <div id="list-p5-5"></div>
+  <div id="list-p5-6"></div>
+  <div id="list-p5-7"></div>
+  <div id="list-p5-8"></div>
+  <div id="list-p5-9"></div>
+  <div id="list-p5-10"></div>
+  <div id="list-p5-11"></div>
+</div>
+
+<div id="p6" class="tab-content">
+  <div id="list-p6-1"></div>
+  <div id="list-p6-2"></div>
+  <div id="list-p6-3"></div>
+  <div id="list-p6-4"></div>
+  <div id="list-p6-5"></div>
+  <div id="list-p6-6"></div>
+  <div id="list-p6-9"></div>
+  <div id="list-p6-10"></div>
+  <div id="list-p6-11"></div>
+  <div id="list-p6-12"></div>
+</div>
+
+<div id="p7" class="tab-content">
+  <div id="list-p7-1"></div>
+  <div id="list-p7-2"></div>
+  <div id="list-p7-3"></div>
+  <div id="list-p7-4"></div>
+  <div id="list-p7-5"></div>
+  <div id="list-p7-6"></div>
+</div>
+
+<div id="p8" class="tab-content">
+  <div id="list-p8-1"></div>
+  <div id="list-p8-2"></div>
+  <div id="list-p8-4"></div>
+  <div id="list-p8-5"></div>
+  <div id="list-p8-6"></div>
+  <div id="list-p8-7"></div>
+  <div id="list-p8-8"></div>
+  <div id="list-p8-9"></div>
+</div>
+
+<div id="p9" class="tab-content">
+  <div id="list-p9-1"></div>
+  <div id="list-p9-2"></div>
+  <div id="list-p9-3"></div>
+  <div id="list-p9-4"></div>
+  <div id="list-p9-5"></div>
+</div>
+
+<div id="p10" class="tab-content">
+  <div id="list-p10-1"></div>
+  <div id="list-p10-2"></div>  
+  <div id="list-p10-3"></div>  
+  <div id="list-p10-4"></div> 
+  <div id="list-p10-5"></div>
+  <div id="list-p10-6"></div>
+  <div id="list-p10-7"></div>
+</div>
+
+<div id="p11" class="tab-content">
+  <div id="list-p11-1"></div>
+  <div id="list-p11-2"></div>
+  <div id="list-p11-3"></div>
+  <div id="list-p11-4"></div>
+  <div id="list-p11-5"></div>
+  <div id="list-p11-6"></div>
+</div>
+
+<div id="p12" class="tab-content">
+  <div id="list-p12-1"></div>
+  <div id="list-p12-2"></div>
+  <div id="list-p12-3"></div>
+  <div id="list-p12-4"></div>
+  <div id="list-p12-5"></div>
+  <div id="list-p12-6"></div>
+</div>
+
+<div id="p13" class="tab-content">
+  <div id="list-p13-1"></div>
+  <div id="list-p13-2"></div>
+  <div id="list-p13-3"></div>
+  <div id="list-p13-4"></div>
+  <div id="list-p13-5"></div>
+  <div id="list-p13-6"></div>
+  <div id="list-p13-7"></div>
+</div>
+
+<div id="p14" class="tab-content">
+  <div id="list-p14-1"></div>
+  <div id="list-p14-2"></div>
+  <div id="list-p14-3"></div>
+  <div id="list-p14-4"></div>
+  <div id="list-p14-5"></div>
+  <div id="list-p14-6"></div>
+</div>
+
+<div id="p15" class="tab-content">
+  <div id="list-p15-1"></div>
+  <div id="list-p15-2"></div>
+  <div id="list-p15-3"></div>
+  <div id="list-p15-4"></div>
+  <div id="list-p15-5"></div>
+  <div id="list-p15-6"></div>
+</div>
+
+<div id="p16" class="tab-content">
+  <div id="list-p16-1"></div>
+  <div id="list-p16-2"></div>
+  <div id="list-p16-3"></div>
+  <div id="list-p16-4"></div>
+  <div id="list-p16-5"></div>
+  <div id="list-p16-6"></div>
+</div>
+
+      <div id="p99" class="tab-content">
+        <h3>🔒 請輸入密碼</h3>
+        <div id="password-box" style="padding: 20px">
+          <input type="password" id="pwd" style="font-size: 18px" placeholder="輸入密碼" />
+          <button onclick="checkPassword()">進入</button>
+        </div>
+        <div id="secret-section" style="display: none">
+          <div id="list-p99-1"></div>
+          <div id="secret-products19"></div>
+        </div>
+      </div>
+
+
+<!-- 搜尋結果分頁 -->
+      <div id="search-content" class="tab-content">
+        <h3 class="new"><span>🔍 搜尋結果</span></h3>
+        <div id="list-search"></div>
+      </div>
+      
+</div><!--商品容器.結尾籤--->
+
+
+<!---- 底部計算金額區total-box (兼購物車入口) ---->
+<div class="total-box">
+      <div class="top-row">
+        <div class="left-area">
+          <span id="visitor-count"><!--👤計數--></span>
+        </div>
+        <div>總金額：<span class="grand-total">$<span id="total-val">0</span></span></div>
+      </div>
+      <div style="display: flex; gap: 8px; margin-top: 5px">
+        <button class="btn" style="flex: 1; background: #0275d8; margin-top: 0" onclick="toggleCart()">🛒 購物車</button>
+        <button class="btn" style="flex: 1; background: #b45f06; margin-top: 0" onclick="openPaymentModal()">💳 結帳</button>
+      </div>
+</div>
+    
+
+<!-- ==============================================
+   購物車
+   ============================================== -->
+    <!-- 購物車面板 -->
+    <div id="cart-wrapper" class="overlay-base">
+      <div id="cart-panel" onclick="event.stopPropagation()">
+        <button class="X-close" onclick="closeModal(this)">✕</button>
+        <h3 style="margin-top: 0;">🛒 購物車</h3>
+<div class="cart-header">
+  <span>明細：<span id="cart-count">0</span>項</span>
+  <span>總金額：<span class="grand-total">$ <span id="cart-total">0</span></span></span>
+</div>
+<!--購物車明細-->
+<div id="cart-content"></div>
+
+        <!-- 功能按鈕 -->
+        <div class="action-row">
+          <button class="btn-2" style="background: #4a5568" onclick="handleAction(1)">📋 複製</button>
+          <button class="btn-2" style="background: #06c755" onclick="handleAction(2)">💬 LINE</button>
+          <button class="btn-2" style="background: #17a2b8" onclick="handleAction(3)">📧 Email</button>
+        </div>
+        <!-- 清空/結算按鈕 -->
+        <div class="action-row">
+          <button class="btn-2" style="background: #6c757d" onclick="clearCart()">清空購物車</button>
+          <button class="btn-2" style="background: #b45f06" onclick="openPaymentModal()">前往結帳</button>
+        </div>
+      </div>
+    </div>
+    
+<!-- ======================================
+   結算與付款引導 彈窗Modal
+   ======================================== -->    
+    <div id="payment-modal" class="modal-overlay overlay-base" style="display: none" onclick="closeModal(this)">
+      <div class="modal-content" onclick="event.stopPropagation()">
+        <button class="X-close" onclick="closeModal(this)">✕</button>
+        <h3 style="margin-top: 0">📋 訂單預覽</h3>
+        <textarea id="modal-order-text" readonly><!--訂單預覽區--></textarea>
+       
+        <div id="payment-instruction"><!--付款指引 根據付款方式引導--></div>
+        <div style="display: flex; gap: 10px; margin-top: 10px">
+          <button class="btn-2" style="background: #4a5568" onclick="handleAction(1)">📋 複製清單</button>
+          <button class="btn-2" style="background: #17a2b8" onclick="handleAction(3)">📧 飛鴿寄出</button>
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 10px">
+          <button class="btn-2" style="background: #06c755" onclick="handleAction(2)">➕ LINE好友</button>
+          <button class="btn-2" style="background: #06c755" onclick="submitOrder()">💬 LINE傳送</button>
+        </div>
+      </div>
+    </div>
+
+
+<!-- ======================================
+     全站共用 
+     ====================================== -->
+<!-- 提示訊息.Aoast -->
+<div id="loading-toast">獲取最新資料中<span class="bounce"></span></div>
+<div id="live-toast" class="live-toast">⚡ 商品資料已更新！</div>
+
+<!-- 提示窗.Alert -->     
+<div id="custom-alert" class="overlay-base">
+  <div class="custom-alert-box">
+    <div class="custom-alert-title">🏮 江湖提示</div>
+    <div id="custom-alert-message" class="custom-alert-message"></div>
+    <!-- Alert 按鈕 -->
+    <button id="custom-alert-ok" class="btn" style="background:var(--bg1);" type="button">確 定</button>
+  </div>
+</div>
+
+<!-- 公告.休站 -->
+<div id="maintenance-overlay" class="overlay-base">
+  <div class="maintenance-box">
+    <div class="maintenance-title">🔔 休站中...暫停接單</div>
+    <div class="maintenance-text">
+      小站休息中<br>
+      商品仍可瀏覽，繼續閒逛。
+    </div>
+    <button class="btn" style="background:var(--h3-bg);" onclick="closeMaintenance()">我知道了</button>
+  </div>
+</div>
+
+
+<!-- ======================================
+     懸浮按鈕
+     ====================================== -->
+<div id="btnTop" class="back-to-top" onclick="window.scrollTo(0, 0)" title="回頂部"> ⬆️ </div>
+<div id="refresh-button" onclick="refreshInventory()" title="重整資料">🔃</div>
+<!-- LINE 按鈕 -->
+<a href="https://line.me/ti/p/7KQQFWwtR5" target="_blank"
+  class="floating-line-btn" rel="noopener noreferrer"
+  title="聯絡百分百（LINE）" aria-label="聯絡百分百（LINE）">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M12 2C6.48 2 2 5.65 2 10.16c0 2.43 1.27 4.6 3.27 6.02l-.83 3.1a.45.45 0 0 0 .65.5l3.53-1.86c1.05.28 2.18.43 3.38.43 5.52 0 10-3.65 10-8.19S17.52 2 12 2zm-4.3 11.1a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 1 0v3.3h1.3a.5.5 0 0 1 0 1H7.7zm3.5 0a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 1 0v3.8a.5.5 0 0 1-.5.5zm4.9-.5a.5.5 0 0 1-.9.3l-1.8-2.5v2.2a.5.5 0 0 1-1 0V8.8a.5.5 0 0 1 .9-.3l1.8 2.5V8.8a.5.5 0 0 1 1 0v3.8zm3.2.5h-2.3a.5.5 0 0 1-.5-.5V8.8a.5.5 0 0 1 .5-.5h2.3a.5.5 0 0 1 0 1h-1.8v.9h1.5a.5.5 0 0 1 0 1h-1.5v.9h1.8a.5.5 0 0 1 0 1z"/>
+  </svg>
+</a>
