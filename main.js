@@ -1,3 +1,13 @@
+// CONFIG專屬 ##集中管理
+const CONFIG = {
+  serverId: document.body.dataset.serverId,
+  serverName: document.body.dataset.serverName,
+  sheet: document.body.dataset.sheet,
+  firebaseNode: document.body.dataset.firebaseNode,
+  cacheKey: `jin_mall_products${document.body.dataset.serverId}`,
+  secretDiv: `secret-products${document.body.dataset.serverId}`,
+  loadingText: document.body.dataset.loadingText,
+};
 
 // 全域宣告
 let selectedItems = {};
@@ -401,7 +411,7 @@ function render() {
       }
     });
 
-    html += `<div style="text-align:center; padding:5px 5px; ">
+    html += `<div style="text-align:center;">
                 <a href="#top-anchor">↑ 回到選單 ↑</a></div>`;
     container.innerHTML = html;
   });
@@ -1045,48 +1055,67 @@ function showLiveToast(message = "⚡ 商品資料已更新") {
 // ==============================================
 document.title = `【百分百】金庸商城 - ${CONFIG.serverId}區`;
 
-//-- DOM 載入完成後執行的初始化與監聽
-window.addEventListener('DOMContentLoaded', () => {
+//-- 頁面初始化
+function initMallPage() {
+
   // 1. 修改 Header 標題
   const h1 = document.querySelector("header h1");
-  if (h1) {h1.textContent = `${CONFIG.serverName}${h1.textContent}`;}
+  if (h1) {
+    h1.textContent = `${CONFIG.serverName}${h1.textContent}`;
+  }
 
   // 2. 角色名稱 LocalStorage 自動記憶邏輯
   const userIdInput = document.getElementById("user-id");
   if (userIdInput) {
-    // 頁面載入時：自動填入上次存下的角色名
     const savedName = localStorage.getItem("shop_saved_user_id");
-    if (savedName) {userIdInput.value = savedName;}
+    if (savedName) {
+      userIdInput.value = savedName;
+    }
 
-    // 當玩家輸入或修改名字時：即時儲存至 localStorage
     userIdInput.addEventListener("input", () => {
       localStorage.setItem("shop_saved_user_id", userIdInput.value.trim());
     });
   }
 
-  // 3. 讀取提示文字 
+  // 3. 讀取提示文字
   const loadingToast = document.getElementById("loading-toast");
   if (loadingToast) {
-    loadingToast.innerHTML = `資料處理中...<span class="bounce">${CONFIG.loadingText}</span>`;}
-    
- // 3. 付款方式 LocalStorage 自動記憶
-const payMethod = document.getElementById("pay-method");
-if (payMethod) {
-  // 頁面載入時：自動填入上次選擇的付款方式
-  const savedPayMethod = localStorage.getItem("shop_saved_pay_method");
-  if (savedPayMethod) {payMethod.value = savedPayMethod;}
-  // 當更改付款方式時：立即更新
-  payMethod.addEventListener("change", () => {
-  setSafeCache("shop_saved_pay_method", payMethod.value);
-  updateTotal();
-  });
-} 
-  updateCart();//購物車畫面初始化
-  initDynamicBurgerMenu(); //漢堡選單初始化
-});
+    loadingToast.innerHTML =
+      `資料處理中...<span class="bounce">${CONFIG.loadingText}</span>`;
+  }
+
+  // 4. 付款方式 LocalStorage 自動記憶
+  const payMethod = document.getElementById("pay-method");
+  if (payMethod) {
+    const savedPayMethod = localStorage.getItem("shop_saved_pay_method");
+
+    if (savedPayMethod) {
+      payMethod.value = savedPayMethod;
+    }
+
+    payMethod.addEventListener("change", () => {
+      setSafeCache("shop_saved_pay_method", payMethod.value);
+      updateTotal();
+    });
+  }
+
+  // 5. 初始化購物車與漢堡選單
+  updateCart();
+  initDynamicBurgerMenu();
+}
 
 
-// 4. Firebase 動態監聽 + 提示
+//-- 判斷 DOM 是否已經載入完成
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initMallPage);
+} else {
+  initMallPage();
+}
+
+
+// ==============================================
+//--  Firebase 動態監聽 + 提示
+// ==============================================
 let isInitialLoad = true;
 dbFirebase.ref(CONFIG.firebaseNode).on("value", (snapshot) => {
   const data = snapshot.val();
