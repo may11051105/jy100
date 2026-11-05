@@ -981,7 +981,7 @@ function checkPassword() {
     document.getElementById("secret-section").style.display = "block";
     document.getElementById("password-box").style.display = "none";
   } else {
-    alert("密碼錯誤");
+    alert("此處機關重重，請大俠移步正廳");
   }
 }
 
