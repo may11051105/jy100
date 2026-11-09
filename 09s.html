@@ -54,6 +54,7 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+
 <!-- 5. Firebase 初始化 + 專屬CONFIG  -->
 <script>
 // Firebase 初始化
@@ -70,17 +71,25 @@ const firebaseConfig = {
 }
       firebase.initializeApp(firebaseConfig)
       const dbFirebase = firebase.database()
+/* =============================
+// CONFIG專屬 ##集中管理
+============================= */      
+const CONFIG = {
+    serverId: "09",
+    serverName: "09倚天",
+    sheet: "products09",
+    firebaseNode: "products09",
+    cacheKey: "jin_mall_products09",
+    secretDiv: "secret-products09",
+    roleStorageKey: "jy100_09_user_id",
+    payStorageKey: "jy100_09_pay_method",
+    loadingText: "👻👻"
+  };
 </script>
 </head>
 
 
-<body
-  data-server-id="09"
-  data-server-name="09倚天"
-  data-sheet="products09"
-  data-firebase-node="products09"
-  data-loading-text="👻👻"
-  class="dark">
+<body class="dark">
  <header>
       <h1>【百分百】金庸商城</h1>
       <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a>
