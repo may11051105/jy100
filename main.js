@@ -1,14 +1,3 @@
-// CONFIG專屬 ##集中管理
-const CONFIG = {
-  serverId: document.body.dataset.serverId,
-  serverName: document.body.dataset.serverName,
-  sheet: document.body.dataset.sheet,
-  firebaseNode: document.body.dataset.firebaseNode,
-  cacheKey: `jin_mall_products${document.body.dataset.serverId}`,
-  secretDiv: `secret-products${document.body.dataset.serverId}`,
-  loadingText: document.body.dataset.loadingText,
-};
-
 // 全域宣告
 let selectedItems = {};
 let productDB = {};
@@ -184,7 +173,7 @@ function initDynamicBurgerMenu() {
     }
   });
 
-  // 4. 一鍵注入選單抽屜中，完全免手動維護！
+  // 4. 一鍵注入選單抽屜中
   menuContainer.innerHTML = menuHtml;
 }
 
@@ -1064,16 +1053,18 @@ function initMallPage() {
     h1.textContent = `${CONFIG.serverName}${h1.textContent}`;
   }
 
-  // 2. 角色名稱 LocalStorage 自動記憶邏輯
+  // 2. 角色名稱 LocalStorage 自動記憶
   const userIdInput = document.getElementById("user-id");
   if (userIdInput) {
-    const savedName = localStorage.getItem("shop_saved_user_id");
+// 角色讀取
+const savedName = localStorage.getItem(CONFIG.roleStorageKey);
+
     if (savedName) {
       userIdInput.value = savedName;
     }
-
-    userIdInput.addEventListener("input", () => {
-      localStorage.setItem("shop_saved_user_id", userIdInput.value.trim());
+    // 角色寫入
+userIdInput.addEventListener("input", () => {
+localStorage.setItem(CONFIG.roleStorageKey, userIdInput.value.trim());
     });
   }
 
@@ -1085,16 +1076,16 @@ function initMallPage() {
   }
 
   // 4. 付款方式 LocalStorage 自動記憶
-  const payMethod = document.getElementById("pay-method");
+const payMethod = document.getElementById("pay-method");
   if (payMethod) {
-    const savedPayMethod = localStorage.getItem("shop_saved_pay_method");
+const savedPayMethod = localStorage.getItem(CONFIG.payStorageKey);
 
     if (savedPayMethod) {
       payMethod.value = savedPayMethod;
     }
 
-    payMethod.addEventListener("change", () => {
-      setSafeCache("shop_saved_pay_method", payMethod.value);
+payMethod.addEventListener("change", () => {
+setSafeCache(CONFIG.payStorageKey, payMethod.value);
       updateTotal();
     });
   }
@@ -1117,17 +1108,27 @@ if (document.readyState === "loading") {
 //--  Firebase 動態監聽 + 提示
 // ==============================================
 let isInitialLoad = true;
+
+console.log("🔎 目前商城伺服器：", CONFIG.serverId);
+console.log("🔎 目前監聽節點：", CONFIG.firebaseNode);
+
 dbFirebase.ref(CONFIG.firebaseNode).on("value", (snapshot) => {
   const data = snapshot.val();
   if (!data) return;
+
   const dataArray = Array.isArray(data) ? data : Object.values(data);
   const cacheKey = CONFIG.cacheKey || "jin_mall_products";
-  localStorage.setItem(cacheKey, JSON.stringify(dataArray));
+
+  setSafeCache(cacheKey, JSON.stringify(dataArray));
   processData(dataArray);
   render();
+
   if (isInitialLoad) {
     isInitialLoad = false;
-  } else {showLiveToast();}
+  } else {
+    console.log("⚡ 收到更新：", CONFIG.serverId, CONFIG.firebaseNode);
+    showLiveToast();
+  }
 });
 
 
