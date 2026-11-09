@@ -70,17 +70,25 @@ const firebaseConfig = {
 }
       firebase.initializeApp(firebaseConfig)
       const dbFirebase = firebase.database()
+/* =============================
+// CONFIG專屬 ##集中管理
+============================= */      
+const CONFIG = {
+    serverId: "20",
+    serverName: "20盟主",
+    sheet: "products20",
+    firebaseNode: "products20",
+    cacheKey: "jin_mall_products20",
+    secretDiv: "secret-products20",
+    roleStorageKey: "user_id_20",
+    payStorageKey: "pay_method_20",
+    loadingText: "💀💫"
+  };
 </script>
 </head>
 
 
-<body
-  data-server-id="20"
-  data-server-name="20盟主"
-  data-sheet="products20"
-  data-firebase-node="products20"
-  data-loading-text="💀💫"
-  class="dark">
+<body class="dark">
  <header>
       <h1>【百分百】金庸商城</h1>
       <a href="https://may11051105.github.io/jy100/">🏠回伺服器選單</a>
