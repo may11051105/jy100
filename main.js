@@ -281,7 +281,7 @@ function renderItem(item) {
 
   // 價格欄位顯示
   const priceDisplay = isGroup
-    ? '<span class="group-spec-tag">[點擊展開規格]</span>' // 強化提示文字
+    ? '<span class="group-spec-tag">[展開規格]</span>' // 強化提示文字
      : (disabled || item.p === null) ? "--"
       : isOutOfStock ? "暫缺"
         : isTextPrice ? item.rawPrice
