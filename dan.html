@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>丹藥紀錄戰力統計_百分百金庸商城</title>
+    <title>丹藥紀錄戰力統計_百分百金庸</title>
     <!-- Open Graph (分享卡片) -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://may11051105.github.io/jy100/" />
@@ -769,7 +769,7 @@
           <button class="main-tab" onclick="switchMainTab('多能丹')">多功能</button>
           <button class="main-tab" onclick="switchMainTab('氣血修為')">氣血修為</button>
           <button class="main-tab" onclick="switchMainTab('常駐')">常駐</button>
-          <button class="main-tab" onclick="switchMainTab('被動')">被動</button>
+          <button class="main-tab" onclick="switchMainTab('主動系')">主動系</button>
           <button class="main-tab" onclick="switchMainTab('神器')">神器</button>
         </nav>
         
@@ -1639,9 +1639,8 @@ function calculateSubCategoryBStats(mainCategory, subCategory) {
     const currentData = hero.levels[currentLevel] || defaultData
     const fullName = currentData ? currentData.名稱 : subCategory
 
-    // 🟢【修改後的程式碼】：將 currentLevel > 0 改為只要 currentLevelData 存在即可
     let effectText = '未啟用 (0)'
-    if (currentLevelData) {
+    if (currentLevel > 0 && currentLevelData) {
       effectText = getItemEffects(currentLevelData).join(' ')
       ATTRIBUTES_MAP.forEach((attr) => {
         const val = Number(currentLevelData[attr.key])
