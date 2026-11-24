@@ -263,7 +263,7 @@ function renderItem(item) {
   const hasLimit = Number.isFinite(item.stock) && item.stock > 0;
   const disabled = item.enabled === "N";
   const isGroup = item.p === -1 && item.key.split("-").length === 2;
-  
+
   const rowClass = isGroup
     ? "item-row group-row"
     : disabled
@@ -274,56 +274,49 @@ function renderItem(item) {
 
   const maxAttr = hasLimit ? `max="${item.stock}"` : "";
   const isTextPrice = Number.isNaN(item.p);
-  const isGift = item.p !== null && item.p === 0; 
+  const isGift = item.p !== null && item.p === 0;
 
   // 鎖定輸入時機
   const inputAttr = isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed ? "disabled" : "";
 
   // 價格欄位顯示
   const priceDisplay = isGroup
-    ? '<span class="group-spec-tag">[展開規格]</span>' // 強化提示文字
-     : (disabled || item.p === null) ? "--"
+    ? '<span class="group-spec-tag">[展開規格]</span>'
+    : (disabled || item.p === null) ? "--"
       : isOutOfStock ? "暫缺"
         : isTextPrice ? item.rawPrice
           : isGift ? "🎁贈"
             : `$${item.p}`;
 
-//-- 條件判斷庫存與限制：  
-  //const stockNotice = hasLimit //只要設定庫存量就會顯示
+  //-- 條件判斷庫存與限制：
   //庫存：限制數量內才顯示庫存，庫存量超過限制不顯示，但會限制輸入上限
   const stockNotice = (!isOutOfStock && hasLimit && item.stock <= 10)
-    ? `<span class="badge-stock">剩${item.stock}</span>`: "";
+    ? `<span class="badge-stock">剩${item.stock}</span>` : "";
 
   // 使用限制：有限制屬性(如限頭部、上限吃5顆)才顯示
   const limitNotice = item.l ? `<span class="badge-limit">${item.l}</span>` : "";
-  //功能說明
+  // 功能說明
   const descNotice = item.f ? `<span class="item-desc">${item.f}</span>` : "";
 
-//-- 父分類群組渲染區塊 --
+  //-- 父分類群組渲染區塊 --
   if (isGroup) {
-    // 如果有填 desc 描述.建立文字
-  const descHtml = item.f ? `<span class="item-desc">💡${item.f}</span>` : "";
-   // 如果有填 limit 使用限制.建立文字
-  const limitHtml = item.l ? `<span class="badge-limit" style="padding: 1px;">${item.l}</span>` : "";
+    const descHtml = item.f ? `<span class="item-desc">💡${item.f}</span>` : "";
+    const limitHtml = item.l ? `<span class="badge-limit" style="padding: 1px;">${item.l}</span>` : "";
 
-  return `<div class="${rowClass}">
-          <div class="item-info-group">
-
-            <div class="group-title">
-              <span class="group-arrow">▶</span>
-              <span class="item-name group-main-name">${item.n}</span>
-            </div>
-
-            <div class="group-extra">
-              ${limitHtml}
-              ${descHtml}
-            </div>
-
-          </div>
-
-          <span class="item-price">${priceDisplay}</span>
-        </div>`;
-}
+    return `<div class="${rowClass}">
+      <div class="item-info-group">
+        <div class="group-title">
+          <span class="group-arrow">▶</span>
+          <span class="item-name group-main-name">${item.n}</span>
+        </div>
+        <div class="group-extra">
+          ${limitHtml}
+          ${descHtml}
+        </div>
+      </div>
+      <span class="item-price">${priceDisplay}</span>
+    </div>`;
+  }
 
   // 一般商品：簡約兩行制卡片.小圓點開頭商品
   return `
@@ -406,31 +399,48 @@ function render() {
   });
 }
 
-//-- 群組折疊選單事件
-document.addEventListener("click", function (e) {
-  const row = e.target.closest(".group-row");
-  if (!row) return;
+//-- 群組折疊選單事件（防重複綁定）
+if (!window.__groupToggleBound) {
+  window.__groupToggleBound = true;
 
-  const group = row.nextElementSibling;
-  if (!group || !group.classList.contains("group-content")) return;
-  const arrow = row.querySelector(".group-arrow");
+  function setGroupState(row, group, isOpen) {
+    group.classList.toggle("open", isOpen);
+    row.classList.toggle("active", isOpen);
 
-  if (group.classList.contains("open")) {
-    group.classList.remove("open");
-    arrow.textContent = "▶";
-    return;
+    const arrow = row.querySelector(".group-arrow");
+    if (arrow) arrow.textContent = isOpen ? "▼" : "▶";
+
+    const specTag = row.querySelector(".group-spec-tag");
+    if (specTag) specTag.textContent = isOpen ? "[隱藏收合]" : "[展開規格]";
   }
 
-  document.querySelectorAll(".group-content.open").forEach((openGroup) => {
-    openGroup.classList.remove("open");
-    const parentRow = openGroup.previousElementSibling;
-    const parentArrow = parentRow?.querySelector(".group-arrow");
-    if (parentArrow) parentArrow.textContent = "▶";
-  });
+  document.addEventListener("click", function (e) {
+    const row = e.target.closest(".group-row");
+    if (!row) return;
 
-  group.classList.add("open");
-  arrow.textContent = "▼";
-});
+    // 若點到內部輸入框或按鈕，不觸發折疊
+    if (e.target.closest("input, button, .qty-control-group")) return;
+
+    const group = row.nextElementSibling;
+    if (!group || !group.classList.contains("group-content")) return;
+
+    const willOpen = !group.classList.contains("open");
+
+    // 先關閉其他已展開的群組並還原文字與箭頭
+    document.querySelectorAll(".group-content.open").forEach((openGroup) => {
+      if (openGroup === group) return;
+      const parentRow = openGroup.previousElementSibling;
+      if (parentRow && parentRow.classList.contains("group-row")) {
+        setGroupState(parentRow, openGroup, false);
+      } else {
+        openGroup.classList.remove("open");
+      }
+    });
+
+    // 切換目前點擊的群組
+    setGroupState(row, group, willOpen);
+  });
+}
 
 //--判斷庫存:
 function normalizeStock(rawStock) {
