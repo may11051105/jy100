@@ -495,13 +495,6 @@ h3.new span {
   font-size: 14px;
 }
 
-.qty:disabled {
-  color: #adb5bd;
-  background-color: #e9ecef;
-  border-color: var(--border);
-  cursor: not-allowed;
-}
-
 /* 隱藏數字輸入框原生上下箭頭 */
 .qty-control-group input[type="number"]::-webkit-outer-spin-button,
 .qty-control-group input[type="number"]::-webkit-inner-spin-button {
@@ -527,7 +520,7 @@ h3.new span {
   background-color: #ffffff;
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
-
+/*卡片交替*/
 .product-card:nth-of-type(even) {
   background-color: #fefdf7;
 }
@@ -583,14 +576,34 @@ h3.new span {
   margin-right: 0;
 }
 
-/* 數量控制按鈕群組 */
+.card-row-2 {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  margin: 2px 0 4px 0;
+  width: 100%;
+  flex-wrap: wrap;
+  padding-left: 10px;
+}
+
+/*功能*/
+.item-desc {
+  font-size: 13px;
+  color: var(--desc);
+}
+
+
+/* ==============================================
+   數量控制按鈕群組（青苔竹韻 / 淺色草原系）
+   ============================================== */
 .qty-control-group {
   display: flex;
   align-items: center;
-  background: #f1f3f5;
-  border-radius: 4px;
-  padding: 0;
-  border: 1px solid var(--border);
+  background: #e9f4ef;
+  border-radius: 5px;
+  padding: 1px;
+  border: 1px solid #8ebca9;
 }
 
 .qty-control-group .qty {
@@ -604,48 +617,127 @@ h3.new span {
 }
 
 .qty-btn {
-  border: none;
-  background: #ffffff;
-  color: #495057;
+  border: 1px solid #84b4a0;
+  background: linear-gradient(180deg, #f8fcf9 0%, #dceee6 100%);
+  color: #205243;
   font-size: 14px;
   font-weight: bold;
   height: 24px;
   min-width: 24px;
-  border-radius: 3px;
+  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-  transition: all 0.1s ease;
+  box-shadow: 0 1px 1px rgba(32, 82, 67, 0.08);
+  transition: all 0.15s ease;
+}
+
+/* 正常可用按鈕：滑鼠移入與按下 */
+.qty-btn:hover:not(:disabled) {
+  filter: none;
+  background: #2f6f5b;
+  border-color: #2f6f5b;
+  color: #f4fbf8;
 }
 
 .qty-btn:active:not(:disabled) {
-  background: #e9ecef;
+  filter: none;
+  background: #235747;
+  border-color: #235747;
+  color: #f4fbf8;
   transform: scale(0.95);
 }
 
-.qty-btn:disabled {
-  background: #e9ecef;
-  color: #adb5bd;
+/* 停用按鈕與輸入框 */
+.qty-btn:disabled,
+.qty:disabled {
+  background: #eef2f0;
+  border-color: #d2dbd7;
+  color: #9fadab;
   cursor: not-allowed;
   box-shadow: none;
+  transform: none;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.card-row-2 {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 5px;
-  margin: 2px 0 4px 0;
-  width: 100%;
-  flex-wrap: wrap;
-  padding-left: 10px;
+/* ==============================================
+   🚫 禁止 / 停售 / 缺貨 / 價格異常狀態
+   ============================================== */
+.disabled-item,
+.item-row.out-of-stock,
+.product-card.out-of-stock {
+  opacity: 0.6;
+  cursor: not-allowed;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
-.item-desc {
+/* 滑鼠移過去：維持原樣，不變灰、不跳動 */
+.disabled-item,
+.disabled-item:hover,
+.disabled-item:nth-of-type(even):hover {
+  filter: none !important;
+  transform: none !important;
+  background-color: inherit !important;
+}
+
+.out-of-stock,
+.out-of-stock:hover,
+.product-card.out-of-stock:nth-of-type(even):hover {
+  filter: none !important;
+  transform: none !important;
+}
+
+/* 停用狀態內的輸入框與按鈕 */
+.disabled-item .qty,
+.disabled-item .qty-btn,
+.out-of-stock .qty,
+.out-of-stock .qty-btn {
+  background: #eee;
+  color: #9fadab;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.disabled-item .qty-btn:hover,
+.out-of-stock .qty-btn:hover {
+  filter: none;
+  background: #eee;
+}
+
+/* 缺貨商品名稱加刪除線 */
+.out-of-stock .item-name {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+
+/* ============================= */
+/* 🏷️ 小標籤設計 */
+/* ============================= */
+.badge-stock {
+  background: #fffff0;
+  color: var(--stock);
+  border: 1px solid var(--border);
   font-size: 13px;
-  color: var(--desc);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.badge-limit {
+  background: #fffff0;
+  color: var(--danger);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  padding: 1px 4px;
+  border-radius: 2px;
+  font-weight: bold;
+  white-space: nowrap;
 }
 
 /* ============================= */
@@ -697,10 +789,6 @@ h3.new span {
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: bold;
   color: var(--bg1);
-}
-
-.group-content.open .group-arrow {
-  transform: rotate(90deg);
 }
 
 .item-row.group-row {
@@ -761,102 +849,25 @@ h3.new span {
   font-weight: 900 !important;
 }
 
-/* [展開規格] / [收合] 標籤 */
+/* 規格 [展開] / [收合] 標籤 */
 .group-spec-tag {
-  font-size: 13px;
+  font-size: 14px;
   color: #222;
   background: rgba(250, 250, 0, 0.5);
   padding: 3px 8px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: bold;
   letter-spacing: 1px;
-  cursor: pointer;
+  cursor: row-resize;
   user-select: none;
-  transition: background-color 0.2s ease;
+  box-shadow: 0 1px 2px rgba(158, 42, 34, 0.12);
+  transition: all 0.2s ease;
 }
-
 .group-spec-tag:hover {
-  background: rgba(250, 250, 0, 0.8);
+  color: #fff;
+  background: #a83229;
+  border-color: #a83229;
 }
-
-/* ============================= */
-/* 🚫 禁止 / 停售 / 缺貨狀態（滑鼠移過去不變灰） */
-/* ============================= */
-.disabled-item {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.disabled-item,
-.disabled-item:hover,
-.disabled-item:nth-of-type(even):hover {
-  filter: none !important;
-  transform: none !important;
-  background-color: inherit !important;
-}
-
-.disabled-item .qty,
-.disabled-item .qty-btn {
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-.item-row.out-of-stock,
-.product-card.out-of-stock {
-  background-color: #f9f9f9;
-  opacity: 0.7;
-  cursor: not-allowed;
-}
-
-.out-of-stock,
-.out-of-stock:hover,
-.product-card.out-of-stock:nth-of-type(even):hover {
-  filter: none !important;
-  transform: none !important;
-  background-color: #f9f9f9 !important;
-}
-
-.out-of-stock .qty,
-.out-of-stock .qty-btn {
-  background: #eee;
-  pointer-events: none;
-  cursor: not-allowed;
-}
-
-.out-of-stock .item-name {
-  text-decoration: line-through;
-  text-decoration-thickness: 1px;
-}
-
-.sold-out {
-  color: var(--sold-out);
-}
-
-/* ============================= */
-/* 🏷️ 小標籤設計 */
-/* ============================= */
-.badge-stock {
-  background: #fffff0;
-  color: var(--stock);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  padding: 1px 5px;
-  border-radius: 3px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
-.badge-limit {
-  background: #fffff0;
-  color: var(--danger);
-  border: 1px solid var(--border);
-  font-size: 13px;
-  padding: 1px 4px;
-  border-radius: 2px;
-  font-weight: bold;
-  white-space: nowrap;
-}
-
 
 /* ============================= */
 /* 💰 底部結帳區 */
