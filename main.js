@@ -264,20 +264,24 @@ function renderItem(item) {
   const disabled = item.enabled === "N";
   const isGroup = item.p === -1 && item.key.split("-").length === 2;
 
+  const isTextPrice = Number.isNaN(item.p);
+  const isGift = item.p !== null && item.p === 0;
+  // 價格空白(null) 或 非正常數字(文字價格 NaN)，且不是群組
+  const isInvalidPrice = !isGroup && (item.p === null || isTextPrice);
+
+  // 套用 disabled-item 樣式，但不走 out-of-stock
   const rowClass = isGroup
     ? "item-row group-row"
-    : disabled
+    : (disabled || isInvalidPrice)
       ? "item-row disabled-item"
       : isOutOfStock
         ? "item-row out-of-stock"
         : "item-row";
 
   const maxAttr = hasLimit ? `max="${item.stock}"` : "";
-  const isTextPrice = Number.isNaN(item.p);
-  const isGift = item.p !== null && item.p === 0;
 
-  // 鎖定輸入時機
-  const inputAttr = isGroup || isTextPrice || isOutOfStock || disabled || isStoreClosed ? "disabled" : "";
+  // 鎖定輸入時機（價格異常時也一併鎖定）
+  const inputAttr = isGroup || isInvalidPrice || isOutOfStock || disabled || isStoreClosed ? "disabled" : "";
 
   // 價格欄位顯示
   const priceDisplay = isGroup
